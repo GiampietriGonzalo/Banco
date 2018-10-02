@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Dimension;
 
 public class Login extends JFrame {
 
@@ -21,31 +22,14 @@ public class Login extends JFrame {
 	private JTextField TFAccount;
 	private JTextField TFPassword;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
+	//Crea el frame
 	public Login() {
+		setSize(new Dimension(390, 200));
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
 		setForeground(Color.BLACK);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 390, 201);
+		setBounds(100, 100, 390, 200);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setForeground(Color.WHITE);
@@ -74,20 +58,37 @@ public class Login extends JFrame {
 		contentPane.add(TFPassword);
 		TFPassword.setColumns(10);
 		
-		JButton BTNSalir = new JButton("Salir");
-		BTNSalir.setForeground(Color.WHITE);
-		BTNSalir.setBackground(Color.DARK_GRAY);
-		BTNSalir.setBounds(81, 138, 94, 25);
-		contentPane.add(BTNSalir);
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.setForeground(Color.WHITE);
+		btnSalir.setBackground(Color.DARK_GRAY);
+		btnSalir.setBounds(81, 138, 94, 25);
+		contentPane.add(btnSalir);
 		
-		JButton btnNewButton = new JButton("Ingresar");
-		btnNewButton.setBackground(Color.DARK_GRAY);
-		btnNewButton.setForeground(Color.WHITE);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		btnNewButton.setBounds(208, 138, 94, 25);
-		contentPane.add(btnNewButton);
+		JButton btnIngresar = new JButton("Ingresar");
+		btnIngresar.setBackground(Color.DARK_GRAY);
+		btnIngresar.setForeground(Color.WHITE);
+		
+		btnIngresar.addActionListener(new oyenteIngresar(this));
+		
+		btnIngresar.setBounds(208, 138, 94, 25);
+		contentPane.add(btnIngresar);
+	
 	}
+		
+	//Listener btnIngresar
+	public class oyenteIngresar implements ActionListener{
+		
+		private JFrame miFrame;
+		
+		public oyenteIngresar(JFrame frame){
+			miFrame=frame;
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+		
+				miFrame.setSize(new Dimension(1100,600));
+		}
+		
+	}
+
 }
