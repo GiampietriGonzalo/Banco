@@ -18,16 +18,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Cursor;
 
-public class Notificaciones extends JFrame {
+public class BoxMessage extends JFrame {
 
+	private static BoxMessage box;
+	
 	private JPanel cpNotificaciones;
 	private String message;
-	
 	private JButton btnCancelar,btnAceptar;
 	private JLabel lblMessage;
 	
 	
-	public Notificaciones(String message) {
+	private BoxMessage(String message) {
+		
 		
 		message=message;
 		
@@ -35,7 +37,7 @@ public class Notificaciones extends JFrame {
 		setBackground(Color.DARK_GRAY);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 346, 179);
+		setBounds(100, 100, 336, 173);
 		cpNotificaciones = new JPanel();
 		cpNotificaciones.setForeground(Color.WHITE);
 		cpNotificaciones.setBackground(Color.DARK_GRAY);
@@ -49,7 +51,7 @@ public class Notificaciones extends JFrame {
 		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMessage.setForeground(Color.WHITE);
 		lblMessage.setBackground(Color.DARK_GRAY);
-		lblMessage.setBounds(12, 12, 318, 88);
+		lblMessage.setBounds(10, 0, 300, 88);
 		cpNotificaciones.add(lblMessage);
 		lblMessage.setText(message);
 		
@@ -58,7 +60,7 @@ public class Notificaciones extends JFrame {
 		btnCancelar.setEnabled(false);
 		btnCancelar.setForeground(Color.WHITE);
 		btnCancelar.setBackground(Color.DARK_GRAY);
-		btnCancelar.setBounds(52, 112, 96, 25);
+		btnCancelar.setBounds(49, 99, 96, 25);
 		cpNotificaciones.add(btnCancelar);
 		
 		btnAceptar = new JButton("Aceptar");
@@ -66,7 +68,7 @@ public class Notificaciones extends JFrame {
 		btnAceptar.setEnabled(false);
 		btnAceptar.setForeground(Color.WHITE);
 		btnAceptar.setBackground(Color.DARK_GRAY);
-		btnAceptar.setBounds(193, 112, 96, 25);
+		btnAceptar.setBounds(172, 99, 96, 25);
 		cpNotificaciones.add(btnAceptar);
 		
 		
@@ -125,6 +127,25 @@ public class Notificaciones extends JFrame {
 		btnCancelar.addActionListener(new oyenteCancelarSalir(this,login));
 		btnCancelar.setVisible(true);
 		btnCancelar.setEnabled(true);
+		
+	}
+	
+	public static BoxMessage getBoxMessage(String message){
+		if(box==null)
+			box=new BoxMessage(message);
+		
+		return box;
+	}
+	
+	public void notificarErrorDB(){
+		this.setSize(458, 172);
+		//cpNotificaciones.setSize(417, cpNotificaciones.getHeight());
+		btnAceptar.setAlignmentX(174);
+		btnAceptar.setAlignmentY(99);
+		
+		btnAceptar.addActionListener(new oyenteAceptarSalir());
+		btnAceptar.setVisible(true);
+		btnAceptar.setEnabled(true);
 		
 	}
 	

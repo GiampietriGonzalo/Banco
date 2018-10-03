@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.FlowLayout;
@@ -32,13 +33,14 @@ public class Login extends JFrame {
 	
 	
 	
-	//Crea el frame
+	
 	public Login() {
 		super();
 		initGui();
+		initBD();
 	}
 	
-	//Inicializa la interfaz grÃ¡fica
+	//Inicializa la interfaz gráfica
 	private void initGui(){
 		
 		String query;
@@ -92,6 +94,19 @@ public class Login extends JFrame {
 	
 		
 	}
+	
+	private void initBD(){
+		
+		// crea la tabla  
+    	table = new DBTable();
+    	
+    	// Agrega la tabla al frame (no necesita JScrollPane como Jtable)
+        getContentPane().add(table, BorderLayout.CENTER);           
+                  
+       // setea la tabla para sólo lectura (no se puede editar su contenido)  
+       table.setEditable(false); 
+		
+	}
 		
 	//Listener btnIngresar
 	public class oyenteIngresar implements ActionListener{
@@ -120,7 +135,7 @@ public class Login extends JFrame {
 		
 		public void actionPerformed(ActionEvent arg0) {
 			
-				Notificaciones not = new Notificaciones("Â¿SALIR?");
+				BoxMessage not = BoxMessage.getBoxMessage("¿Salir de la aplicación?");
 				not.habilitarAceptarSalir();
 				not.habilitarCancelarSalir(miFrame);
 				
@@ -134,18 +149,8 @@ public class Login extends JFrame {
 		
 	}
 	
-	
-	private void thisComponentShown(ComponentEvent evt){
-	      this.conectarBD();
-	}
-	   
-	private void thisComponentHidden(ComponentEvent evt){
-	      this.desconectarBD();
-	}
-	
-	
 	private void conectarBD(){
-	  
+		  
 		try{
 	       String driver ="com.mysql.cj.jdbc.Driver";
 	       String servidor = "localhost:3306";
@@ -154,7 +159,7 @@ public class Login extends JFrame {
 	       String clave = "admin";
 	       String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 	   
-	       //establece una conexiÃ³n con la  B.D. "batallas"  usando directamante una tabla DBTable    
+	       //establece una coneccionn con la  B.D. "batallas"  usando directamante una tabla DBTable    
 	       table.connectDatabase(driver, uriConexion, usuario, clave);
 	           
 		}
@@ -182,5 +187,8 @@ public class Login extends JFrame {
 	       System.out.println("VendorError: " + ex.getErrorCode());
 	    }      
 	}
+	
+
+	
 
 }
