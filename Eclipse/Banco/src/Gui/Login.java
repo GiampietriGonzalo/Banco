@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import DataBase.DBManager;
+
 import java.awt.Color;
 import javax.swing.JComboBox;
 import java.awt.FlowLayout;
@@ -30,6 +32,8 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfPassword;
 	private DBTable table;
+	private DBManager manager;
+	private JComboBox cbUser;
 	
 	
 	
@@ -37,13 +41,13 @@ public class Login extends JFrame {
 	public Login() {
 		super();
 		initGui();
-		initBD();
+		manager=DBManager.getDBManager();
 	}
 	
 	//Inicializa la interfaz gráfica
 	private void initGui(){
 		
-		String query;
+		
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
 		setForeground(Color.BLACK);
@@ -56,9 +60,9 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		query="SELECT * FROM ";
-		JComboBox cbUser = new JComboBox();
-		cbUser.addItem(new String("Selecciona usuario"));
+
+		cbUser = new JComboBox();
+		cbUser.addItem(new String("Seleccionar usuario"));
 		cbUser.addItem(new String("ATM"));
 		cbUser.addItem(new String("empleado"));
 		cbUser.addItem(new String("admin"));
@@ -94,24 +98,15 @@ public class Login extends JFrame {
 	
 		
 	}
-	
-	private void initBD(){
-		
-		// crea la tabla  
-    	table = new DBTable();
-    	
-    	// Agrega la tabla al frame (no necesita JScrollPane como Jtable)
-        getContentPane().add(table, BorderLayout.CENTER);           
-                  
-       // setea la tabla para sólo lectura (no se puede editar su contenido)  
-       table.setEditable(false); 
-		
-	}
+
 		
 	//Listener btnIngresar
 	public class oyenteIngresar implements ActionListener{
 		
 		private JFrame miFrame;
+		private String query = "SELECT password, fecha " + 
+                "FROM batallas " +
+                "ORDER BY nombre_batalla";
 		
 		public oyenteIngresar(JFrame frame){
 			miFrame=frame;
@@ -119,6 +114,19 @@ public class Login extends JFrame {
 		
 		public void actionPerformed(ActionEvent arg0) {
 		
+			/*TODO comparar la contraseña ingresada con la de sqlite.user*/
+			
+			if(cbUser.getSelectedItem().toString()!="Seleccionar usuario")
+				
+				switch(cbUser.getSelectedItem().toString()) {
+				
+				case "ATM":{}
+				
+				case "admin":{}
+				
+				case "empleado":{}
+				}		
+			
 				miFrame.setSize(new Dimension(1100,600));
 		}
 		
@@ -149,44 +157,7 @@ public class Login extends JFrame {
 		
 	}
 	
-	private void conectarBD(){
-		  
-		try{
-	       String driver ="com.mysql.cj.jdbc.Driver";
-	       String servidor = "localhost:3306";
-	       String baseDatos = "banco";
-	       String usuario = "admin";
-	       String clave = "admin";
-	       String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
-	   
-	       //establece una coneccionn con la  B.D. "batallas"  usando directamante una tabla DBTable    
-	       table.connectDatabase(driver, uriConexion, usuario, clave);
-	           
-		}
-	    catch (SQLException ex){
-	       JOptionPane.showMessageDialog(this,"Se produjo un error al intentar conectarse a la base de datos.\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-	       System.out.println("SQLException: " + ex.getMessage());
-	       System.out.println("SQLState: " + ex.getSQLState());
-	       System.out.println("VendorError: " + ex.getErrorCode());
-	    }
-	    catch (ClassNotFoundException e){
-	       e.printStackTrace();
-	    }
-	      
-	 }
 	
-	
-	private void desconectarBD(){
-	         
-		try{
-	       table.close();            
-	    }
-	    catch (SQLException ex){
-	       System.out.println("SQLException: " + ex.getMessage());
-	       System.out.println("SQLState: " + ex.getSQLState());
-	       System.out.println("VendorError: " + ex.getErrorCode());
-	    }      
-	}
 	
 
 	

@@ -9,12 +9,12 @@ import quick.dbtable.DBTable;
 
 public class DBManager {
 
-	private DBManager manager;
+	private static DBManager manager;
 	private DBTable table;
 	
 	private DBManager(){}
 	
-	public DBManager gerDBManager(){
+	public static DBManager getDBManager(){
 		
 		if(manager==null)
 			manager=new DBManager();
@@ -41,9 +41,9 @@ public class DBManager {
 	    	BoxMessage box=BoxMessage.getBoxMessage("Se produjo un error al intentar conectarse a la base de datos.\n" + ex.getMessage());
 	    	box.notificarErrorDB();
 	    	//JOptionPane.showMessageDialog(this,"Se produjo un error al intentar conectarse a la base de datos.\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
-	       System.out.println("SQLException: " + ex.getMessage());
-	       System.out.println("SQLState: " + ex.getSQLState());
-	       System.out.println("VendorError: " + ex.getErrorCode());
+	    	System.out.println("SQLException: " + ex.getMessage());
+	    	System.out.println("SQLState: " + ex.getSQLState());
+	    	System.out.println("VendorError: " + ex.getErrorCode());
 	    }
 	    catch (ClassNotFoundException e){
 	       e.printStackTrace();
