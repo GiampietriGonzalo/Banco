@@ -44,7 +44,7 @@ public class Login extends JFrame {
 		manager=DBManager.getDBManager();
 	}
 	
-	//Inicializa la interfaz gráfica
+	//Inicializa la interfaz grï¿½fica
 	private void initGui(){
 		
 		
@@ -114,7 +114,7 @@ public class Login extends JFrame {
 		
 		public void actionPerformed(ActionEvent arg0) {
 		
-			/*TODO comparar la contraseña ingresada con la de sqlite.user*/
+			/*TODO comparar la contraseï¿½a ingresada con la de sqlite.user*/
 			
 			if(cbUser.getSelectedItem().toString()!="Seleccionar usuario")
 				
@@ -143,12 +143,7 @@ public class Login extends JFrame {
 		
 		public void actionPerformed(ActionEvent arg0) {
 			
-				BoxMessage not = BoxMessage.getBoxMessage("¿Salir de la aplicación?");
-				not.habilitarAceptarSalir();
-				not.habilitarCancelarSalir(miFrame);
-				
-				not.setVisible(true);
-				not.setEnabled(true);
+				//HACER
 				
 				
 				miFrame.setVisible(false);
@@ -157,7 +152,45 @@ public class Login extends JFrame {
 		
 	}
 	
+	private void conectarBD(){
+		  
+		try{
+	       String driver ="com.mysql.cj.jdbc.Driver";
+	       String servidor = "localhost:3306";
+	       String baseDatos = "banco";
+	       String usuario = "admin";
+	       String clave = "admin";
+	       String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
+	   
+	       //establece una coneccionn con la  B.D. "batallas"  usando directamante una tabla DBTable    
+	       table.connectDatabase(driver, uriConexion, usuario, clave);
+	           
+		}
+	    catch (SQLException ex){
+	    	
+	    	JOptionPane.showMessageDialog(this,"Se produjo un error al intentar conectarse a la base de datos.\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+	    	System.out.println("SQLException: " + ex.getMessage());
+	    	System.out.println("SQLState: " + ex.getSQLState());
+	    	System.out.println("VendorError: " + ex.getErrorCode());
+	    }
+	    catch (ClassNotFoundException e){
+	       e.printStackTrace();
+	    }
+	      
+	 }
 	
+	
+	private void desconectarBD(){
+	         
+		try{
+	       table.close();            
+	    }
+	    catch (SQLException ex){
+	       System.out.println("SQLException: " + ex.getMessage());
+	       System.out.println("SQLState: " + ex.getSQLState());
+	       System.out.println("VendorError: " + ex.getErrorCode());
+	    }      
+	}
 	
 
 	

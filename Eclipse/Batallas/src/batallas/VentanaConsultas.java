@@ -171,22 +171,18 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
 
    private void desconectarBD()
    {
-         try
-         {
+         try{
             tabla.close();            
          }
-         catch (SQLException ex)
-         {
+         catch (SQLException ex){
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
          }      
    }
 
-   private void refrescarTabla()
-   {
-      try
-      {    
+   private void refrescarTabla(){
+      try{    
     	  // seteamos la consulta a partir de la cual se obtendrán los datos para llenar la tabla
     	  tabla.setSelectSql(this.txtConsulta.getText().trim());
 
