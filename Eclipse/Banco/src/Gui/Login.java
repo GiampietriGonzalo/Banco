@@ -109,13 +109,7 @@ public class Login extends JFrame {
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
-			
-			boolean vu=false;
-			vu=manager.verificarUsuario(tfUser.getText(),tfPassword.getText(),miFrame);
-			
-			if(!vu)
-				 JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame),"Usuario o Contraseña incorrecta\n","Login Error",JOptionPane.ERROR_MESSAGE);
-
+			manager.verificarUsuario(tfUser.getText(),tfPassword.getText().trim(),miFrame);
 		}
 		
 	}

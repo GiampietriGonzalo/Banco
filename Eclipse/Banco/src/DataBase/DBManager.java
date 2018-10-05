@@ -3,6 +3,8 @@ package DataBase;
 
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import Gui.VentanaAdmin;
 import quick.dbtable.DBTable;
@@ -22,37 +24,55 @@ public class DBManager {
 		return manager;
 	}
 	
-	public boolean verificarUsuario(String user,String password,JFrame login){
-		
-		boolean tr=false;
+	public void verificarUsuario(String user,String password,JFrame login){
 		
 	
 		switch(user) {
 			
 			case "ATM":{
-				tr=password=="atm";
+				if(password.equals("atm")){
+					
+					//TODO IR A FRAME ATM
+				}
+				else
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contraseña incorrecta\n","Login Error",JOptionPane.ERROR_MESSAGE);
+
 				break;
 			}
 			
 			case "admin":{
-				tr=password=="admin";
-				VentanaAdmin admin=new VentanaAdmin();
+				
+				if(password.equals("admin")) {
+					VentanaAdmin admin=new VentanaAdmin();
+
+					admin.setVisible(true);
+					admin.setEnabled(true);
+
+					login.dispose();
+				}
+				else
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contraseña incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
+
 					
-				admin.setVisible(true);
-				admin.setEnabled(true);
-					
-				login.dispose();
 					
 				break;
 			}
 			
 			case "empleado":{
-				tr=password=="empleado";
+				if(password.equals("empleado")){
+					//TODO IR A FRAME EMPLEADO
+					
+				}
+				else
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contraseña incorrecta\n","Login Error",JOptionPane.ERROR_MESSAGE);
+
 				break;		
 			}
+			
+			default:JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contraseña incorrecta\n","Login Error",JOptionPane.ERROR_MESSAGE);
+
 		}
-	
-		return tr;
+
 	}
 	
 	

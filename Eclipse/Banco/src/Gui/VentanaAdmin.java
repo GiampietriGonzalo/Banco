@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import quick.dbtable.DBTable;
 
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -36,10 +37,9 @@ public class VentanaAdmin extends JFrame {
 	private JButton btnBorrar;
 	public JTextField tfQuery;
 
+
 	public VentanaAdmin() {
-		
 		initGui();
-		
 	}
 
 	
@@ -78,10 +78,13 @@ public class VentanaAdmin extends JFrame {
 		table.setBackground(Color.DARK_GRAY);
 		table.setBounds(5, 198, 809, 384);
 		contentPane.add(table);
+		table.setEnabled(false);
 		
 		tfQuery = new JTextField(10);
 		tfQuery.setBounds(10, 11, 688, 142);
 		contentPane.add(tfQuery);
+		
+		
 		
 	}
 	
@@ -141,28 +144,31 @@ public class VentanaAdmin extends JFrame {
 				 ResultSet rs= stmt.executeQuery(tfQuery.getText());
 				 ResultSetMetaData md= rs.getMetaData();
 				   
-				 //Se cuenta la cantidad de filas de la consulta
-				 while(rs.next()){
-					 filas++;
-				 }
 			   
 				 rs=stmt.executeQuery(tfQuery.getText());
 				 TableModel bancoModel;
 				 Object columnNames[]=new Object[md.getColumnCount()];
 				   
+				 System.out.println("ColumnCount: "+md.getColumnCount());
 				 while(i<md.getColumnCount()){
-					 columnNames[i]=md.getColumnName(i);
-					 bancoModel = new DefaultTableModel(columnNames,filas);
-					 
+					 columnNames[i]= new String(md.getColumnName(i+1));
+					 i++;
 				 }
-		       
-		       
-				 for(int j=0;j<filas;j++){
-					 i=0;
-					 while (rs.next()){
-						 table.setValueAt(rs.getObject(i), j, i);       
-						 i++;
+				 
+				 bancoModel = new DefaultTableModel(columnNames,1);
+				 table.setModel(bancoModel);
+				 
+				 
+				 i=1;
+				 //int j=1;
+				 while (rs.next()){
+					 
+					 ((DefaultTableModel) table.getModel()).setRowCount(i);
+					 for(int j=1;j<md.getColumnCount();j++){
+						 table.setValueAt(rs.getObject(j),i-1, j-1);       
 					 }
+					 
+					 i++;
 				 }
 		  
 				 rs.close();
