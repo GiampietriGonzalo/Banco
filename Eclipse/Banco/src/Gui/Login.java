@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import java.awt.FlowLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -25,15 +26,16 @@ import java.sql.Types;
 //import java.sql.ResultSet;
 import java.sql.SQLException;
 import quick.dbtable.*;
+import javax.swing.JPasswordField;
 
 
 public class Login extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField tfPassword;
+	private JPasswordField tfPassword;
 	private DBTable table;
 	private DBManager manager;
-	private JComboBox cbUser;
+	private JTextField tfUser;
 	
 	
 	
@@ -61,19 +63,16 @@ public class Login extends JFrame {
 		contentPane.setLayout(null);
 		
 
-		cbUser = new JComboBox();
-		cbUser.addItem(new String("Seleccionar usuario"));
-		cbUser.addItem(new String("ATM"));
-		cbUser.addItem(new String("empleado"));
-		cbUser.addItem(new String("admin"));
-		cbUser.setToolTipText("");
-		cbUser.setForeground(Color.WHITE);
-		cbUser.setBackground(Color.DARK_GRAY);
-		cbUser.setBounds(60, 22, 220, 24);
-		contentPane.add(cbUser);
+		tfUser = new JTextField();
+		tfUser.setText("Usuario");
+		tfUser.setToolTipText("");
+		tfUser.setForeground(Color.WHITE);
+		tfUser.setBackground(Color.DARK_GRAY);
+		tfUser.setBounds(60, 22, 220, 24);
+		contentPane.add(tfUser);
 		
-		tfPassword = new JTextField();
-		tfPassword.setText("PASSWORD");
+		tfPassword = new JPasswordField();
+		tfPassword.setEchoChar('*');
 		tfPassword.setForeground(Color.WHITE);
 		tfPassword.setBackground(Color.DARK_GRAY);
 		tfPassword.setBounds(61, 58, 220, 19);
@@ -104,30 +103,19 @@ public class Login extends JFrame {
 	public class oyenteIngresar implements ActionListener{
 		
 		private JFrame miFrame;
-		private String query = "SELECT password, fecha " + 
-                "FROM batallas " +
-                "ORDER BY nombre_batalla";
 		
 		public oyenteIngresar(JFrame frame){
 			miFrame=frame;
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
-		
-			/*TODO comparar la contraseï¿½a ingresada con la de sqlite.user*/
 			
-			if(cbUser.getSelectedItem().toString()!="Seleccionar usuario")
-				
-				switch(cbUser.getSelectedItem().toString()) {
-				
-				case "ATM":{}
-				
-				case "admin":{}
-				
-				case "empleado":{}
-				}		
+			boolean vu=false;
+			vu=manager.verificarUsuario(tfUser.getText(),tfPassword.getText(),miFrame);
 			
-				miFrame.setSize(new Dimension(1100,600));
+			if(!vu)
+				 JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame),"Usuario o Contraseña incorrecta\n","Login Error",JOptionPane.ERROR_MESSAGE);
+
 		}
 		
 	}
@@ -145,9 +133,7 @@ public class Login extends JFrame {
 			
 				//HACER
 				
-				
-				miFrame.setVisible(false);
-				miFrame.setEnabled(false);
+				System.exit(0);
 		}
 		
 	}

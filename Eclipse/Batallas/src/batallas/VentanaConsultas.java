@@ -21,7 +21,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
-import quick.dbtable.*; 
+import quick.dbtable.*;
+import java.awt.Color; 
 
 
 @SuppressWarnings("serial")
@@ -39,6 +40,10 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
    public VentanaConsultas() 
    {
       super();
+      getContentPane().setForeground(Color.WHITE);
+      setForeground(Color.WHITE);
+      getContentPane().setBackground(Color.DARK_GRAY);
+      setBackground(Color.DARK_GRAY);
       initGUI();
    }
    
@@ -64,12 +69,16 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
          });
          {
             pnlConsulta = new JPanel();
+            pnlConsulta.setForeground(Color.WHITE);
+            pnlConsulta.setBackground(Color.DARK_GRAY);
             getContentPane().add(pnlConsulta, BorderLayout.NORTH);
             {
                scrConsulta = new JScrollPane();
                pnlConsulta.add(scrConsulta);
                {
                   txtConsulta = new JTextArea();
+                  txtConsulta.setForeground(Color.WHITE);
+                  txtConsulta.setBackground(Color.DARK_GRAY);
                   scrConsulta.setViewportView(txtConsulta);
                   txtConsulta.setTabSize(3);
                   txtConsulta.setColumns(80);
@@ -85,6 +94,8 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
             }
             {
                btnEjecutar = new JButton();
+               btnEjecutar.setForeground(Color.WHITE);
+               btnEjecutar.setBackground(Color.DARK_GRAY);
                pnlConsulta.add(btnEjecutar);
                btnEjecutar.setText("Ejecutar");
                btnEjecutar.addActionListener(new ActionListener() {
@@ -95,6 +106,8 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
             }
             {
             	botonBorrar = new JButton();
+            	botonBorrar.setForeground(Color.WHITE);
+            	botonBorrar.setBackground(Color.DARK_GRAY);
             	pnlConsulta.add(botonBorrar);
             	botonBorrar.setText("Borrar");            
             	botonBorrar.addActionListener(new ActionListener() {
@@ -107,6 +120,8 @@ public class VentanaConsultas extends javax.swing.JInternalFrame
          {
         	// crea la tabla  
         	tabla = new DBTable();
+        	tabla.setForeground(Color.WHITE);
+        	tabla.setBackground(Color.DARK_GRAY);
         	
         	// Agrega la tabla al frame (no necesita JScrollPane como Jtable)
             getContentPane().add(tabla, BorderLayout.CENTER);           
