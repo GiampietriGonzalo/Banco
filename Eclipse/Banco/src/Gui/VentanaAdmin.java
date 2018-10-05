@@ -15,8 +15,10 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
 import quick.dbtable.DBTable;
@@ -25,7 +27,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JTable;
+import javax.swing.JScrollBar;
 
 
 public class VentanaAdmin extends JFrame {
@@ -34,11 +39,14 @@ public class VentanaAdmin extends JFrame {
 	private JTable table;
 	private Connection conexionBD = null;
 	private JButton btnConsultar;
-	private JButton btnBorrar;
-	public JTextField tfQuery;
+	private JButton btnLimpiar;
+	private JTextField tfQuery;
+	private JPanel tablePane;
+	private JScrollPane spTable;
 
 
 	public VentanaAdmin() {
+		setResizable(false);
 		initGui();
 	}
 
@@ -48,7 +56,7 @@ public class VentanaAdmin extends JFrame {
 		setForeground(Color.WHITE);
 		setBackground(Color.DARK_GRAY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 835, 635);
+		setBounds(100, 100, 835, 527);
 		contentPane = new JPanel();
 		contentPane.setForeground(Color.WHITE);
 		contentPane.setBackground(Color.DARK_GRAY);
@@ -59,12 +67,12 @@ public class VentanaAdmin extends JFrame {
 		this.setEnabled(false);
 		
 		
-		btnBorrar = new JButton("Borrar");
-		btnBorrar.setForeground(Color.WHITE);
-		btnBorrar.setBackground(Color.DARK_GRAY);
-		btnBorrar.setBounds(725, 164, 89, 23);
-		contentPane.add(btnBorrar);
-		btnBorrar.addActionListener(new oyenteBorrar());
+		btnLimpiar = new JButton("Limpiar");
+		btnLimpiar.setForeground(Color.WHITE);
+		btnLimpiar.setBackground(Color.DARK_GRAY);
+		btnLimpiar.setBounds(725, 164, 89, 23);
+		contentPane.add(btnLimpiar);
+		btnLimpiar.addActionListener(new oyenteBorrar());
 		
 		btnConsultar = new JButton("Consultar");
 		btnConsultar.setForeground(Color.WHITE);
@@ -73,15 +81,32 @@ public class VentanaAdmin extends JFrame {
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 		
+		tablePane= new JPanel();
+		tablePane.setForeground(Color.WHITE);
+		tablePane.setBackground(Color.DARK_GRAY);
+		tablePane.setBounds(10,198,799,285);
+		tablePane.setLayout(new BorderLayout(0, 0));
+		contentPane.add(tablePane);
+		
+	
+		
+		
 		table = new JTable();
 		table.setForeground(Color.WHITE);
 		table.setBackground(Color.DARK_GRAY);
-		table.setBounds(5, 198, 809, 384);
-		contentPane.add(table);
+		table.setBounds(2, 50, 789, 384);
+		//contentPane.add(table);
 		table.setEnabled(false);
 		
+		spTable = new JScrollPane(table);
+		spTable.setBounds(0,50,799,400);
+		
+		tablePane.add(spTable, BorderLayout.CENTER);
+		
 		tfQuery = new JTextField(10);
-		tfQuery.setBounds(10, 11, 688, 142);
+		tfQuery.setForeground(Color.WHITE);
+		tfQuery.setBackground(Color.DARK_GRAY);
+		tfQuery.setBounds(10, 11, 799, 142);
 		contentPane.add(tfQuery);
 		
 		
@@ -125,7 +150,7 @@ public class VentanaAdmin extends JFrame {
 	            System.out.println("SQLException: " + ex.getMessage());
 	            System.out.println("SQLState: " + ex.getSQLState());
 	            System.out.println("VendorError: " + ex.getErrorCode());
-	         	}
+	         }
 		 }
 	 }
 	   
@@ -149,7 +174,6 @@ public class VentanaAdmin extends JFrame {
 				 TableModel bancoModel;
 				 Object columnNames[]=new Object[md.getColumnCount()];
 				   
-				 System.out.println("ColumnCount: "+md.getColumnCount());
 				 while(i<md.getColumnCount()){
 					 columnNames[i]= new String(md.getColumnName(i+1));
 					 i++;
@@ -159,8 +183,9 @@ public class VentanaAdmin extends JFrame {
 				 table.setModel(bancoModel);
 				 
 				 
+				 
 				 i=1;
-				 //int j=1;
+			
 				 while (rs.next()){
 					 
 					 ((DefaultTableModel) table.getModel()).setRowCount(i);
@@ -170,6 +195,9 @@ public class VentanaAdmin extends JFrame {
 					 
 					 i++;
 				 }
+				 
+				 JTableHeader header = table.getTableHeader();
+				 tablePane.add(header,BorderLayout.NORTH);
 		  
 				 rs.close();
 				 stmt.close();
@@ -211,6 +239,7 @@ public class VentanaAdmin extends JFrame {
 		 public void actionPerformed(ActionEvent arg) {
 
 			 tfQuery.setText("");
+			 table.setModel(new DefaultTableModel());
 
 		 }
 

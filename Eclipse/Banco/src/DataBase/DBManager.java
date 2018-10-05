@@ -25,8 +25,7 @@ public class DBManager {
 	}
 	
 	public void verificarUsuario(String user,String password,JFrame login){
-		
-	
+
 		switch(user) {
 			
 			case "ATM":{
