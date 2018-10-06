@@ -6,7 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import Gui.VentanaAdmin;
+import Gui.ConsultasAdmin;
+import Gui.MenuAdmin;
 import quick.dbtable.DBTable;
 
 public class DBManager {
@@ -42,7 +43,7 @@ public class DBManager {
 			case "admin":{
 				
 				if(password.equals("admin")) {
-					VentanaAdmin admin=new VentanaAdmin();
+					MenuAdmin admin=new MenuAdmin();
 
 					admin.setVisible(true);
 					admin.setEnabled(true);

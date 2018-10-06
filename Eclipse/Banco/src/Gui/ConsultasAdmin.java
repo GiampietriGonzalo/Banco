@@ -13,6 +13,7 @@ import java.sql.Statement;
 
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollBar;
 
 
-public class VentanaAdmin extends JFrame {
+public class ConsultasAdmin extends JInternalFrame {
 
 	private JPanel contentPane;
 	private JTable table;
@@ -45,8 +46,9 @@ public class VentanaAdmin extends JFrame {
 	private JScrollPane spTable;
 
 
-	public VentanaAdmin() {
+	public ConsultasAdmin() {
 		setResizable(false);
+		setTitle("Consultas");
 		initGui();
 	}
 
@@ -70,14 +72,14 @@ public class VentanaAdmin extends JFrame {
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.setForeground(Color.WHITE);
 		btnLimpiar.setBackground(Color.DARK_GRAY);
-		btnLimpiar.setBounds(725, 164, 89, 23);
+		btnLimpiar.setBounds(720, 164, 89, 23);
 		contentPane.add(btnLimpiar);
 		btnLimpiar.addActionListener(new oyenteBorrar());
 		
 		btnConsultar = new JButton("Consultar");
 		btnConsultar.setForeground(Color.WHITE);
 		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(609, 164, 89, 23);
+		btnConsultar.setBounds(604, 164, 89, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 		
@@ -99,6 +101,8 @@ public class VentanaAdmin extends JFrame {
 		table.setEnabled(false);
 		
 		spTable = new JScrollPane(table);
+		spTable.setForeground(Color.WHITE);
+		spTable.setBackground(Color.DARK_GRAY);
 		spTable.setBounds(0,50,799,400);
 		
 		tablePane.add(spTable, BorderLayout.CENTER);
@@ -154,7 +158,7 @@ public class VentanaAdmin extends JFrame {
 		 }
 	 }
 	   
-	 private void refrescarTabla(){
+	 private void realizarConsulta(){
 		   
 		 int filas=0;
 		 int i=0;
@@ -206,29 +210,26 @@ public class VentanaAdmin extends JFrame {
 		    	  
 		 }
 		 catch (SQLException ex){
-			   
 			 // en caso de error, se muestra la causa en la consola
-			 
 			 System.out.println("SQLException: " + ex.getMessage());
 			 System.out.println("SQLState: " + ex.getSQLState());
 			 System.out.println("VendorError: " + ex.getErrorCode());
 			 JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
-			 
 		 }
 		      
 	 }
 	   
 	 private class oyenteConsultar implements ActionListener{
 
-		 private JFrame miFrame;
+		 private JInternalFrame miFrame;
 		 
-		 public oyenteConsultar(JFrame miFrame) {
+		 public oyenteConsultar(JInternalFrame miFrame) {
 			 this.miFrame=miFrame;
 		 }
 
 		 public void actionPerformed(ActionEvent arg0) {
 
-			 refrescarTabla();
+			 realizarConsulta();
 
 		 }
 
