@@ -364,16 +364,16 @@
 	FROM ((deposito NATURAL JOIN transaccion) NATURAL JOIN Transaccion_por_Caja) NATURAL JOIN caja_ahorro;
     
     CREATE VIEW banco.datos_extraccion AS
-    SELECT c.nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Extraccion' AS tipo
-    FROM ((((extraccion NATURAL JOIN cliente_ca c) NATURAL JOIN caja_ahorro) NATURAL JOIN cliente) NATURAL JOIN transaccion) NATURAL JOIN caja;
+    SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Extraccion' AS tipo
+    FROM (((extraccion NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN Transaccion_por_caja) NATURAL JOIN caja_ahorro;
     
     CREATE VIEW banco.datos_transferencia AS
-    SELECT c.nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, destino, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Transferencia' AS tipo
-	FROM ((((transferencia NATURAL JOIN cliente_ca c) NATURAL JOIN cliente) JOIN Caja_Ahorro ON Transferencia.origen=Caja_Ahorro.nro_ca) NATURAL JOIN transaccion) NATURAL JOIN caja;
+    SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, destino, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Transferencia' AS tipo
+	FROM (((transferencia NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN Transaccion_por_caja) JOIN Caja_Ahorro ON Transferencia.origen=Caja_Ahorro.nro_ca;
 	
 	CREATE VIEW banco.datos_debito AS
-	SELECT c.nro_ca, saldo, nro_trans, fecha, hora, monto, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Debito' AS tipo
-	FROM (((debito NATURAL JOIN cliente_ca c) NATURAL JOIN caja_ahorro) NATURAL JOIN cliente) NATURAL JOIN transaccion;
+	SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Debito' AS tipo
+	FROM ((debito NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN caja_ahorro;
     
     CREATE VIEW banco.trans_cajas_ahorro AS
 	SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, tipo, cod_caja, '-' AS destino, '-' AS nro_cliente, '-' AS tipo_doc, '-' AS nro_doc, '-' AS nombre, '-' AS apellido from banco.datos_deposito
@@ -425,14 +425,10 @@
 
 	CREATE USER atm@'%' IDENTIFIED BY 'atm';
     
-    GRANT SELECT ON banco.datos_debito TO atm@'%';
-    GRANT SELECT ON banco.datos_deposito TO atm@'%';
-	GRANT SELECT ON banco.datos_extraccion TO atm@'%';
-	GRANT SELECT ON banco.datos_transferencia TO atm@'%';
 	GRANT SELECT ON banco.trans_cajas_ahorro TO atm@'%';
+    GRANT SELECT ON banco.tarjeta TO atm@'%';
     
     GRANT UPDATE ON banco.tarjeta TO atm@'%';
-	GRANT UPDATE ON banco.trans_cajas_ahorro TO atm@'%';
 
 	
 
