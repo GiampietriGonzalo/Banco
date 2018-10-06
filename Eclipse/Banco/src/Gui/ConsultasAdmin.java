@@ -94,8 +94,8 @@ public class ConsultasAdmin extends JInternalFrame {
 		
 		
 		table = new JTable();
-		table.setForeground(Color.WHITE);
-		table.setBackground(Color.DARK_GRAY);
+		table.setForeground(Color.DARK_GRAY);
+		table.setBackground(Color.WHITE);
 		table.setBounds(2, 50, 789, 384);
 		//contentPane.add(table);
 		table.setEnabled(false);
