@@ -1,18 +1,15 @@
 package Gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseMotionListener;
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -23,12 +20,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
-
 import Logica.Fechas;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -151,20 +145,16 @@ public class MovimientosATM extends JInternalFrame {
 		int i=0;
 		int saldo;
 		String tipo;
-		
-		try{    
 
+		try{    
 			if(query.isEmpty())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacía\n","Consulta vacía",JOptionPane.ERROR_MESSAGE);
 			else{
-				
+
 				conectarBD();
 				Statement stmt = this.conexionBD.createStatement();
-
 				ResultSet rs= stmt.executeQuery(query);
 				ResultSetMetaData md= rs.getMetaData();
-
-
 				rs=stmt.executeQuery(query);
 				Object columnNames[]=new Object[md.getColumnCount()];
 
@@ -176,9 +166,7 @@ public class MovimientosATM extends JInternalFrame {
 				modelo = new DefaultTableModel(columnNames,1);
 				tabla.setModel(modelo);
 
-				//i=Filas
-				//j=Columnas
-				i=1;
+				i=1; //i=Filas j=Columnas
 				String fecha;
 				while (rs.next() && i<ultimas+1){
 
@@ -191,24 +179,22 @@ public class MovimientosATM extends JInternalFrame {
 							fecha= Fechas.convertirDateAString(rs.getDate(1));
 							tabla.setValueAt(fecha,i-1,0);
 						}
-						
+
 						if(j==3){
 
 							tipo=rs.getString(j);
-							
+
 							if(!tipo.equals("Deposito"))
 								saldo= -rs.getInt(4);
 							else
 								saldo= rs.getInt(4);
-							
+
 							tabla.setValueAt(saldo,i-1, 3);
 						}
-
 					}
 
 					i++;
 				}
-
 				JTableHeader header = tabla.getTableHeader();
 				panelTabla.add(header,BorderLayout.NORTH);
 
@@ -229,7 +215,7 @@ public class MovimientosATM extends JInternalFrame {
 	
 	private class oyenteUltimos implements ActionListener{
 		
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(ActionEvent arg0){
 			
 			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja="+codCaja+" ORDER BY fecha DESC, hora DESC";
 			
@@ -276,7 +262,8 @@ public class MovimientosATM extends JInternalFrame {
 			this.miFrame=miFrame;
 		}
 		
-		public void actionPerformed(ActionEvent arg0) {
+		public void actionPerformed(ActionEvent arg0){
+			
 			String query;
 			Date hasta;
 			Date desde;
@@ -285,7 +272,7 @@ public class MovimientosATM extends JInternalFrame {
 				
 				desde= Fechas.convertirStringADateSQL(tfDesde.getText());
 				hasta= Fechas.convertirStringADateSQL(tfHasta.getText());
-				query="SELECT fecha, hora, tipo, monto FROM tarjeta NATURAL JOIN trans_cajas_ahorro WHERE  fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
+				query="SELECT fecha, hora, tipo, monto FROM tarjeta NATURAL JOIN trans_cajas_ahorro AS T WHERE T.cod_caja="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
 
 				consultar(query);
 			}
@@ -309,7 +296,6 @@ public class MovimientosATM extends JInternalFrame {
 
 			//establece una conexión con la  B.D. "banco"    
 			conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
-			//table.connectDatabase(driver, uriConexion, usuario, clave);
 
 		}
 		catch (SQLException ex){

@@ -1,7 +1,7 @@
-#Archivo batch (batalllas.sql) para la creaci髇 de la 
-#Base de datos del pr醕tico de SQL
+#Archivo batch (batalllas.sql) para la creaci贸n de la 
+#Base de datos del pr谩ctico de SQL
 
-#Lo que esta despu閟 del "#" es un comentario
+#Lo que esta despu茅s del "#" es un comentario
 
 # Creo de la Base de Datos
 CREATE DATABASE batallas;
@@ -10,7 +10,7 @@ CREATE DATABASE batallas;
 USE batallas;
 
 #-------------------------------------------------------------------------
-# Creaci髇 Tablas para las entidades
+# Creaci贸n Tablas para las entidades
 
 CREATE TABLE barcos (
  nombre_barco VARCHAR(45) NOT NULL, 
@@ -45,7 +45,7 @@ CREATE TABLE batallas (
 ) ENGINE=InnoDB;
 
 #-------------------------------------------------------------------------
-# Creaci髇 Tablas para las relaciones
+# Creaci贸n Tablas para las relaciones
 
 CREATE TABLE barco_clase (
  nombre_barco VARCHAR(45) NOT NULL,
@@ -178,7 +178,7 @@ INSERT INTO resultados VALUES ("West Virginia","Surigao Strait","ok");
 INSERT INTO resultados VALUES ("Yamashiro","Surigao Strait","hundido");
 
 #-------------------------------------------------------------------------
-# Creaci髇 de vistas 
+# Creaci贸n de vistas 
 # (acorazados = Datos de todos los barcos que son "acorazados"
 
    CREATE VIEW acorazados as 
@@ -191,13 +191,14 @@ INSERT INTO resultados VALUES ("Yamashiro","Surigao Strait","hundido");
 
 
 #-------------------------------------------------------------------------
-# Creaci髇 de usuarios y otorgamiento de privilegios
+# Creaci贸n de usuarios y otorgamiento de privilegios
 
 # creo el usuario y le otorgo privilegios 
 # utilizando solo la sentencia GRANT
 
-    GRANT ALL PRIVILEGES ON batallas.* TO admin_batallas@localhost 
-    IDENTIFIED BY 'pwadmin' WITH GRANT OPTION;
+	CREATE USER admin_batallas@localhost IDENTIFIED BY 'admin';
+	
+    GRANT ALL PRIVILEGES ON batallas.* TO admin_batallas@localhost;
 
 # El usuario 'admin_batallas' tiene acceso total a todas las tablas de 
 # la B.D. batallas, puede conectarse solo desde la desde la computadora 

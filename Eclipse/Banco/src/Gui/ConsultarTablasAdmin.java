@@ -164,7 +164,6 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 			conectarBD();
 			Statement stmt = conexionBD.createStatement();
 			ResultSet rs= stmt.executeQuery(query);
-			//ResultSetMetaData md= rs.getMetaData();
 			int i=0;
 			
 			
@@ -196,7 +195,6 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 			conectarBD();
 			Statement stmt = conexionBD.createStatement();
 			ResultSet rs= stmt.executeQuery(query);
-			//ResultSetMetaData md= rs.getMetaData();
 			int i=0;
 			
 			toListaAtributos= new String[15];

@@ -39,6 +39,7 @@ public class DBManager {
 		Statement stmt;
 		ResultSet rs;
 		boolean incorrecto=true;
+		int codCaja=0;
 		
 		if(user.equals("admin")){
 			
@@ -56,38 +57,34 @@ public class DBManager {
 
 		}
 		else{
-			try{ 
-				//POSIBLE MODIFICACION
+			try{
 				queryEmpleado="SELECT legajo FROM empleado WHERE legajo="+Integer.parseInt(user)+" and password=md5('"+password+"')";
 
 				conectarBD(login);
 				stmt = conexionBD.createStatement();
 				rs= stmt.executeQuery(queryEmpleado);
-				//ResultSetMetaData md= rs.getMetaData();
 				
 				if(rs.first()){
 					//EL USUARIO ES EMPLEADO
 					System.out.println("EL USUARIO ES EMPLEADO");
 					incorrecto=false;
-					//login.dispose();
 				}
 				else{
-					//TODO CONSULTA RANCIA -> PREGUNTA A PABLITO
-					//queryATM="SELECT DISTINCT cod_caja FROM tarjeta as T,trans_cajas_ahorro as C WHERE T.nro_tarjeta="+Integer.parseInt(user)+" and T.PIN=md5('"+Integer.parseInt(password)+"') and T.nro_ca=C.nro_ca and T.nro_cliente nad C.nro_cliente";
-
-					//rs=stmt.executeQuery(queryATM);
-					//if(rs.first()){
+					queryATM="SELECT cod_caja FROM tarjeta AS T,trans_cajas_ahorro AS C WHERE T.nro_tarjeta="+Integer.parseInt(user)+" AND T.PIN=md5("+Integer.parseInt(password)+") AND T.nro_ca=C.nro_ca AND T.nro_cliente=C.nro_cliente";
+					rs=stmt.executeQuery(queryATM);
+					if(rs.first()){
 						
 						//EL USUARIO ES ATM
+						codCaja=rs.getInt(1);
 						incorrecto=false;
-						MenuATM ATM= new MenuATM(123,login);
+						MenuATM ATM= new MenuATM(codCaja,login);
 						ATM.setVisible(true);
 						ATM.setEnabled(true);
 						
 						login.setVisible(false);
 						login.setEnabled(false);
 
-					//}
+					}
 				}
 			
 			}
@@ -124,7 +121,6 @@ public class DBManager {
 
 			//establece una conexión con la  B.D. "banco"    
 			this.conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
-			//table.connectDatabase(driver, uriConexion, usuario, clave);
 
 		}
 		catch (SQLException ex){
