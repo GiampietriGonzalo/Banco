@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseMotionListener;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -21,23 +23,33 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+
+import Logica.Fechas;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import java.awt.Color;
+import javax.swing.JPanel;
 
 public class MovimientosATM extends JInternalFrame {
 	
 	private JTextField tfDesde;
 	private JTextField tfHasta;
+	private JButton btnMostrar;
 	private JTable tabla;
 	private TableModel modelo;
 	private JScrollPane spTabla;
 	private Connection conexionBD;
 	private int codCaja;
+	private JPanel panelTabla;
 	
 
 
 	public MovimientosATM(int codCaja){
+		setTitle("Movimientos");
+		
 		this.codCaja=codCaja;
 		initGui();
 	}
@@ -45,19 +57,31 @@ public class MovimientosATM extends JInternalFrame {
 	private void initGui(){
 		
 		setClosable(true);
-		setBounds(100, 100, 842, 485);
+		setBounds(0,0, 842, 485);
 		getContentPane().setLayout(null);
+		
+		getContentPane().setForeground(Color.WHITE);
+		setForeground(Color.WHITE);
+		getContentPane().setBackground(Color.DARK_GRAY);
+		setBackground(Color.DARK_GRAY);
 		
 		ButtonGroup bg= new ButtonGroup();
 		
 		JRadioButton rbUltimos = new JRadioButton("\u00DAltimos");
-		rbUltimos.setBounds(339, 18, 59, 23);
+		rbUltimos.setForeground(Color.WHITE);
+		rbUltimos.setBackground(Color.DARK_GRAY);
+		rbUltimos.setBounds(273, 15, 86, 23);
 		getContentPane().add(rbUltimos);
 		
-		JRadioButton rbPeriodo = new JRadioButton("\u00DAltimos");
-		rbPeriodo.setBounds(417, 18, 59, 23);
+		JRadioButton rbPeriodo = new JRadioButton("Por per\u00EDodo");
+		rbPeriodo.setForeground(Color.WHITE);
+		rbPeriodo.setBackground(Color.DARK_GRAY);
+		rbPeriodo.setBounds(375, 15, 106, 23);
 		getContentPane().add(rbPeriodo);
-	
+		
+		rbPeriodo.addActionListener(new oyentePeriodo());
+		rbUltimos.addActionListener(new oyenteUltimos());
+		//rbPeriodo.addMouseMotionListener(l);
 		
 		bg.add(rbPeriodo);
 		bg.add(rbUltimos);
@@ -71,38 +95,60 @@ public class MovimientosATM extends JInternalFrame {
 		getContentPane().add(separator_1);
 		
 		tfDesde = new JTextField();
+		tfDesde.setEnabled(false);
+		tfDesde.setForeground(Color.WHITE);
+		tfDesde.setBackground(Color.DARK_GRAY);
 		tfDesde.setText("Desde");
 		tfDesde.setBounds(260, 59, 86, 23);
 		getContentPane().add(tfDesde);
 		tfDesde.setColumns(10);
 		
 		tfHasta = new JTextField();
+		tfHasta.setEnabled(false);
+		tfHasta.setForeground(Color.WHITE);
+		tfHasta.setBackground(Color.DARK_GRAY);
 		tfHasta.setText("Hasta");
 		tfHasta.setColumns(10);
 		tfHasta.setBounds(362, 59, 86, 23);
 		getContentPane().add(tfHasta);
 		
-		JButton btnMostar = new JButton("Mostar");
-		btnMostar.setBounds(460, 59, 89, 23);
-		getContentPane().add(btnMostar);
+		btnMostrar = new JButton("Mostar");
+		btnMostrar.setEnabled(false);
+		btnMostrar.setForeground(Color.WHITE);
+		btnMostrar.setBackground(Color.DARK_GRAY);
+		btnMostrar.setBounds(460, 59, 89, 23);
+		btnMostrar.addActionListener(new oyenteMostrar(this));
+		getContentPane().add(btnMostrar);
+		
+		panelTabla = new JPanel();
+		panelTabla.setForeground(Color.WHITE);
+		panelTabla.setBackground(Color.DARK_GRAY);
+		panelTabla.setBounds(82, 105, 655, 339);
+		getContentPane().add(panelTabla);
+		panelTabla.setLayout(new BorderLayout(0, 0));
 		
 		tabla= new JTable();
+		tabla.setEnabled(false);
+		tabla.setOpaque(false);
+		tabla.setForeground(Color.WHITE);
+		tabla.setBackground(Color.DARK_GRAY);
 		
 		spTabla = new JScrollPane(tabla);
-		spTabla.setBounds(10, 115, 806, 329);
-		getContentPane().add(spTabla);
+		spTabla.setOpaque(false);
+		panelTabla.add(spTabla);
+		spTabla.setForeground(Color.WHITE);
+		spTabla.setBackground(Color.DARK_GRAY);
 		
 		spTabla.setEnabled(false);
 		spTabla.setVisible(true);
 		
 	}
+
 	
-	
-	private void consultarUltimos(){
+	private void consultar(String query){
 		
 		int ultimas=15;
 		int i=0;
-		String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja="+codCaja;
 		int saldo;
 		String tipo;
 		
@@ -120,7 +166,6 @@ public class MovimientosATM extends JInternalFrame {
 
 
 				rs=stmt.executeQuery(query);
-				TableModel bancoModel;
 				Object columnNames[]=new Object[md.getColumnCount()];
 
 				while(i<md.getColumnCount()){
@@ -134,25 +179,30 @@ public class MovimientosATM extends JInternalFrame {
 				//i=Filas
 				//j=Columnas
 				i=1;
-
+				String fecha;
 				while (rs.next() && i<ultimas+1){
 
 					((DefaultTableModel) tabla.getModel()).setRowCount(i);
 					for(int j=1;j<md.getColumnCount();j++){
 
+						tabla.setValueAt(rs.getObject(j),i-1, j-1);
+
+						if(j==1){
+							fecha= Fechas.convertirDateAString(rs.getDate(1));
+							tabla.setValueAt(fecha,i-1,0);
+						}
+						
 						if(j==3){
 
 							tipo=rs.getString(j);
-
+							
 							if(!tipo.equals("Deposito"))
 								saldo= -rs.getInt(4);
 							else
 								saldo= rs.getInt(4);
-
-							tabla.setValueAt(saldo,i-1, 4);
+							
+							tabla.setValueAt(saldo,i-1, 3);
 						}
-						else
-							tabla.setValueAt(rs.getObject(j),i-1, j-1);
 
 					}
 
@@ -160,7 +210,7 @@ public class MovimientosATM extends JInternalFrame {
 				}
 
 				JTableHeader header = tabla.getTableHeader();
-				spTabla.add(header,BorderLayout.NORTH);
+				panelTabla.add(header,BorderLayout.NORTH);
 
 				rs.close();
 				stmt.close();
@@ -175,24 +225,76 @@ public class MovimientosATM extends JInternalFrame {
 			System.out.println("VendorError: " + ex.getErrorCode());
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
-
-	}
-	
-	private void consultarPorPeriodo(){
-		
-		
 	}
 	
 	private class oyenteUltimos implements ActionListener{
 		
 		public void actionPerformed(ActionEvent arg0) {
+			
+			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja="+codCaja+" ORDER BY fecha DESC, hora DESC";
+			
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			
-			consultarUltimos();
+			tfHasta.setEnabled(false);
+			tfDesde.setEnabled(false);
+			btnMostrar.setEnabled(false);
+			
+			tfHasta.setText("Hasta");
+			tfDesde.setText("Desde");
+			
+			consultar(query);
 			
 		}
 
+	}
+	
+	
+	private class oyentePeriodo implements ActionListener{
+
+		public void actionPerformed(ActionEvent arg0) {
+
+			spTabla.setEnabled(true);
+			spTabla.setVisible(true);
+
+			tfHasta.setEnabled(true);
+			tfDesde.setEnabled(true);
+			btnMostrar.setEnabled(true);
+			
+			tabla.setModel(new DefaultTableModel());
+
+
+		}
+
+	}
+	
+	private class oyenteMostrar implements ActionListener{
+
+		private JInternalFrame miFrame;
+		
+		public oyenteMostrar(JInternalFrame miFrame){
+			this.miFrame=miFrame;
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			String query;
+			Date hasta;
+			Date desde;
+			
+			if(Fechas.validar(tfDesde.getText()) && Fechas.validar(tfHasta.getText())){
+				
+				desde= Fechas.convertirStringADateSQL(tfDesde.getText());
+				hasta= Fechas.convertirStringADateSQL(tfHasta.getText());
+				query="SELECT fecha, hora, tipo, monto FROM tarjeta NATURAL JOIN trans_cajas_ahorro WHERE  fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
+
+				consultar(query);
+			}
+				
+			else
+				JOptionPane.showMessageDialog(miFrame,"Al menos una de las fechas es incorrecta.\n" ,"Error-Fechas",JOptionPane.ERROR_MESSAGE);
+			
+			
+		}
 	}
 	
 	private void conectarBD(){
@@ -234,5 +336,4 @@ public class MovimientosATM extends JInternalFrame {
 			}
 		}
 	}
-
 }

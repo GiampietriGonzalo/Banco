@@ -102,14 +102,16 @@ public class Login extends JFrame {
 	//Listener btnIngresar
 	public class oyenteIngresar implements ActionListener{
 		
-		private JFrame miFrame;
+		private Login miFrame;
 		
-		public oyenteIngresar(JFrame frame){
+		public oyenteIngresar(Login frame){
 			miFrame=frame;
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
+			
 			manager.verificarUsuario(tfUser.getText(),tfPassword.getText().trim(),miFrame);
+			tfPassword.setText("");
 		}
 		
 	}

@@ -13,19 +13,71 @@ import javax.swing.JDesktopPane;
 import java.awt.Color;
 import javax.swing.JSeparator;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Rectangle;
 
 public class MenuATM extends JFrame {
 
 	private JPanel contentPane;
 	private int codCaja;
+	private MovimientosATM mov;
+	private Login login;
 
 	
-	public MenuATM(int codCaja){
-		setResizable(false);
+	public MenuATM(int codCaja,Login login){
+		
+		initGui(login);
+		
+	}
+	
+	private class oyenteMovimientos implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			mov.setVisible(true);
+			mov.setEnabled(true);			
+		} 
+	 }
+	
+	private class oyenteSesion implements ActionListener{
+	
+		private MenuATM menu;
+		
+		public oyenteSesion(MenuATM menu){
+			this.menu=menu;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			menu.setEnabled(false);
+			menu.setVisible(false);
+			login.setVisible(true);
+			login.setEnabled(true);
+			
+		}				
+	}
+
+	
+	private void initGui(Login login){
+		
+		setTitle("ATM");
+		setBounds(new Rectangle(0, 0, 900, 500));
+		this.login=login;
+
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		
+		mov= new MovimientosATM(codCaja);
+		mov.setResizable(true);
+		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
+		mov.setMaximizable(true);
+		mov.setBounds(0, 0, 846, 492);
+		mov.setVisible(false);
+		mov.setEnabled(false);
 		
 		this.codCaja=codCaja;
 		
-		setBounds(0,0,842, 485);
+		setBounds(0,0,837, 540);
 		
 		setFont(new Font("Tahoma", Font.PLAIN, 14));
 		getContentPane().setForeground(Color.WHITE);
@@ -49,15 +101,11 @@ public class MenuATM extends JFrame {
 		miSaldo.setBackground(Color.DARK_GRAY);
 		mnRealizar.add(miSaldo);
 		
-		JMenuItem miUltimos = new JMenuItem("Consultar \u00FAltimos movimientos");
-		miUltimos.setForeground(Color.WHITE);
-		miUltimos.setBackground(Color.DARK_GRAY);
-		mnRealizar.add(miUltimos);
-		
-		JMenuItem miPeriodo = new JMenuItem("Consultar Movimientos por per\u00EDodo");
-		miPeriodo.setForeground(Color.WHITE);
-		miPeriodo.setBackground(Color.DARK_GRAY);
-		mnRealizar.add(miPeriodo);
+		JMenuItem miMovimientos = new JMenuItem("Consultar movimientos");
+		miMovimientos.setForeground(Color.WHITE);
+		miMovimientos.setBackground(Color.DARK_GRAY);
+		miMovimientos.addActionListener(new oyenteMovimientos());
+		mnRealizar.add(miMovimientos);
 		
 		JSeparator separator = new JSeparator();
 		mnRealizar.add(separator);
@@ -67,26 +115,19 @@ public class MenuATM extends JFrame {
 		miSesion.setBackground(Color.DARK_GRAY);
 		mnRealizar.add(miSesion);
 		getContentPane().setLayout(null);
+		miSesion.addActionListener(new oyenteSesion(this));
+		contentPane.setLayout(null);
 		
-		JDesktopPane desktopPane = new JDesktopPane();
-		desktopPane.setForeground(Color.WHITE);
-		desktopPane.setBackground(Color.DARK_GRAY);
-		desktopPane.setBounds(0, 0, 434, 240);
-		getContentPane().add(desktopPane);
+		JDesktopPane dkP = new JDesktopPane();
+		dkP.setOpaque(false);
+		dkP.setBounds(new Rectangle(0, 0, 842, 485));
+		dkP.setForeground(Color.WHITE);
+		dkP.setBackground(Color.DARK_GRAY);
+		dkP.setBounds(-8, -11, 844, 496);
+		dkP.add(mov);
+		getContentPane().add(dkP);
 	
 		
-
+		
 	}
-
-	
-	private void initGui(){
-		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-		
-	};
 }

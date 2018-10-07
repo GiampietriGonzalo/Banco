@@ -32,7 +32,7 @@ public class DBManager {
 		return manager;
 	}
 	
-	public void verificarUsuario(String user,String password,JFrame login){
+	public void verificarUsuario(String user,String password,Login login){
 
 		String queryATM;
 		String queryEmpleado;
@@ -43,12 +43,13 @@ public class DBManager {
 		if(user.equals("admin")){
 			
 			if(password.equals("admin")) {
-				MenuAdmin admin=new MenuAdmin();
+				MenuAdmin admin=new MenuAdmin(login);
 
 				admin.setVisible(true);
 				admin.setEnabled(true);
 				incorrecto=false;
-				login.dispose();
+				login.setVisible(false);
+				login.setEnabled(false);
 			}
 			else
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contraseña incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
@@ -79,11 +80,12 @@ public class DBManager {
 						
 						//EL USUARIO ES ATM
 						incorrecto=false;
-						MenuATM ATM= new MenuATM(123);
+						MenuATM ATM= new MenuATM(123,login);
 						ATM.setVisible(true);
 						ATM.setEnabled(true);
 						
-						login.dispose();
+						login.setVisible(false);
+						login.setEnabled(false);
 
 					//}
 				}

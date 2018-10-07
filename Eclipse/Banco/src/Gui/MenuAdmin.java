@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.Component;
 
 public class MenuAdmin extends JFrame {
-	
+
 	private ConsultasAdmin consultas;
 	private ConsultarTablasAdmin consultasTablas;
 	private JMenuBar menuBar;
@@ -23,26 +23,29 @@ public class MenuAdmin extends JFrame {
 	private JMenuItem JIConsultarTablas;
 	private JMenu menuAccion;
 	private JSeparator separator;
-	
-	
-	public MenuAdmin() {
+	private Login login;
+
+
+	public MenuAdmin(Login login) {
+		this.login=login;
+		initGui();
+	}
+
+	private void initGui(){
+
 		getContentPane().setForeground(Color.WHITE);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setTitle("Admin Menu");
 		setResizable(false);
-		initGui();
-	}
-	
-	private void initGui(){
 		
 		setForeground(Color.WHITE);
 		setBackground(Color.DARK_GRAY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0,0, 840, 570);
-			
-		
+
+
 		getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		JDesktopPane dpMA = new JDesktopPane();
 		dpMA.setForeground(Color.WHITE);
 		dpMA.setBackground(Color.DARK_GRAY);
@@ -52,7 +55,7 @@ public class MenuAdmin extends JFrame {
 		dpMA.setBounds(new Rectangle(0, 0, 835, 527));
 		dpMA.setBounds(-10, -10, 835, 527);
 		getContentPane().add(dpMA);
-	
+
 		consultas= new ConsultasAdmin();
 		consultas.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		consultas.setResizable(true);
@@ -64,15 +67,13 @@ public class MenuAdmin extends JFrame {
 		consultas.getContentPane().setBackground(Color.DARK_GRAY);
 		consultas.setBackground(Color.DARK_GRAY);
 		consultas.setMaximizable(true);
-		//consultas.setMaximum(true);
-		//consultas.setClosed(true);
 		consultas.setClosable(true);
 		consultas.setBounds(0, 0, 834, 527);
 		consultas.setLocation(0, 0);
 		consultas.setVisible(false);
 		consultas.setEnabled(false);
 		dpMA.add(consultas);
-		
+
 		consultasTablas= new ConsultarTablasAdmin();
 		consultasTablas.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		consultasTablas.setBorder(null);
@@ -80,12 +81,12 @@ public class MenuAdmin extends JFrame {
 		consultasTablas.setAlignmentX(Component.LEFT_ALIGNMENT);
 		consultasTablas.setForeground(Color.WHITE);
 		dpMA.add(consultasTablas);
-		
+
 		menuBar= new JMenuBar();
 		menuBar.setForeground(Color.WHITE);
 		menuBar.setBackground(Color.DARK_GRAY);
 		setJMenuBar(menuBar);
-		
+
 		menuAccion = new JMenu("Realizar...");
 		menuAccion.setForeground(Color.WHITE);
 		menuAccion.setBackground(Color.DARK_GRAY);
@@ -98,7 +99,7 @@ public class MenuAdmin extends JFrame {
 		JIConsultarTablas.setForeground(Color.WHITE);
 		JIConsultarTablas.setBackground(Color.DARK_GRAY);
 		menuAccion.add(JIConsultarTablas);
-		
+
 		separator = new JSeparator();
 		separator.setForeground(Color.WHITE);
 		separator.setBackground(Color.DARK_GRAY);
@@ -106,28 +107,46 @@ public class MenuAdmin extends JFrame {
 		JICerrarSesion= new JMenuItem("Cerrar Sesión");
 		JICerrarSesion.setForeground(Color.WHITE);
 		JICerrarSesion.setBackground(Color.DARK_GRAY);
+		JICerrarSesion.addActionListener(new oyenteSesion(this));
 		menuAccion.add(JICerrarSesion);
-		
+
 		JIConsultarTablas.addActionListener(new oyenteConsultarTablas());
 		JIConsultar.addActionListener(new oyenteConsultar());
-		
-		
-		
+
+
+
 	}
-	
-	 private class oyenteConsultar implements ActionListener{
+
+	private class oyenteConsultar implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			consultas.setVisible(true);
 			consultas.setEnabled(true);			
 		} 
-	 }
-	 
-	 private class oyenteConsultarTablas implements ActionListener{
-			public void actionPerformed(ActionEvent arg0) {
-				consultasTablas.setVisible(true);
-				consultas.setEnabled(true);			
-			} 
-		 }
-	
-	
+	}
+
+	private class oyenteConsultarTablas implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			consultasTablas.setVisible(true);
+			consultas.setEnabled(true);			
+		} 
+	}
+
+	private class oyenteSesion implements ActionListener{
+		
+		private MenuAdmin menu;
+		
+		public oyenteSesion(MenuAdmin menu){
+			this.menu=menu;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			menu.setEnabled(false);
+			menu.setVisible(false);
+			login.setVisible(true);
+			login.setEnabled(true);
+			
+		}				
+	}
+
 }
