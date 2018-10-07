@@ -1,8 +1,5 @@
 package Gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -22,41 +19,16 @@ public class MenuATM extends JFrame {
 	private JPanel contentPane;
 	private int codCaja;
 	private MovimientosATM mov;
+	private ConsultarSaldoATM saldos;
 	private Login login;
 
 	
 	public MenuATM(int codCaja,Login login){
-		
+		this.codCaja=codCaja;
 		initGui(login);
 		
 	}
-	
-	private class oyenteMovimientos implements ActionListener{
-		public void actionPerformed(ActionEvent arg0) {
-			mov.setVisible(true);
-			mov.setEnabled(true);			
-		} 
-	 }
-	
-	private class oyenteSesion implements ActionListener{
-	
-		private MenuATM menu;
-		
-		public oyenteSesion(MenuATM menu){
-			this.menu=menu;
-		}
-		
-		public void actionPerformed(ActionEvent e) {
-			
-			menu.setEnabled(false);
-			menu.setVisible(false);
-			login.setVisible(true);
-			login.setEnabled(true);
-			
-		}				
-	}
 
-	
 	private void initGui(Login login){
 		
 		setTitle("ATM");
@@ -68,6 +40,7 @@ public class MenuATM extends JFrame {
 		setContentPane(contentPane);
 		
 		mov= new MovimientosATM(codCaja);
+		mov.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		mov.setResizable(true);
 		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
 		mov.setMaximizable(true);
@@ -75,7 +48,11 @@ public class MenuATM extends JFrame {
 		mov.setVisible(false);
 		mov.setEnabled(false);
 		
-		this.codCaja=codCaja;
+		saldos= new ConsultarSaldoATM(codCaja);
+		saldos.setMaximizable(true);
+		saldos.setClosable(true);
+		saldos.setLocation(-19, 11);
+		
 		
 		setBounds(0,0,837, 540);
 		
@@ -100,6 +77,7 @@ public class MenuATM extends JFrame {
 		miSaldo.setForeground(Color.WHITE);
 		miSaldo.setBackground(Color.DARK_GRAY);
 		mnRealizar.add(miSaldo);
+		miSaldo.addActionListener(new oyenteSaldo());
 		
 		JMenuItem miMovimientos = new JMenuItem("Consultar movimientos");
 		miMovimientos.setForeground(Color.WHITE);
@@ -125,9 +103,42 @@ public class MenuATM extends JFrame {
 		dkP.setBackground(Color.DARK_GRAY);
 		dkP.setBounds(-8, -11, 844, 496);
 		dkP.add(mov);
+		dkP.add(saldos);
 		getContentPane().add(dkP);
+		
+	}
 	
+	
+	private class oyenteMovimientos implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			mov.setVisible(true);
+			mov.setEnabled(true);			
+		} 
+	 }
+	
+	private class oyenteSaldo implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			saldos.setVisible(true);
+			saldos.setEnabled(true);			
+		} 
+	 }
+	
+	private class oyenteSesion implements ActionListener{
+	
+		private MenuATM menu;
 		
+		public oyenteSesion(MenuATM menu){
+			
+			this.menu=menu;
+		}
 		
+		public void actionPerformed(ActionEvent e) {
+			
+			menu.setEnabled(false);
+			menu.setVisible(false);
+			login.setVisible(true);
+			login.setEnabled(true);
+			
+		}				
 	}
 }

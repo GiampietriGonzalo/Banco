@@ -218,7 +218,7 @@ public class MovimientosATM extends JInternalFrame {
 		public void actionPerformed(ActionEvent arg0){
 			
 			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja="+codCaja+" ORDER BY fecha DESC, hora DESC";
-			
+			System.out.println("COD_CAJA ULTIMOS: "+codCaja);
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			
