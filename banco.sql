@@ -361,15 +361,15 @@
 	#CREAR VISTAS PARA USUARIO atm	
 	CREATE VIEW banco.datos_deposito AS
 	SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, 'Deposito' AS tipo 
-	FROM ((deposito NATURAL JOIN transaccion) NATURAL JOIN Transaccion_por_Caja) NATURAL JOIN caja_ahorro;
+	FROM ((deposito NATURAL JOIN transaccion) NATURAL JOIN transaccion_por_caja) NATURAL JOIN caja_ahorro;
     
     CREATE VIEW banco.datos_extraccion AS
     SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Extraccion' AS tipo
-    FROM (((extraccion NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN Transaccion_por_caja) NATURAL JOIN caja_ahorro;
+    FROM (((extraccion NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN transaccion_por_caja) NATURAL JOIN caja_ahorro;
     
     CREATE VIEW banco.datos_transferencia AS
     SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, cod_caja, destino, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Transferencia' AS tipo
-	FROM (((transferencia NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN Transaccion_por_caja) JOIN Caja_Ahorro ON Transferencia.origen=Caja_Ahorro.nro_ca;
+	FROM (((transferencia NATURAL JOIN transaccion) NATURAL JOIN cliente) NATURAL JOIN transaccion_por_caja) JOIN caja_ahorro ON transferencia.origen=caja_ahorro.nro_ca;
 	
 	CREATE VIEW banco.datos_debito AS
 	SELECT nro_ca, saldo, nro_trans, fecha, hora, monto, nro_cliente, tipo_doc, nro_doc, nombre, apellido, 'Debito' AS tipo
