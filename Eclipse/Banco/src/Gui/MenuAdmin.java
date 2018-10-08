@@ -104,7 +104,7 @@ public class MenuAdmin extends JFrame {
 		separator.setForeground(Color.WHITE);
 		separator.setBackground(Color.DARK_GRAY);
 		menuAccion.add(separator);
-		JICerrarSesion= new JMenuItem("Cerrar Sesión");
+		JICerrarSesion= new JMenuItem("Cerrar Sesion");
 		JICerrarSesion.setForeground(Color.WHITE);
 		JICerrarSesion.setBackground(Color.DARK_GRAY);
 		JICerrarSesion.addActionListener(new oyenteSesion(this));
@@ -120,14 +120,16 @@ public class MenuAdmin extends JFrame {
 	private class oyenteConsultar implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			consultas.setVisible(true);
-			consultas.setEnabled(true);			
+			consultas.setEnabled(true);
+			consultas.moveToFront();
 		} 
 	}
 
 	private class oyenteConsultarTablas implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			consultasTablas.setVisible(true);
-			consultas.setEnabled(true);			
+			consultasTablas.setEnabled(true);
+			consultasTablas.moveToFront();
 		} 
 	}
 
