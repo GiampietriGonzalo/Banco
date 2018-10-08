@@ -123,10 +123,6 @@ public class CrearPrestamo extends JInternalFrame {
 					ResultSetMetaData md= rs.getMetaData();
 
 					rs=stmt.executeQuery(tfQuery);
-					
-					
-
-					table.setModel(bancoModel);
 
 					JTableHeader header = table.getTableHeader();
 					tablePane.add(header,BorderLayout.NORTH);
