@@ -27,6 +27,7 @@ import java.sql.Types;
 import java.sql.SQLException;
 import quick.dbtable.*;
 import javax.swing.JPasswordField;
+import java.awt.Font;
 
 
 public class Login extends JFrame {
@@ -37,10 +38,10 @@ public class Login extends JFrame {
 	private JTextField tfUser;
 	
 	
-	
-	
 	public Login() {
 		super();
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setTitle("Banco");
 		initGui();
 		manager=DBManager.getDBManager();
 	}
@@ -50,7 +51,7 @@ public class Login extends JFrame {
 		
 		setResizable(false);
 		setBackground(Color.DARK_GRAY);
-		setForeground(Color.BLACK);
+		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 346, 170);
 		contentPane = new JPanel();

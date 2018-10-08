@@ -148,7 +148,7 @@ public class MovimientosATM extends JInternalFrame {
 
 		try{    
 			if(query.isEmpty())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacía\n","Consulta vacía",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacia\n","Consulta vacia",JOptionPane.ERROR_MESSAGE);
 			else{
 
 				conectarBD();
@@ -294,7 +294,7 @@ public class MovimientosATM extends JInternalFrame {
 			String clave = "admin";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
-			//establece una conexión con la  B.D. "banco"    
+			//establece una conexion con la  B.D. "banco"    
 			conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
 
 		}

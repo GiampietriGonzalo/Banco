@@ -125,7 +125,7 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 			String clave = "admin";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
-			//establece una conexión con la  B.D. "banco"    
+			//establece una conexion con la  B.D. "banco"    
 			this.conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
 			//table.connectDatabase(driver, uriConexion, usuario, clave);
 

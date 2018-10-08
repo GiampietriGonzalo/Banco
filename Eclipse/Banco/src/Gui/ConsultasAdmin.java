@@ -69,7 +69,7 @@ public class ConsultasAdmin extends JInternalFrame {
 		btnConsultar = new JButton("Consultar");
 		btnConsultar.setForeground(Color.WHITE);
 		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(604, 164, 89, 23);
+		btnConsultar.setBounds(590, 164, 103, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 
@@ -113,7 +113,7 @@ public class ConsultasAdmin extends JInternalFrame {
 			String clave = "admin";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
-			//establece una conexión con la  B.D. "banco"    
+			//establece una conexion con la  B.D. "banco"    
 			this.conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
 
 		}
@@ -149,7 +149,7 @@ public class ConsultasAdmin extends JInternalFrame {
 		try{    
 
 			if(tfQuery.getText().isEmpty())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacía\n","Consulta vacía",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacia\n","Consulta vacia",JOptionPane.ERROR_MESSAGE);
 			else{
 				conectarBD();
 				Statement stmt = this.conexionBD.createStatement();

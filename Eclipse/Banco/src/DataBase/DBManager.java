@@ -53,7 +53,7 @@ public class DBManager {
 				login.setEnabled(false);
 			}
 			else
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contrase�a incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Password incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
 
 		}
 		else{
@@ -101,7 +101,7 @@ public class DBManager {
 		}
 		
 		if(incorrecto)
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Contrase�a incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Password incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
 
 		
 		
@@ -119,7 +119,7 @@ public class DBManager {
 			String clave = "admin";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
-			//establece una conexi�n con la  B.D. "banco"    
+			//establece una conexion con la  B.D. "banco"    
 			this.conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
 
 		}
