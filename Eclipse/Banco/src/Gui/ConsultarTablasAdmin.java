@@ -38,6 +38,7 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 	private JScrollPane spAtr;
 	
 	public ConsultarTablasAdmin() {
+		setBorder(null);
 		setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
 		setTitle("Consultar Tablas");
@@ -45,35 +46,33 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 		setClosable(true);
 		setForeground(Color.WHITE);
 		getContentPane().setForeground(Color.WHITE);
-		setBackground(Color.DARK_GRAY);
-		getContentPane().setBackground(Color.DARK_GRAY);
 		setBounds(0, 0, 835, 527);
 		getContentPane().setLayout(null);
 		
 		toListaTablas= new String[27];
 		listaTablas = new JList(toListaTablas);
-		listaTablas.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		listaTablas.setFont(new Font("Dialog", Font.BOLD, 16));
 		listaTablas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listaTablas.setForeground(Color.WHITE);
-		listaTablas.setBackground(Color.GRAY);
+		listaTablas.setForeground(Color.DARK_GRAY);
+		listaTablas.setBackground(new Color(211, 211, 211));
 		listaTablas.setBounds(70, 75, 263, 394);
 		//getContentPane().add(listaTablas);
 		
 		lblTablas = new JLabel("Tablas de la BD");
 		lblTablas.setOpaque(true);
-		lblTablas.setBackground(Color.BLACK);
-		lblTablas.setForeground(Color.WHITE);
+		lblTablas.setBackground(Color.LIGHT_GRAY);
+		lblTablas.setForeground(Color.DARK_GRAY);
 		lblTablas.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTablas.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblTablas.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblTablas.setBounds(60, 43, 263, 31);
 		getContentPane().add(lblTablas);
 		
 		lblAtributos = new JLabel("Atributos de la Tabla");
 		lblAtributos.setOpaque(true);
-		lblAtributos.setBackground(Color.BLACK);
-		lblAtributos.setForeground(Color.WHITE);
+		lblAtributos.setBackground(Color.LIGHT_GRAY);
+		lblAtributos.setForeground(Color.DARK_GRAY);
 		lblAtributos.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAtributos.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblAtributos.setFont(new Font("Dialog", Font.BOLD, 16));
 		lblAtributos.setBounds(493, 43, 263, 31);
 		getContentPane().add(lblAtributos);
 		
@@ -82,10 +81,10 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 		listaAtributos.setMinimumSize(new Dimension(2, 54));
 		listaAtributos.setMaximumSize(new Dimension(2, 54));
 		listaAtributos.setToolTipText("");
-		listaAtributos.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		listaAtributos.setFont(new Font("Dialog", Font.BOLD, 16));
 		listaAtributos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		listaAtributos.setForeground(Color.WHITE);
-		listaAtributos.setBackground(Color.GRAY);
+		listaAtributos.setForeground(Color.DARK_GRAY);
+		listaAtributos.setBackground(new Color(211, 211, 211));
 		listaAtributos.setBounds(70, 75, 263, 394);
 
 		

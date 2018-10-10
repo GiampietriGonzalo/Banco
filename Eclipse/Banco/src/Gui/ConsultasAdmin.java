@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import java.awt.Color;
 import javax.swing.JTable;
+import java.awt.Font;
 
 public class ConsultasAdmin extends JInternalFrame {
 
@@ -38,6 +39,7 @@ public class ConsultasAdmin extends JInternalFrame {
 
 
 	public ConsultasAdmin() {
+		setBorder(null);
 		setResizable(false);
 		setTitle("Consultas");
 		initGui();
@@ -47,12 +49,10 @@ public class ConsultasAdmin extends JInternalFrame {
 	private void initGui() {
 
 		setForeground(Color.WHITE);
-		setBackground(Color.DARK_GRAY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 835, 527);
 		contentPane = new JPanel();
-		contentPane.setForeground(Color.WHITE);
-		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setForeground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -60,22 +60,22 @@ public class ConsultasAdmin extends JInternalFrame {
 		this.setEnabled(false);
 
 		btnLimpiar = new JButton("Limpiar");
-		btnLimpiar.setForeground(Color.WHITE);
-		btnLimpiar.setBackground(Color.DARK_GRAY);
+		btnLimpiar.setForeground(Color.DARK_GRAY);
+		btnLimpiar.setBackground(new Color(211, 211, 211));
 		btnLimpiar.setBounds(720, 164, 89, 23);
 		contentPane.add(btnLimpiar);
 		btnLimpiar.addActionListener(new oyenteBorrar());
 
 		btnConsultar = new JButton("Consultar");
-		btnConsultar.setForeground(Color.WHITE);
-		btnConsultar.setBackground(Color.DARK_GRAY);
+		btnConsultar.setForeground(Color.DARK_GRAY);
+		btnConsultar.setBackground(new Color(211, 211, 211));
 		btnConsultar.setBounds(590, 164, 103, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 
 		tablePane= new JPanel();
-		tablePane.setForeground(Color.WHITE);
-		tablePane.setBackground(Color.DARK_GRAY);
+		tablePane.setForeground(Color.DARK_GRAY);
+		tablePane.setBackground(new Color(211, 211, 211));
 		tablePane.setBounds(10,198,799,285);
 		tablePane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(tablePane);
@@ -88,15 +88,16 @@ public class ConsultasAdmin extends JInternalFrame {
 		table.setEnabled(false);
 
 		spTable = new JScrollPane(table);
-		spTable.setForeground(Color.WHITE);
-		spTable.setBackground(Color.DARK_GRAY);
+		spTable.setForeground(Color.DARK_GRAY);
+		spTable.setBackground(new Color(211, 211, 211));
 		spTable.setBounds(0,50,799,400);
 
 		tablePane.add(spTable, BorderLayout.CENTER);
 
 		tfQuery = new JTextField(10);
-		tfQuery.setForeground(Color.WHITE);
-		tfQuery.setBackground(Color.DARK_GRAY);
+		tfQuery.setFont(new Font("Dialog", Font.BOLD, 14));
+		tfQuery.setForeground(Color.DARK_GRAY);
+		tfQuery.setBackground(new Color(211, 211, 211));
 		tfQuery.setBounds(10, 11, 799, 142);
 		contentPane.add(tfQuery);		
 

@@ -42,6 +42,7 @@ public class MovimientosATM extends JInternalFrame {
 
 
 	public MovimientosATM(int codCaja){
+		setBorder(null);
 		setTitle("Movimientos");
 		
 		this.codCaja=codCaja;
@@ -54,23 +55,19 @@ public class MovimientosATM extends JInternalFrame {
 		setBounds(0,0, 842, 485);
 		getContentPane().setLayout(null);
 		
-		getContentPane().setForeground(Color.WHITE);
-		setForeground(Color.WHITE);
-		getContentPane().setBackground(Color.DARK_GRAY);
-		setBackground(Color.DARK_GRAY);
+		getContentPane().setForeground(Color.DARK_GRAY);
+		setForeground(Color.DARK_GRAY);
 		
 		ButtonGroup bg= new ButtonGroup();
 		
 		JRadioButton rbUltimos = new JRadioButton("\u00DAltimos");
-		rbUltimos.setForeground(Color.WHITE);
-		rbUltimos.setBackground(Color.DARK_GRAY);
+		rbUltimos.setForeground(Color.DARK_GRAY);
 		rbUltimos.setBounds(273, 15, 86, 23);
 		getContentPane().add(rbUltimos);
 		
 		JRadioButton rbPeriodo = new JRadioButton("Por per\u00EDodo");
-		rbPeriodo.setForeground(Color.WHITE);
-		rbPeriodo.setBackground(Color.DARK_GRAY);
-		rbPeriodo.setBounds(375, 15, 106, 23);
+		rbPeriodo.setForeground(Color.DARK_GRAY);
+		rbPeriodo.setBounds(375, 15, 123, 23);
 		getContentPane().add(rbPeriodo);
 		
 		rbPeriodo.addActionListener(new oyentePeriodo());
@@ -90,8 +87,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		tfDesde = new JTextField();
 		tfDesde.setEnabled(false);
-		tfDesde.setForeground(Color.WHITE);
-		tfDesde.setBackground(Color.DARK_GRAY);
+		tfDesde.setForeground(Color.DARK_GRAY);
 		tfDesde.setText("Desde");
 		tfDesde.setBounds(260, 59, 86, 23);
 		getContentPane().add(tfDesde);
@@ -99,8 +95,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		tfHasta = new JTextField();
 		tfHasta.setEnabled(false);
-		tfHasta.setForeground(Color.WHITE);
-		tfHasta.setBackground(Color.DARK_GRAY);
+		tfHasta.setForeground(Color.DARK_GRAY);
 		tfHasta.setText("Hasta");
 		tfHasta.setColumns(10);
 		tfHasta.setBounds(362, 59, 86, 23);
@@ -108,8 +103,8 @@ public class MovimientosATM extends JInternalFrame {
 		
 		btnMostrar = new JButton("Mostar");
 		btnMostrar.setEnabled(false);
-		btnMostrar.setForeground(Color.WHITE);
-		btnMostrar.setBackground(Color.DARK_GRAY);
+		btnMostrar.setForeground(Color.DARK_GRAY);
+		btnMostrar.setBackground(new Color(211, 211, 211));
 		btnMostrar.setBounds(460, 59, 89, 23);
 		btnMostrar.addActionListener(new oyenteMostrar(this));
 		getContentPane().add(btnMostrar);

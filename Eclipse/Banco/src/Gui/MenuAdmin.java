@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Component;
+import java.awt.Font;
 
 public class MenuAdmin extends JFrame {
 
@@ -27,19 +28,19 @@ public class MenuAdmin extends JFrame {
 
 
 	public MenuAdmin(Login login) {
+		getContentPane().setFont(new Font("Dialog", Font.BOLD, 14));
+		setFont(new Font("Dialog", Font.BOLD, 16));
 		this.login=login;
 		initGui();
 	}
 
 	private void initGui(){
 
-		getContentPane().setForeground(Color.WHITE);
-		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setForeground(new Color(64, 64, 64));
 		setTitle("Admin Menu");
 		setResizable(false);
 		
-		setForeground(Color.WHITE);
-		setBackground(Color.DARK_GRAY);
+		setForeground(Color.DARK_GRAY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0,0, 840, 570);
 
@@ -84,20 +85,18 @@ public class MenuAdmin extends JFrame {
 
 		menuBar= new JMenuBar();
 		menuBar.setForeground(Color.WHITE);
-		menuBar.setBackground(Color.DARK_GRAY);
+		menuBar.setBackground(new Color(211, 211, 211));
 		setJMenuBar(menuBar);
 
 		menuAccion = new JMenu("Realizar...");
-		menuAccion.setForeground(Color.WHITE);
-		menuAccion.setBackground(Color.DARK_GRAY);
+		menuAccion.setForeground(Color.DARK_GRAY);
+		menuAccion.setBackground(new Color(211, 211, 211));
 		menuBar.add(menuAccion);
 		JIConsultar= new JMenuItem("Realizar Consultas");
-		JIConsultar.setForeground(Color.WHITE);
-		JIConsultar.setBackground(Color.DARK_GRAY);
+		JIConsultar.setForeground(Color.DARK_GRAY);
 		menuAccion.add(JIConsultar);
 		JIConsultarTablas= new JMenuItem("Consultar Tablas");
-		JIConsultarTablas.setForeground(Color.WHITE);
-		JIConsultarTablas.setBackground(Color.DARK_GRAY);
+		JIConsultarTablas.setForeground(Color.DARK_GRAY);
 		menuAccion.add(JIConsultarTablas);
 
 		separator = new JSeparator();
@@ -105,8 +104,7 @@ public class MenuAdmin extends JFrame {
 		separator.setBackground(Color.DARK_GRAY);
 		menuAccion.add(separator);
 		JICerrarSesion= new JMenuItem("Cerrar Sesion");
-		JICerrarSesion.setForeground(Color.WHITE);
-		JICerrarSesion.setBackground(Color.DARK_GRAY);
+		JICerrarSesion.setForeground(Color.DARK_GRAY);
 		JICerrarSesion.addActionListener(new oyenteSesion(this));
 		menuAccion.add(JICerrarSesion);
 

@@ -50,13 +50,9 @@ public class Login extends JFrame {
 	private void initGui(){
 		
 		setResizable(false);
-		setBackground(Color.DARK_GRAY);
-		setForeground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 346, 170);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.DARK_GRAY);
-		contentPane.setForeground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -65,29 +61,23 @@ public class Login extends JFrame {
 		tfUser = new JTextField();
 		tfUser.setText("Usuario");
 		tfUser.setToolTipText("");
-		tfUser.setForeground(Color.WHITE);
-		tfUser.setBackground(Color.DARK_GRAY);
 		tfUser.setBounds(60, 22, 220, 24);
 		contentPane.add(tfUser);
 		
 		tfPassword = new JPasswordField();
 		tfPassword.setEchoChar('*');
-		tfPassword.setForeground(Color.WHITE);
-		tfPassword.setBackground(Color.DARK_GRAY);
 		tfPassword.setBounds(61, 58, 220, 19);
 		contentPane.add(tfPassword);
 		tfPassword.setColumns(10);
 		
 		JButton btnSalir = new JButton("Salir");
-		btnSalir.setForeground(Color.WHITE);
-		btnSalir.setBackground(Color.DARK_GRAY);
+		btnSalir.setBackground(new Color(211, 211, 211));
 		btnSalir.setBounds(60, 95, 94, 25);
 		contentPane.add(btnSalir);
 		btnSalir.addActionListener(new oyenteSalir(this));
 		
 		JButton btnIngresar = new JButton("Ingresar");
-		btnIngresar.setBackground(Color.DARK_GRAY);
-		btnIngresar.setForeground(Color.WHITE);
+		btnIngresar.setBackground(new Color(211, 211, 211));
 		
 		btnIngresar.addActionListener(new oyenteIngresar(this));
 		

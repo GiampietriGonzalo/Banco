@@ -28,25 +28,25 @@ public class ConsultarSaldoATM extends JInternalFrame {
 	private JLabel lblSaldo;
 	
 	public ConsultarSaldoATM(int codCaja){
+		setBorder(null);
+		setMaximizable(true);
+		setEnabled(false);
+		setClosable(true);
+		getContentPane().setBackground(new Color(211, 211, 211));
+		setOpaque(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		
-		setBackground(Color.DARK_GRAY);
 		setForeground(Color.WHITE);
 		setTitle("Mi Saldo");
 		this.codCaja=codCaja;
-		setBounds(100, 100, 285, 116);
+		setBounds(100, 100, 280, 118);
 		getContentPane().setLayout(null);
 		
 		JLabel lblInfo = new JLabel("Saldo:");
-		lblInfo.setBackground(Color.DARK_GRAY);
-		lblInfo.setForeground(Color.WHITE);
-		lblInfo.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblInfo.setBounds(62, 31, 51, 29);
+		lblInfo.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblInfo.setBounds(42, 31, 71, 29);
 		getContentPane().add(lblInfo);
 		
 		lblSaldo = new JLabel("");
-		lblSaldo.setBackground(Color.DARK_GRAY);
-		lblSaldo.setForeground(Color.WHITE);
 		lblSaldo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblSaldo.setBounds(123, 31, 81, 29);
 		getContentPane().add(lblSaldo);
@@ -60,7 +60,7 @@ public class ConsultarSaldoATM extends JInternalFrame {
 		int saldo=0;
 		try{    
 			if(query.isEmpty())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacía\n","Consulta vacía",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacï¿½a\n","Consulta vacï¿½a",JOptionPane.ERROR_MESSAGE);
 			else{
 
 				conectarBD();
@@ -101,7 +101,7 @@ public class ConsultarSaldoATM extends JInternalFrame {
 			String clave = "admin";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
-			//establece una conexión con la  B.D. "banco"    
+			//establece una conexiï¿½n con la  B.D. "banco"    
 			this.conexionBD = DriverManager.getConnection(uriConexion, usuario, clave);
 
 		}

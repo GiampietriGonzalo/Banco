@@ -15,6 +15,7 @@ import Gui.ConsultasAdmin;
 import Gui.Login;
 import Gui.MenuATM;
 import Gui.MenuAdmin;
+import Gui.MenuEmpleado;
 import quick.dbtable.DBTable;
 
 public class DBManager {
@@ -66,7 +67,12 @@ public class DBManager {
 				
 				if(rs.first()){
 					//EL USUARIO ES EMPLEADO
-					System.out.println("EL USUARIO ES EMPLEADO");
+					MenuEmpleado empleado= new MenuEmpleado(login);
+					empleado.setVisible(true);
+					empleado.setEnabled(true);
+					
+					login.setVisible(false);
+					login.setEnabled(false);
 					incorrecto=false;
 				}
 				else{

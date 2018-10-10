@@ -56,32 +56,28 @@ public class MenuATM extends JFrame {
 		
 		setBounds(0,0,837, 540);
 		
-		setFont(new Font("Tahoma", Font.PLAIN, 14));
-		getContentPane().setForeground(Color.WHITE);
-		setForeground(Color.WHITE);
-		getContentPane().setBackground(Color.DARK_GRAY);
-		setBackground(Color.DARK_GRAY);
+		setFont(new Font("Dialog", Font.BOLD, 16));
+		getContentPane().setForeground(Color.DARK_GRAY);
+		setForeground(Color.DARK_GRAY);
 		
 		JMenuBar menuATM = new JMenuBar();
-		menuATM.setForeground(Color.WHITE);
-		menuATM.setBackground(Color.DARK_GRAY);
+		menuATM.setForeground(Color.DARK_GRAY);
+		menuATM.setBackground(new Color(211, 211, 211));
 		setJMenuBar(menuATM);
 		
 		JMenu mnRealizar = new JMenu("Realizar...");
 		mnRealizar.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		mnRealizar.setForeground(Color.WHITE);
-		mnRealizar.setBackground(Color.DARK_GRAY);
+		mnRealizar.setForeground(Color.DARK_GRAY);
+		mnRealizar.setBackground(new Color(211, 211, 211));
 		menuATM.add(mnRealizar);
 		
 		JMenuItem miSaldo = new JMenuItem("ConsultarSaldo");
-		miSaldo.setForeground(Color.WHITE);
-		miSaldo.setBackground(Color.DARK_GRAY);
+		miSaldo.setForeground(Color.DARK_GRAY);
 		mnRealizar.add(miSaldo);
 		miSaldo.addActionListener(new oyenteSaldo());
 		
 		JMenuItem miMovimientos = new JMenuItem("Consultar movimientos");
-		miMovimientos.setForeground(Color.WHITE);
-		miMovimientos.setBackground(Color.DARK_GRAY);
+		miMovimientos.setForeground(Color.DARK_GRAY);
 		miMovimientos.addActionListener(new oyenteMovimientos());
 		mnRealizar.add(miMovimientos);
 		
@@ -89,8 +85,7 @@ public class MenuATM extends JFrame {
 		mnRealizar.add(separator);
 		
 		JMenuItem miSesion = new JMenuItem("Cerrar Sesi\u00F3n");
-		miSesion.setForeground(Color.WHITE);
-		miSesion.setBackground(Color.DARK_GRAY);
+		miSesion.setForeground(Color.DARK_GRAY);
 		mnRealizar.add(miSesion);
 		getContentPane().setLayout(null);
 		miSesion.addActionListener(new oyenteSesion(this));
@@ -99,8 +94,7 @@ public class MenuATM extends JFrame {
 		JDesktopPane dkP = new JDesktopPane();
 		dkP.setOpaque(false);
 		dkP.setBounds(new Rectangle(0, 0, 842, 485));
-		dkP.setForeground(Color.WHITE);
-		dkP.setBackground(Color.DARK_GRAY);
+		dkP.setForeground(Color.DARK_GRAY);
 		dkP.setBounds(-8, -11, 844, 496);
 		dkP.add(mov);
 		dkP.add(saldos);
