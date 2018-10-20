@@ -48,8 +48,7 @@ public class MenuAdmin extends JFrame {
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		JDesktopPane dpMA = new JDesktopPane();
-		dpMA.setForeground(Color.WHITE);
-		dpMA.setBackground(Color.DARK_GRAY);
+		dpMA.setForeground(Color.DARK_GRAY);
 		dpMA.setEnabled(false);
 		dpMA.setAlignmentY(0.0f);
 		dpMA.setAlignmentX(0.0f);
@@ -63,10 +62,8 @@ public class MenuAdmin extends JFrame {
 		consultas.setBorder(null);
 		consultas.setAlignmentY(Component.TOP_ALIGNMENT);
 		consultas.setAlignmentX(Component.LEFT_ALIGNMENT);
-		consultas.getContentPane().setForeground(Color.WHITE);
-		consultas.setForeground(Color.WHITE);
-		consultas.getContentPane().setBackground(Color.DARK_GRAY);
-		consultas.setBackground(Color.DARK_GRAY);
+		consultas.getContentPane().setForeground(Color.DARK_GRAY);
+		consultas.setForeground(Color.DARK_GRAY);
 		consultas.setMaximizable(true);
 		consultas.setClosable(true);
 		consultas.setBounds(0, 0, 834, 527);
@@ -76,11 +73,12 @@ public class MenuAdmin extends JFrame {
 		dpMA.add(consultas);
 
 		consultasTablas= new ConsultarTablasAdmin();
+		consultasTablas.getContentPane().setForeground(Color.DARK_GRAY);
 		consultasTablas.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		consultasTablas.setBorder(null);
 		consultasTablas.setAlignmentY(Component.TOP_ALIGNMENT);
 		consultasTablas.setAlignmentX(Component.LEFT_ALIGNMENT);
-		consultasTablas.setForeground(Color.WHITE);
+		consultasTablas.setForeground(Color.DARK_GRAY);
 		dpMA.add(consultasTablas);
 
 		menuBar= new JMenuBar();

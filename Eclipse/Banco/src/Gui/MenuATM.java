@@ -44,14 +44,15 @@ public class MenuATM extends JFrame {
 		mov.setResizable(true);
 		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
 		mov.setMaximizable(true);
-		mov.setBounds(0, 0, 846, 492);
+		mov.setBounds(7, 10, 846,
+				492);
 		mov.setVisible(false);
 		mov.setEnabled(false);
 		
 		saldos= new ConsultarSaldoATM(codCaja);
 		saldos.setMaximizable(true);
 		saldos.setClosable(true);
-		saldos.setLocation(-19, 11);
+		saldos.setLocation(9, 11);
 		
 		
 		setBounds(0,0,837, 540);

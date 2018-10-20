@@ -164,7 +164,7 @@ public class MovimientosATM extends JInternalFrame {
 				i=1; //i=Filas j=Columnas
 				String fecha;
 				while (rs.next() && i<ultimas+1){
-
+					
 					((DefaultTableModel) tabla.getModel()).setRowCount(i);
 					for(int j=1;j<md.getColumnCount();j++){
 
@@ -212,7 +212,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		public void actionPerformed(ActionEvent arg0){
 			
-			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja="+codCaja+" ORDER BY fecha DESC, hora DESC";
+			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE cod_caja='"+codCaja+"' ORDER BY fecha DESC, hora DESC";
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			

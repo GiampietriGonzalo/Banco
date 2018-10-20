@@ -45,17 +45,14 @@ public class DBManager {
 		if(user.equals("admin")){
 			
 			if(password.equals("admin")) {
+				
 				MenuAdmin admin=new MenuAdmin(login);
-
 				admin.setVisible(true);
 				admin.setEnabled(true);
 				incorrecto=false;
 				login.setVisible(false);
 				login.setEnabled(false);
 			}
-			else
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(login),"Usuario o Password incorrecta \n","Login Error",JOptionPane.ERROR_MESSAGE);
-
 		}
 		else{
 			try{
@@ -76,7 +73,7 @@ public class DBManager {
 					incorrecto=false;
 				}
 				else{
-					queryATM="SELECT cod_caja FROM tarjeta AS T,trans_cajas_ahorro AS C WHERE T.nro_tarjeta="+Integer.parseInt(user)+" AND T.PIN=md5("+Integer.parseInt(password)+") AND T.nro_ca=C.nro_ca AND T.nro_cliente=C.nro_cliente";
+					queryATM="SELECT cod_caja FROM tarjeta AS T NATURAL JOIN trans_cajas_ahorro AS C WHERE T.nro_tarjeta="+Integer.parseInt(user)+" AND T.PIN=md5("+Integer.parseInt(password)+")";// AND T.nro_ca=C.nro_ca AND T.nro_cliente=C.nro_cliente";
 					rs=stmt.executeQuery(queryATM);
 					if(rs.first()){
 						

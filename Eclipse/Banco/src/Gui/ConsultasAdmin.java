@@ -48,7 +48,7 @@ public class ConsultasAdmin extends JInternalFrame {
 
 	private void initGui() {
 
-		setForeground(Color.WHITE);
+		setForeground(new Color(211, 211, 211));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 835, 527);
 		contentPane = new JPanel();
@@ -62,21 +62,21 @@ public class ConsultasAdmin extends JInternalFrame {
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.setForeground(Color.DARK_GRAY);
 		btnLimpiar.setBackground(new Color(211, 211, 211));
-		btnLimpiar.setBounds(720, 164, 89, 23);
+		btnLimpiar.setBounds(720, 86, 89, 23);
 		contentPane.add(btnLimpiar);
 		btnLimpiar.addActionListener(new oyenteBorrar());
 
 		btnConsultar = new JButton("Consultar");
 		btnConsultar.setForeground(Color.DARK_GRAY);
 		btnConsultar.setBackground(new Color(211, 211, 211));
-		btnConsultar.setBounds(590, 164, 103, 23);
+		btnConsultar.setBounds(590, 86, 103, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 
 		tablePane= new JPanel();
 		tablePane.setForeground(Color.DARK_GRAY);
 		tablePane.setBackground(new Color(211, 211, 211));
-		tablePane.setBounds(10,198,799,285);
+		tablePane.setBounds(10,121,799,362);
 		tablePane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(tablePane);
 
@@ -97,8 +97,7 @@ public class ConsultasAdmin extends JInternalFrame {
 		tfQuery = new JTextField(10);
 		tfQuery.setFont(new Font("Dialog", Font.BOLD, 14));
 		tfQuery.setForeground(Color.DARK_GRAY);
-		tfQuery.setBackground(new Color(211, 211, 211));
-		tfQuery.setBounds(10, 11, 799, 142);
+		tfQuery.setBounds(10, 11, 799, 63);
 		contentPane.add(tfQuery);		
 
 	}
@@ -146,55 +145,69 @@ public class ConsultasAdmin extends JInternalFrame {
 		int filas=0;
 		int i=0;
 		String fecha;
+		boolean resConsulta=false;
+		Statement stmt;
 		
 		try{    
-
+			
 			if(tfQuery.getText().isEmpty())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacia\n","Consulta vacia",JOptionPane.ERROR_MESSAGE);
 			else{
 				conectarBD();
-				Statement stmt = this.conexionBD.createStatement();
+				
+				stmt = this.conexionBD.createStatement();
 
-				ResultSet rs= stmt.executeQuery(tfQuery.getText());
-				ResultSetMetaData md= rs.getMetaData();
-
-
-				rs=stmt.executeQuery(tfQuery.getText());
-				TableModel bancoModel;
-				Object columnNames[]=new Object[md.getColumnCount()];
-
-				while(i<md.getColumnCount()){
-					columnNames[i]= new String(md.getColumnName(i+1));
-					i++;
+				if(noEsConsulta(tfQuery.getText().toLowerCase())){
+					resConsulta= stmt.execute(tfQuery.getText());	
+					if(!resConsulta)
+						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL ha sido exitosa\n","Consulta exitosa",JOptionPane.INFORMATION_MESSAGE);
+					else
+						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL ha fallado\n","Error en la consulta",JOptionPane.ERROR_MESSAGE);
+					
+					tfQuery.setText("");
+					table.setModel(new DefaultTableModel());
 				}
+				else{
 
-				bancoModel = new DefaultTableModel(columnNames,1);
+					ResultSet rs= stmt.executeQuery(tfQuery.getText());
+					ResultSetMetaData md= rs.getMetaData();
+					rs=stmt.executeQuery(tfQuery.getText());
+					TableModel bancoModel;
+					Object columnNames[]=new Object[md.getColumnCount()];
 
-				table.setModel(bancoModel);
-
-				i=1;
-				//Filas i, Columnas j
-
-				while (rs.next()){
-
-					((DefaultTableModel) table.getModel()).setRowCount(i);
-					for(int j=1;j<md.getColumnCount()+1;j++){
-
-						if(columnNames[j-1].equals("fecha")){
-
-							fecha= Fechas.convertirDateAString(rs.getDate(j));
-							table.setValueAt(fecha,i-1,j-1);
-						}
-						else
-							table.setValueAt(rs.getObject(j),i-1, j-1);   
+					while(i<md.getColumnCount()){
+						columnNames[i]= new String(md.getColumnName(i+1));
+						i++;
 					}
-					i++;
+
+					bancoModel = new DefaultTableModel(columnNames,1);
+
+					table.setModel(bancoModel);
+
+					i=1;
+					//Filas i, Columnas j
+
+					while (rs.next()){
+
+						((DefaultTableModel) table.getModel()).setRowCount(i);
+						for(int j=1;j<md.getColumnCount()+1;j++){
+
+							if(columnNames[j-1].equals("fecha")){
+
+								fecha= Fechas.convertirDateAString(rs.getDate(j));
+								table.setValueAt(fecha,i-1,j-1);
+							}
+							else
+								table.setValueAt(rs.getObject(j),i-1, j-1);   
+						}
+						i++;
+					}
+
+					JTableHeader header = table.getTableHeader();
+					tablePane.add(header,BorderLayout.NORTH);
+
+					rs.close();
 				}
-
-				JTableHeader header = table.getTableHeader();
-				tablePane.add(header,BorderLayout.NORTH);
-
-				rs.close();
 				stmt.close();
 				desconectarBD();
 			}
@@ -233,5 +246,15 @@ public class ConsultasAdmin extends JInternalFrame {
 
 		}
 
+	}
+	
+	private boolean noEsConsulta(String query){
+		
+		boolean es=false;
+		
+		if(query.contains("update") || query.contains("insert") || query.contains("delete"))
+			es=true;
+		
+		return es;
 	}
 }
