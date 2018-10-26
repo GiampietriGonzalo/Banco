@@ -56,6 +56,15 @@ public class Fechas{
       }
       return retorno;
    }
+   
+   public static java.util.Date convertirDateSQLADate(java.sql.Date fecha){
+	   
+	      java.util.Date retorno = null;
+	      if (fecha != null){
+	    	  retorno= new java.util.Date(fecha.getTime());
+	      }
+	      return retorno;
+	   }
 
    public static boolean validar(String p_fecha){
       
@@ -67,9 +76,20 @@ public class Fechas{
         	sdf.parse(p_fecha);
             return true;
          }
-         catch (ParseException ex) {}
+         catch (ParseException ex) {System.out.println("ACA");}
       }
       return false;
+   }
+   
+   public static String acomodarFecha(String fecha){
+	   
+	   String newFecha=fecha;
+	   String dividida[]= fecha.split("/");
+	   
+	   newFecha= dividida[2]+"/"+dividida[1]+"/"+dividida[0];
+	  
+   
+	   return newFecha;
    }
    
 }

@@ -162,7 +162,8 @@ public class MovimientosATM extends JInternalFrame {
 				tabla.setModel(modelo);
 
 				i=1; //i=Filas j=Columnas
-				String fecha;
+				Date fecha;
+				String fechaAux;
 				while (rs.next() && i<ultimas+1){
 					
 					((DefaultTableModel) tabla.getModel()).setRowCount(i);
@@ -171,12 +172,20 @@ public class MovimientosATM extends JInternalFrame {
 						tabla.setValueAt(rs.getObject(j),i-1, j-1);
 
 						if(j==1){
-							fecha= Fechas.convertirDateAString(rs.getDate(1));
-							tabla.setValueAt(fecha,i-1,0);
+							//Fecha
+							fechaAux= rs.getString(1); 
+							fechaAux=fechaAux.replace('-', '/');						
+							fecha= Fechas.convertirStringADate(fechaAux);
+							tabla.setValueAt(Fechas.acomodarFecha(fechaAux),i-1,0);
+						}
+						
+						if(j==2){
+							//Hora
+							tabla.setValueAt(rs.getString(2), i-1, 1);
 						}
 
 						if(j==3){
-
+							//Monto
 							tipo=rs.getString(j);
 
 							if(!tipo.equals("Deposito"))

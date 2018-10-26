@@ -36,6 +36,8 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
 		  
 	      SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
 		  SELECT saldo INTO saldo_cajaB FROM caja_ahorro WHERE nro_ca=cajaB FOR UPDATE;
+		  SELECT saldo_cajaA;
+		  SELECT saldo_cajaB;
 		  set nuevoSaldoA=saldo_cajaA - monto;
 		  set nuevoSaldoB=saldo_cajaB + monto;
 			
@@ -61,7 +63,7 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
              INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
              set lastIDTransaccionCaja=LAST_INSERT_ID();
 			 SELECT nro_cliente INTO numCliente FROM cliente_ca WHERE nro_ca=cajaA;
-			 INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,codCaja,cajaB); 
+			 #INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,codCaja,cajaB); 
 
 		   #DEPOSITO
 			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);
@@ -69,7 +71,7 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
              SELECT 'La transferencia se realizo con exito' AS resultado; 
 			 SELECT * FROM transaccion WHERE nro_trans=lastIDTransaccion;
 			 SELECT * FROM deposito WHERE nro_trans=lastIDTransaccionCaja;
-			 SELECT * FROM transferencia WHERE nro_trans=lastIDTransaccionCaja;
+			 SELECT * FROM transferencia_por_caja WHERE nro_trans=lastIDTransaccionCaja;
              SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaA;
              SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaB; 
 	    
