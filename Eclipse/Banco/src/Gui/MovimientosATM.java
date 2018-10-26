@@ -162,7 +162,6 @@ public class MovimientosATM extends JInternalFrame {
 				tabla.setModel(modelo);
 
 				i=1; //i=Filas j=Columnas
-				Date fecha;
 				String fechaAux;
 				while (rs.next() && i<ultimas+1){
 					
@@ -173,9 +172,7 @@ public class MovimientosATM extends JInternalFrame {
 
 						if(j==1){
 							//Fecha
-							fechaAux= rs.getString(1); 
-							fechaAux=fechaAux.replace('-', '/');						
-							fecha= Fechas.convertirStringADate(fechaAux);
+							fechaAux= rs.getString(1); 						
 							tabla.setValueAt(Fechas.acomodarFecha(fechaAux),i-1,0);
 						}
 						

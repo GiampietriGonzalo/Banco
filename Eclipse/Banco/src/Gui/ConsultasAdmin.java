@@ -192,17 +192,22 @@ public class ConsultasAdmin extends JInternalFrame {
 						((DefaultTableModel) table.getModel()).setRowCount(i);
 						for(int j=1;j<md.getColumnCount()+1;j++){
 
-							if(columnNames[j-1].equals("fecha")){
+							if(((String)columnNames[j-1]).trim().toLowerCase().equals("fecha")){
 
-								fecha= Fechas.convertirDateAString(rs.getDate(j));
-								table.setValueAt(fecha,i-1,j-1);
+								fecha= rs.getString(j);
+								table.setValueAt(Fechas.acomodarFecha(fecha),i-1,j-1);
 							}
 							else
-								table.setValueAt(rs.getObject(j),i-1, j-1);   
+								if(((String)columnNames[j-1]).trim().toLowerCase().equals("hora"))
+									table.setValueAt(rs.getString(j),i-1,j-1);
+								else
+									table.setValueAt(rs.getObject(j),i-1, j-1);   
 						}
 						i++;
 					}
 
+			
+					
 					JTableHeader header = table.getTableHeader();
 					tablePane.add(header,BorderLayout.NORTH);
 

@@ -84,6 +84,7 @@ public class Fechas{
    public static String acomodarFecha(String fecha){
 	   
 	   String newFecha=fecha;
+	   fecha=fecha.replace('-', '/');
 	   String dividida[]= fecha.split("/");
 	   
 	   newFecha= dividida[2]+"/"+dividida[1]+"/"+dividida[0];
