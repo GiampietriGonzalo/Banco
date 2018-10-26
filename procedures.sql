@@ -53,6 +53,8 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
            #la transferencia, entonces actualizo el saldo de ambas cuentas 
 	      IF saldo_cajaA >= monto THEN 	  
 	       
+			 SELECT nuevoSaldoA as nuevoSaldoA;
+			 SELECT nuevoSaldoB as nuevoSaldoB;
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoA  WHERE nro_ca=cajaA;
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoB  WHERE nro_ca=cajaB;
 
@@ -63,17 +65,16 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
              INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
              set lastIDTransaccionCaja=LAST_INSERT_ID();
 			 SELECT nro_cliente INTO numCliente FROM cliente_ca WHERE nro_ca=cajaA;
-			 #INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,codCaja,cajaB); 
+			 INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,cajaA,cajaB); 
 
 		   #DEPOSITO
-			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);
-	
+			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);	
              SELECT 'La transferencia se realizo con exito' AS resultado; 
-			 SELECT * FROM transaccion WHERE nro_trans=lastIDTransaccion;
-			 SELECT * FROM deposito WHERE nro_trans=lastIDTransaccionCaja;
-			 SELECT * FROM transferencia_por_caja WHERE nro_trans=lastIDTransaccionCaja;
-             SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaA;
-             SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaB; 
+			 #SELECT * FROM transaccion WHERE nro_trans=lastIDTransaccion;
+			 #SELECT * FROM deposito WHERE nro_trans=lastIDTransaccionCaja;
+			 #SELECT * FROM transaccion_por_caja WHERE nro_trans=lastIDTransaccionCaja;
+             #SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaA;
+             #SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaB; 
 	    
 		  ELSE  
              SELECT 'Saldo insuficiente para realizar la transferencia' 
@@ -91,5 +92,5 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
     
  delimiter ; #reestablece ';' como delimitador de sentencias
 	
-GRANT EXECUTE ON banco.* TO 'admin'@'localhost';
+#GRANT EXECUTE ON banco.* TO 'admin'@'localhost';
 GRANT EXECUTE ON banco.* TO 'atm'@'%';	
