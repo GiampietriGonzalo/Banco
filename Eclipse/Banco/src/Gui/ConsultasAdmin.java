@@ -49,7 +49,7 @@ public class ConsultasAdmin extends JInternalFrame {
 	private void initGui() {
 
 		setForeground(new Color(211, 211, 211));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 835, 527);
 		contentPane = new JPanel();
 		contentPane.setForeground(Color.DARK_GRAY);
