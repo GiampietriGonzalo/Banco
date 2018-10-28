@@ -439,6 +439,7 @@ delimiter !
 CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT(8),IN cajaB INT(8))
                             
   BEGIN   
+
      #Declaración de variables.
 	 DECLARE saldo_cajaA DECIMAL(16,2);
 	 DECLARE saldo_cajaB DECIMAL(16,2);
@@ -523,12 +524,11 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
  END; !
 
 
-CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
+CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 
 	BEGIN
 
 		#Declaración de variables.
-		DECLARE num_caja INT(8);
 		DECLARE saldo_caja DECIMAL(16,2);
 		DECLARE nuevoSaldo DECIMAL(16,2);
 		DECLARE num_cliente INT(5);
@@ -553,12 +553,10 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
  		 
 		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
 		#CREO QUE NO HACE FALTA VERIFICAR		
-		IF EXISTS (SELECT * FROM tarjeta WHERE nro_tarjeta=num_tarjeta) THEN
-		#AND EXISTS (SELECT DISTINCT * FROM tarjeta as T NATURAL JOIN cliente_ca as CLI WHERE T.nro_ca=CLI.nro_ca) THEN
+		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
 			
-			SELECT nro_ca INTO num_caja FROM tarjeta WHERE nro_tarjeta=num_tarjeta;
 			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
-			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_tarjeta=num_tarjeta;
+			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_ca=num_caja;
 
 			IF saldo_caja >= monto THEN 
 		

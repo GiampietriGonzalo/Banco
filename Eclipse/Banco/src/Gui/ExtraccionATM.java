@@ -3,13 +3,11 @@ package Gui;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -19,80 +17,70 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 
-public class TransferenciaATM extends JInternalFrame {
-	
-	private JTextField txtDestino;
+public class ExtraccionATM extends JInternalFrame {
+
 	private JTextField txtMonto;
-	private Connection conexionBD = null;
-	private JButton btnTransferir;
 	private int codCaja;
-	
+	private JButton btnExtraer;
+	private Connection conexionBD = null;
 
 	
-	public TransferenciaATM(int codCaja) {
-		initGui();
+	public ExtraccionATM(int codCaja) {
+	
+		initGUI();
 		this.codCaja=codCaja;
+		
 	}
 	
-	private void initGui(){
+	private void initGUI(){
 		
-		
-		
-		getContentPane().setBackground(new Color(211, 211, 211));
-		getContentPane().setForeground(Color.WHITE);
+		setClosable(true);
+		setTitle("Extraccion");
+		setBorder(null);
+		setForeground(new Color(211, 211, 211));
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 100, 266, 78);
 		getContentPane().setLayout(null);
-		
-		txtDestino = new JTextField();
-		txtDestino.setText("N° de la cuenta de ahorro destino");
-		txtDestino.setBounds(12, 12, 243, 30);
-		getContentPane().add(txtDestino);
-		txtDestino.setColumns(10);
 		
 		txtMonto = new JTextField();
 		txtMonto.setText("Monto");
-		txtMonto.setBounds(12, 54, 114, 30);
+		txtMonto.setBounds(12, 12, 114, 27);
 		getContentPane().add(txtMonto);
 		txtMonto.setColumns(10);
 		
-		btnTransferir = new JButton("Transferir");
-		btnTransferir.setBackground(new Color(211, 211, 211));
-		btnTransferir.setBounds(138, 54, 117, 30);
-		btnTransferir.addActionListener(new oyenteTransferir(this));
-		getContentPane().add(btnTransferir);
-		setForeground(Color.DARK_GRAY);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setTitle("Transferencia");
-		setBounds(100, 100, 291, 133);
-		
+		btnExtraer = new JButton("Extraer");
+		btnExtraer.setBackground(new Color(211, 211, 211));
+		btnExtraer.setBounds(138, 13, 117, 25);
+		btnExtraer.addActionListener(new oyenteExtraer(this));
+		getContentPane().add(btnExtraer);
 
 	}
 	
-	private class oyenteTransferir implements ActionListener{
-
+	private class oyenteExtraer implements ActionListener{
+		
 		private JInternalFrame miFrame;
-
-		public oyenteTransferir(JInternalFrame miFrame) {
+		
+		public oyenteExtraer(JInternalFrame miFrame){
 			this.miFrame=miFrame;
 		}
-
-		public void actionPerformed(ActionEvent arg0){
+		
+		public void actionPerformed(ActionEvent arg0) {
 			
-			int resp = JOptionPane.showConfirmDialog(null, "¿Confirmar transacción?","Confirmación",JOptionPane.YES_NO_OPTION);
+			int resp = JOptionPane.showConfirmDialog(null, "¿Confirmar Extracción?","Confirmación",JOptionPane.YES_NO_OPTION);
 			
 			if(resp==0)
 				//Si
-				realizarTransferencia();
+				realizarExtraccion();
 			else
 				//No
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transacción ha sido cancelada." + "\n","Transacción finalizada",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La Extracción ha sido cancelada." + "\n","Transacción finalizada",JOptionPane.INFORMATION_MESSAGE);
 		
-			txtDestino.setText("Destino");
 			txtMonto.setText("Monto");
-		}
-		
-	}
-	
-	private void realizarTransferencia(){
+			
+		} 
+	 }
+
+	private void realizarExtraccion(){
 		
 		String query;
 		int destino;
@@ -103,25 +91,23 @@ public class TransferenciaATM extends JInternalFrame {
 			
 			conectarBD();
 			
-			destino= Integer.parseInt(txtDestino.getText());
 			monto = Double.parseDouble(txtMonto.getText());
 		
-			query="call transferir("+atm+","+monto+","+codCaja+","+destino+")";
+			query="call extraer("+atm+","+codCaja+","+monto+")";
 			
 			Statement stmt = conexionBD.createStatement();
-			
 			
 			ResultSet rs= stmt.executeQuery(query);
 			
 			if(rs.next());
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ""+rs.getString(1) + "\n","Transferencia Finalizada.",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ""+rs.getString(1) + "\n","Extracción Finalizada",JOptionPane.INFORMATION_MESSAGE);
 			
 			
 			desconectarBD();
 			 
 		}
 		catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. Sólo se admite números enteros." + "\n","ERROR.",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admite números enteros." + "\n","ERROR.",JOptionPane.ERROR_MESSAGE);
 			
 		}
 		catch (SQLException ex){
@@ -170,4 +156,6 @@ public class TransferenciaATM extends JInternalFrame {
 			}
 		}
 	}
+
 }
+

@@ -21,6 +21,7 @@ public class MenuATM extends JFrame {
 	private MovimientosATM mov;
 	private ConsultarSaldoATM saldos;
 	private TransferenciaATM trans;
+	private ExtraccionATM ext;
 	private Login login;
 
 	
@@ -45,8 +46,7 @@ public class MenuATM extends JFrame {
 		mov.setResizable(false);
 		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
 		mov.setMaximizable(true);
-		mov.setBounds(7, 10, 846,
-				492);
+		mov.setBounds(7, 10, 846,492);
 		mov.setVisible(false);
 		mov.setEnabled(false);
 		
@@ -62,7 +62,12 @@ public class MenuATM extends JFrame {
 		trans.setLocation(9, 11);
 		trans.setVisible(false);
 		
-		
+		ext= new ExtraccionATM(codCaja);
+		ext.setBorder(null);
+		ext.setMaximizable(true);
+		ext.setClosable(true);
+		ext.setLocation(9,11);
+		ext.setVisible(false);
 		setBounds(0,0,837, 540);
 		
 		setFont(new Font("Dialog", Font.BOLD, 16));
@@ -95,6 +100,11 @@ public class MenuATM extends JFrame {
 		miTransferencias.addActionListener(new oyenteTransferencias());
 		mnRealizar.add(miTransferencias);
 		
+		JMenuItem miExtraccion = new JMenuItem("Realizar Extracción");
+		miExtraccion.setForeground(Color.DARK_GRAY);
+		miExtraccion.addActionListener(new oyenteExtraccion());
+		mnRealizar.add(miExtraccion);
+		
 		JSeparator separator = new JSeparator();
 		mnRealizar.add(separator);
 		
@@ -113,6 +123,7 @@ public class MenuATM extends JFrame {
 		dkP.add(mov);
 		dkP.add(saldos);
 		dkP.add(trans);
+		dkP.add(ext);
 		getContentPane().add(dkP);
 		
 	}
@@ -139,6 +150,14 @@ public class MenuATM extends JFrame {
 			trans.setVisible(true);
 			trans.setEnabled(true);			
 			trans.moveToFront();
+		} 
+	 }
+	
+	private class oyenteExtraccion implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			ext.setVisible(true);
+			ext.setEnabled(true);			
+			ext.moveToFront();
 		} 
 	 }
 	

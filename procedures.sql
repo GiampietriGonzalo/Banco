@@ -120,11 +120,9 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
 		#CREO QUE NO HACE FALTA VERIFICAR		
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
-		#AND EXISTS (SELECT DISTINCT * FROM tarjeta as T NATURAL JOIN cliente_ca as CLI WHERE T.nro_ca=CLI.nro_ca) THEN
 			
-			SELECT nro_ca INTO num_caja FROM tarjeta WHERE nro_tarjeta=num_tarjeta;
 			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
-			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_tarjeta=num_tarjeta;
+			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_ca=num_caja;
 
 			IF saldo_caja >= monto THEN 
 		
