@@ -56,7 +56,7 @@ public class ConsultarSaldoATM extends JInternalFrame {
 	
 	private void consultarSaldo(){
 		
-		String query="SELECT saldo FROM trans_cajas_ahorro WHERE cod_caja="+codCaja;
+		String query="SELECT saldo FROM caja_ahorro WHERE nro_ca="+codCaja;
 		int saldo=0;
 		try{    
 			if(query.isEmpty())

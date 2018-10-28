@@ -73,7 +73,7 @@ public class DBManager {
 					incorrecto=false;
 				}
 				else{
-					queryATM="SELECT cod_caja FROM tarjeta AS T NATURAL JOIN trans_cajas_ahorro AS C WHERE T.nro_tarjeta="+Integer.parseInt(user)+" AND T.PIN=md5("+Integer.parseInt(password)+")";// AND T.nro_ca=C.nro_ca AND T.nro_cliente=C.nro_cliente";
+					queryATM="SELECT nro_ca FROM tarjeta WHERE nro_tarjeta="+Integer.parseInt(user)+" AND pin=md5("+Integer.parseInt(password)+")";
 					rs=stmt.executeQuery(queryATM);
 					if(rs.first()){
 						

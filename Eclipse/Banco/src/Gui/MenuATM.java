@@ -20,6 +20,7 @@ public class MenuATM extends JFrame {
 	private int codCaja;
 	private MovimientosATM mov;
 	private ConsultarSaldoATM saldos;
+	private TransferenciaATM trans;
 	private Login login;
 
 	
@@ -41,7 +42,7 @@ public class MenuATM extends JFrame {
 		
 		mov= new MovimientosATM(codCaja);
 		mov.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		mov.setResizable(true);
+		mov.setResizable(false);
 		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
 		mov.setMaximizable(true);
 		mov.setBounds(7, 10, 846,
@@ -53,6 +54,13 @@ public class MenuATM extends JFrame {
 		saldos.setMaximizable(true);
 		saldos.setClosable(true);
 		saldos.setLocation(9, 11);
+		
+		trans= new TransferenciaATM(codCaja);
+		trans.setBorder(null);
+		trans.setMaximizable(true);
+		trans.setClosable(true);
+		trans.setLocation(9, 11);
+		trans.setVisible(false);
 		
 		
 		setBounds(0,0,837, 540);
@@ -82,6 +90,11 @@ public class MenuATM extends JFrame {
 		miMovimientos.addActionListener(new oyenteMovimientos());
 		mnRealizar.add(miMovimientos);
 		
+		JMenuItem miTransferencias = new JMenuItem("Realizar transferencia");
+		miTransferencias.setForeground(Color.DARK_GRAY);
+		miTransferencias.addActionListener(new oyenteTransferencias());
+		mnRealizar.add(miTransferencias);
+		
 		JSeparator separator = new JSeparator();
 		mnRealizar.add(separator);
 		
@@ -99,6 +112,7 @@ public class MenuATM extends JFrame {
 		dkP.setBounds(-8, -11, 844, 496);
 		dkP.add(mov);
 		dkP.add(saldos);
+		dkP.add(trans);
 		getContentPane().add(dkP);
 		
 	}
@@ -117,6 +131,14 @@ public class MenuATM extends JFrame {
 			saldos.setVisible(true);
 			saldos.setEnabled(true);			
 			saldos.moveToFront();
+		} 
+	 }
+	
+	private class oyenteTransferencias implements ActionListener{
+		public void actionPerformed(ActionEvent arg0) {
+			trans.setVisible(true);
+			trans.setEnabled(true);			
+			trans.moveToFront();
 		} 
 	 }
 	

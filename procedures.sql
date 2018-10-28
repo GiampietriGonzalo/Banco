@@ -1,11 +1,11 @@
 #PROCEDURES
-use banco;
 
 delimiter !
 
-CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT,IN cajaB INT)
+CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT(8),IN cajaB INT(8))
                             
   BEGIN   
+
      #Declaración de variables.
 	 DECLARE saldo_cajaA DECIMAL(16,2);
 	 DECLARE saldo_cajaB DECIMAL(16,2);
@@ -34,7 +34,7 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
 		#Verifico que existan ambas cuentas. 
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaA) AND EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaB) THEN
 		  
-	      SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
+		  SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
 		  SELECT saldo INTO saldo_cajaB FROM caja_ahorro WHERE nro_ca=cajaB FOR UPDATE;
 
 		  set nuevoSaldoA=saldo_cajaA - monto;
@@ -56,44 +56,45 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoA  WHERE nro_ca=cajaA;
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoB  WHERE nro_ca=cajaB;
 
- 		   #HACER TRANSACCION-TRANSFERENCIA Y TRANSACCION-DEPOSITO
 		   #TRANSFERENCIA
+
+			 #transaccion
 			 INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
+
              set lastIDTransaccion=LAST_INSERT_ID();
-             INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
-             set lastIDTransaccionCaja=LAST_INSERT_ID();
+             
+			 #transaccion_por_caja
+			 INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
+             
+			 set lastIDTransaccionCaja=LAST_INSERT_ID();
 			 SELECT nro_cliente INTO numCliente FROM cliente_ca WHERE nro_ca=cajaA;
+			 
+			 #transferencia
 			 INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,cajaA,cajaB); 
 
 		   #DEPOSITO
-			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);	
-             SELECT 'La transferencia se realizo con exito' AS resultado; 
-			 #SELECT * FROM transaccion WHERE nro_trans=lastIDTransaccion;
-			 #SELECT * FROM deposito WHERE nro_trans=lastIDTransaccionCaja;
-			 #SELECT * FROM transaccion_por_caja WHERE nro_trans=lastIDTransaccionCaja;
-             #SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaA;
-             #SELECT nro_ca,monto FROM caja_ahorro WHERE nro_ca=cajaB; 
+			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);
+	
+             SELECT 'La transferencia ha sido exitosa' AS resultado; 
+
 	    
 		  ELSE  
-             SELECT 'Saldo insuficiente para realizar la transferencia' 
-		        AS resultado;
+             SELECT 'ERROR: Saldo insuficiente para realizar la transferencia' AS resultado;
 	      END IF;  
 
 	   ELSE  
-            SELECT 'ERROR: Cuenta inexistente' 
-		        AS resultado;  
+            SELECT 'ERROR: Cuenta inexistente' AS resultado;  
 	   END IF;  	 		
 		
 	 COMMIT;   #Comete la transacción  
  END; !
 
 
-CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
+CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 
 	BEGIN
 
 		#Declaración de variables.
-		DECLARE num_caja INT(8);
 		DECLARE saldo_caja DECIMAL(16,2);
 		DECLARE nuevoSaldo DECIMAL(16,2);
 		DECLARE num_cliente INT(5);
@@ -118,7 +119,7 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
  		 
 		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
 		#CREO QUE NO HACE FALTA VERIFICAR		
-		IF EXISTS (SELECT * FROM tarjeta WHERE nro_tarjeta=num_tarjeta) THEN
+		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
 		#AND EXISTS (SELECT DISTINCT * FROM tarjeta as T NATURAL JOIN cliente_ca as CLI WHERE T.nro_ca=CLI.nro_ca) THEN
 			
 			SELECT nro_ca INTO num_caja FROM tarjeta WHERE nro_tarjeta=num_tarjeta;
@@ -128,7 +129,7 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
 			IF saldo_caja >= monto THEN 
 		
 				#TESTEO-ANTES
-				SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
+				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
 
 				SET nuevoSaldo= saldo_caja - monto;
 
@@ -145,8 +146,9 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_tarjeta BIGINT,monto INT(12))
 				INSERT INTO extraccion(nro_trans,nro_cliente,nro_ca) VALUES (LAST_INSERT_ID(),num_cliente,num_caja);
 
 				#TESTEO-DESPUES
-				SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
+				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
 
+				SELECT 'La extracción ha sido exitosa' AS resultado;
 	
 	   	 	ELSE
 				SELECT 'ERROR: El monto a extraer es superior al saldo de la cuenta' AS resultado;		

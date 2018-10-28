@@ -3,9 +3,13 @@ package Gui;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -21,13 +25,13 @@ public class TransferenciaATM extends JInternalFrame {
 	private JTextField txtMonto;
 	private Connection conexionBD = null;
 	private JButton btnTransferir;
-	private int numTarjeta;
+	private int codCaja;
 	
 
 	
-	public TransferenciaATM(int numTarjeta) {
+	public TransferenciaATM(int codCaja) {
 		initGui();
-		this.numTarjeta=numTarjeta;
+		this.codCaja=codCaja;
 	}
 	
 	private void initGui(){
@@ -75,40 +79,57 @@ public class TransferenciaATM extends JInternalFrame {
 			
 			int resp = JOptionPane.showConfirmDialog(null, "¿Confirmar transacción?","Confirmación",JOptionPane.YES_NO_OPTION);
 			
-			if(resp==0){
+			if(resp==0)
 				//Si
 				realizarTransferencia();
-				txtDestino.setText("Destino");
-				txtMonto.setText("Monto");
-				
-				//Si la transaccion fue un exito, entonces
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transacción ha sido exitosa." + "\n","Transacción finalizada",JOptionPane.INFORMATION_MESSAGE);
-				
-			}
 			else
-				if(resp==1)
-					//No
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transacción ha sido cancelada." + "\n","Transacción finalizada",JOptionPane.INFORMATION_MESSAGE);
+				//No
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transacción ha sido cancelada." + "\n","Transacción finalizada",JOptionPane.INFORMATION_MESSAGE);
+		
+			txtDestino.setText("Destino");
+			txtMonto.setText("Monto");
 		}
 		
 	}
 	
 	private void realizarTransferencia(){
 		
-	
+		String query;
+		int destino;
+		double monto;
+		int atm=20;
 		
 		try {
 			
-			int destino= Integer.parseInt(txtDestino.getText());
-			int monto = Integer.parseInt(txtMonto.getText());
+			conectarBD();
+			
+			destino= Integer.parseInt(txtDestino.getText());
+			monto = Double.parseDouble(txtMonto.getText());
+		
+			query="call transferir("+atm+","+monto+","+codCaja+","+destino+")";
+			
+			Statement stmt = conexionBD.createStatement();
 			
 			
+			ResultSet rs= stmt.executeQuery(query);
 			
+			if(rs.next());
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ""+rs.getString(1) + "\n","ERROR.",JOptionPane.INFORMATION_MESSAGE);
+			
+			
+			desconectarBD();
 			 
 		}
 		catch(NumberFormatException e){
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. Sólo se admite números enteros." + "\n","ERROR.",JOptionPane.ERROR_MESSAGE);
 			
+		}
+		catch (SQLException ex){
+			// en caso de error, se muestra la causa en la consola
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
