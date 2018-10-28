@@ -161,6 +161,22 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		COMMIT; #Comete la transacción 
 
 	END; !
+
+CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
+	
+	BEGIN
+		#Declaración de variables
+		DECLARE i INT;
+
+	    SET k = 1;
+
+	    WHILE k <= NEW.cant_meses DO
+			INSERT INTO pago VALUES(NEW.nro_prestamo, k, NULL, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)));
+	        SET k = k+1;
+	    END WHILE;
+
+	END; !
+	
     
  delimiter ; #reestablece ';' como delimitador de sentencias
 

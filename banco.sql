@@ -432,8 +432,6 @@
 
 #Stored Procedures
 
-#PROCEDURES
-
 delimiter !
 
 CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT(8),IN cajaB INT(8))
@@ -551,8 +549,6 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		START TRANSACTION;	#Comienza la transacción 		 
 
  		 
-		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
-		#CREO QUE NO HACE FALTA VERIFICAR		
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
 			
 			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
@@ -560,9 +556,6 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 
 			IF saldo_caja >= monto THEN 
 		
-				#TESTEO-ANTES
-				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
-
 				SET nuevoSaldo= saldo_caja - monto;
 
 				#actualizacion del saldo de la caja de ahorro
@@ -595,6 +588,22 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		COMMIT; #Comete la transacción 
 
 	END; !
+
+CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
+	
+	BEGIN
+		#Declaración de variables
+		DECLARE k INT;
+
+	    SET k = 1;
+
+	    WHILE k <= NEW.cant_meses DO
+			INSERT INTO pago VALUES(NEW.nro_prestamo, k, NULL, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)));
+	        SET k = k+1;
+	    END WHILE;
+
+	END; !
+	
     
  delimiter ; #reestablece ';' como delimitador de sentencias
 

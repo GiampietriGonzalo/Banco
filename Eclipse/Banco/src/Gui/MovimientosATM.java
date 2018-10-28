@@ -48,6 +48,15 @@ public class MovimientosATM extends JInternalFrame {
 		this.codCaja=codCaja;
 		initGui();
 	}
+	
+	public void limpiar(){
+		
+		tfDesde.setText("Desde");
+		tfHasta.setText("Hasta");
+		btnMostrar.setEnabled(false);
+		tabla.setModel(new DefaultTableModel());
+		
+	}
 
 	private void initGui(){
 		
@@ -72,7 +81,6 @@ public class MovimientosATM extends JInternalFrame {
 		
 		rbPeriodo.addActionListener(new oyentePeriodo());
 		rbUltimos.addActionListener(new oyenteUltimos());
-		//rbPeriodo.addMouseMotionListener(l);
 		
 		bg.add(rbPeriodo);
 		bg.add(rbUltimos);

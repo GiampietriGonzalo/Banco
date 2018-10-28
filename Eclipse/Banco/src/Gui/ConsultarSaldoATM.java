@@ -28,13 +28,12 @@ public class ConsultarSaldoATM extends JInternalFrame {
 	private JLabel lblSaldo;
 	
 	public ConsultarSaldoATM(int codCaja){
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBorder(null);
 		setMaximizable(true);
 		setEnabled(false);
 		setClosable(true);
-		getContentPane().setBackground(new Color(211, 211, 211));
 		setOpaque(false);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setForeground(Color.WHITE);
 		setTitle("Mi Saldo");
 		this.codCaja=codCaja;
@@ -54,10 +53,11 @@ public class ConsultarSaldoATM extends JInternalFrame {
 		consultarSaldo();
 	}
 	
-	private void consultarSaldo(){
+	public void consultarSaldo(){
 		
 		String query="SELECT saldo FROM caja_ahorro WHERE nro_ca="+codCaja;
 		int saldo=0;
+		
 		try{    
 			if(query.isEmpty())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vac�a\n","Consulta vac�a",JOptionPane.ERROR_MESSAGE);

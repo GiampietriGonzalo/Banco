@@ -30,15 +30,12 @@ public class TransferenciaATM extends JInternalFrame {
 
 	
 	public TransferenciaATM(int codCaja) {
+		setBorder(null);
 		initGui();
 		this.codCaja=codCaja;
 	}
 	
 	private void initGui(){
-		
-		
-		
-		getContentPane().setBackground(new Color(211, 211, 211));
 		getContentPane().setForeground(Color.WHITE);
 		getContentPane().setLayout(null);
 		
@@ -62,7 +59,7 @@ public class TransferenciaATM extends JInternalFrame {
 		setForeground(Color.DARK_GRAY);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setTitle("Transferencia");
-		setBounds(100, 100, 291, 133);
+		setBounds(100, 100, 274, 119);
 		
 
 	}

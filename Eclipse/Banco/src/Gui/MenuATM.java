@@ -131,6 +131,7 @@ public class MenuATM extends JFrame {
 	
 	private class oyenteMovimientos implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
+			mov.limpiar();
 			mov.setVisible(true);
 			mov.setEnabled(true);		
 			mov.moveToFront();
@@ -139,7 +140,9 @@ public class MenuATM extends JFrame {
 	
 	private class oyenteSaldo implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
+			
 			saldos.setVisible(true);
+			saldos.consultarSaldo();
 			saldos.setEnabled(true);			
 			saldos.moveToFront();
 		} 
@@ -147,6 +150,7 @@ public class MenuATM extends JFrame {
 	
 	private class oyenteTransferencias implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
+			
 			trans.setVisible(true);
 			trans.setEnabled(true);			
 			trans.moveToFront();
@@ -155,6 +159,7 @@ public class MenuATM extends JFrame {
 	
 	private class oyenteExtraccion implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
+		
 			ext.setVisible(true);
 			ext.setEnabled(true);			
 			ext.moveToFront();
