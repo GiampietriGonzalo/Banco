@@ -95,9 +95,10 @@ public class ListarClientesMorosos extends JInternalFrame {
 			java.util.Date dete = new Date();
 			String fehca = Fechas.convertirDateAStringDB(dete);
 			
-			String tfQuery = "SELECT num_cliente, tipo_doc, num_doc, nombre, apellido, num_prestamo, monto, cant_meses, valor_cuota, COUNT(nro_pago)\r\n" + 
+			String tfQuery ="SELECT c.nro_cliente, c.tipo_doc, c.nro_doc, c.nombre, c.apellido, p.nro_prestamo, p.monto, p.cant_meses, p.valor_cuota, COUNT(nro_pago) as cuotas_atrasadas\r\n" + 
 					"FROM Cliente c, Prestamo p, Pago a\r\n" + 
-					"WHERE c.num_cliente=p.num_cliente and p.num_prestamo=a.num_prestamo and a.fecha_venc<"+ fehca +";";
+					"WHERE c.nro_cliente=p.nro_cliente and p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and a.fecha_venc<"+ fehca +" \r\n" + 
+					"GROUP BY nro_prestamo having COUNT(nro_pago)>=2;";
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			ResultSetMetaData md= rs.getMetaData();
