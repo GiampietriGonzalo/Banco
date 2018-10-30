@@ -270,8 +270,8 @@ public class CrearPrestamo extends JInternalFrame {
 	
 	private boolean crearPrestamo() {
 		
-		String monto, periodo, numeroC, tipoC;
-		int valorCuota, interes;
+		String numeroC, tipoC;
+		int monto,valorCuota, interes,periodo,monto_sup;
 		boolean crea3 = false;
 		
 		try{    
@@ -279,32 +279,31 @@ public class CrearPrestamo extends JInternalFrame {
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
 			
-			periodo= tfMeses.getText().toString();
+			periodo= Integer.parseInt(tfMeses.getText().toString());
 
-			String tfQuery = "SELECT monto_sup\r\n" + 
-					"FROM tasa_prestamo\r\n" + 
-					"WHERE periodo='"+ periodo +"';";
+			String tfQuery = "SELECT monto_sup FROM tasa_prestamo WHERE periodo="+periodo;
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
 			
 			if(!rs.next())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El periodo ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-			else {
+			else{
 				
 				//verificar si el monto es menor al maximo
 				
-				monto = tfMonto.getText().toString();
+				monto = Integer.parseInt(tfMonto.getText().toString());
+				monto_sup= Integer.parseInt(rs.getString(1));
 				
-				if(Integer.parseInt(monto)<=Integer.parseInt(rs.getString("monto_sup")))
+				if(monto<=monto_sup)
 					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El monto ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
 				else {
 					
 					numeroC = tfNum.getText().toString();
 					tipoC = tfTipo.getText().toString();
 					
-					interes = (Integer.parseInt(monto)*Integer.parseInt(rs.getString("tasa_interes"))*Integer.parseInt(periodo))/1200;
-					valorCuota = (Integer.parseInt(monto)+interes)/Integer.parseInt(periodo);
+					interes = (monto*Integer.parseInt(rs.getString("tasa_interes"))*periodo)/1200;
+					valorCuota = (monto+interes)/periodo;
 					
 					java.util.Date dete = new Date();
 					String fehca = Fechas.convertirDateAStringDB(dete);
@@ -329,6 +328,10 @@ public class CrearPrestamo extends JInternalFrame {
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+		}
+		catch (NumberFormatException ex){
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admiten números positivos" + "\n","Prestamo abortado",JOptionPane.ERROR_MESSAGE);
+
 		}
 		
 		return crea3;
