@@ -97,7 +97,7 @@ public class ListarClientesMorosos extends JInternalFrame {
 			
 			String tfQuery ="SELECT c.nro_cliente, c.tipo_doc, c.nro_doc, c.nombre, c.apellido, p.nro_prestamo, p.monto, p.cant_meses, p.valor_cuota, COUNT(nro_pago) as cuotas_atrasadas\r\n" + 
 					"FROM Cliente c, Prestamo p, Pago a\r\n" + 
-					"WHERE c.nro_cliente=p.nro_cliente and p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and a.fecha_venc<"+ fehca +" \r\n" + 
+					"WHERE c.nro_cliente=p.nro_cliente and p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and a.fecha_venc<'"+ fehca +"' \r\n" + 
 					"GROUP BY nro_prestamo having COUNT(nro_pago)>=2;";
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);

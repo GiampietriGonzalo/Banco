@@ -183,9 +183,7 @@ public class PagarCuotas extends JInternalFrame {
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los campos de tipo y número de documento no pueden estar vacíos\n","No se puede seleccionar cliente",JOptionPane.ERROR_MESSAGE);
 			}
 			else {
-				String tipo = '"'+tfTipo.getText().toString()+'"';
-				//numero valor fecha vencimieno cuota impaga
-				String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente where tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString();
+				String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente where tipo_doc='"+ tfTipo.getText().toString() +"' and nro_doc='" + tfNum.getText().toString()+"';";
 
 				ResultSet rs= stmt.executeQuery(tfQuery);
 				
