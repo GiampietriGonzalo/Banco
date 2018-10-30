@@ -306,12 +306,11 @@ public class CrearPrestamo extends JInternalFrame {
 					
 					tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
 							"VALUES ("+1+","+periodo+","+monto+","+rs.getString("tasa_interes")+","+interes+","+valorCuota+","+legajo+","+numeroC+");";
-
-					rs= stmt.executeQuery(tfQuery);
+					
+					stmt.execute(tfQuery);
 					
 					ResultSetMetaData md= rs.getMetaData();
 
-					rs=stmt.executeQuery(tfQuery);
 					
 				}
 								
