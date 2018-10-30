@@ -31,7 +31,7 @@ import javax.swing.table.TableModel;
 public class CrearPrestamo extends JInternalFrame {
 	
 	private Connection conexionBD = null;
-	private JPanel contentPane, tablePane, prestamoPane;
+	private JPanel contentPane, tablePane;
 	private JButton btnCrear, btnConsultar, btnCancelar;
 	private JTextField tfTipo, tfNum, tfMonto, tfMeses;
 	private JTable tablaDoc;
@@ -113,52 +113,49 @@ public class CrearPrestamo extends JInternalFrame {
 		tfNum.setBounds(160, 20, 142, 50);
 		contentPane.add(tfNum);
 		
-		prestamoPane= new JPanel();
-		prestamoPane.setForeground(Color.WHITE);
-		prestamoPane.setBackground(Color.DARK_GRAY);
-		prestamoPane.setBounds(300,100,285,285);
-		prestamoPane.setLayout(new BorderLayout(0, 0));
-		prestamoPane.setVisible(false);
-		contentPane.add(prestamoPane);
-		
 		etMonto = new JLabel();
 		etMonto.setBounds(400, 100, 142, 20);
 		etMonto.setEnabled(false);
 		etMonto.setText("Monto prestamo");
-		prestamoPane.add(etMonto);
+		contentPane.add(etMonto);
+		etMonto.setVisible(false);
 		
 		tfMonto = new JTextField(10);
 		tfMonto.setForeground(Color.WHITE);
 		tfMonto.setBackground(Color.DARK_GRAY);
 		tfMonto.setBounds(400, 120, 142, 50);
-		prestamoPane.add(tfMonto);
+		contentPane.add(tfMonto);
+		tfMonto.setVisible(false);
 		
 		etMeses = new JLabel();
 		etMeses.setBounds(400, 200, 142, 20);
 		etMeses.setEnabled(false);
 		etMeses.setText("Meses prestamo");
-		prestamoPane.add(etMeses);
+		contentPane.add(etMeses);
+		etMeses.setVisible(false);
 		
 		tfMeses = new JTextField(10);
 		tfMeses.setForeground(Color.WHITE);
 		tfMeses.setBackground(Color.DARK_GRAY);
 		tfMeses.setBounds(400, 220, 142, 50);
-		prestamoPane.add(tfMeses);
+		contentPane.add(tfMeses);
+		tfMeses.setVisible(false);
 		
 		btnCrear = new JButton("Crear Prestamo");
 		btnCrear.setForeground(Color.WHITE);
 		btnCrear.setBackground(Color.DARK_GRAY);
 		btnCrear.setBounds(400, 300, 142, 23);
-		prestamoPane.add(btnCrear);
+		contentPane.add(btnCrear);
 		btnCrear.addActionListener(new oyenteCrear(this));
+		btnCrear.setVisible(false);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setForeground(Color.WHITE);
 		btnCancelar.setBackground(Color.DARK_GRAY);
 		btnCancelar.setBounds(400, 300, 142, 23);
-		prestamoPane.add(btnCancelar);
-		btnCrear.addActionListener(new oyenteCancelar(this));
-		
+		contentPane.add(btnCancelar);
+		btnCancelar.addActionListener(new oyenteCancelar(this));
+		btnCancelar.setVisible(false);
 		mostrarDocumentos();
 	}
 
@@ -233,7 +230,9 @@ public class CrearPrestamo extends JInternalFrame {
 			Statement stmt = this.conexionBD.createStatement();
 			
 			String tipo = '"'+tfTipo.getText().toString()+'"';
-			String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString();
+			String tfQuery = "SELECT tipo_doc, nro_doc \r\n" + 
+					"FROM Cliente \r\n" + 
+					"WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString()+";";
 
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
@@ -378,7 +377,12 @@ public class CrearPrestamo extends JInternalFrame {
 
 		public void actionPerformed(ActionEvent arg0) {
 			if(clienteValidoPrestamo()) {
-				prestamoPane.setVisible(true);
+				etMonto.setVisible(true);
+				etMeses.setVisible(true);
+				tfMonto.setVisible(true);
+				tfMeses.setVisible(true);
+				btnCrear.setVisible(true);
+				btnCancelar.setVisible(true);
 				tfNum.setEnabled(false);
 				tfTipo.setEnabled(false);
 				btnConsultar.setEnabled(false);
@@ -408,9 +412,18 @@ public class CrearPrestamo extends JInternalFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			prestamoPane.setVisible(false);
+			etMonto.setVisible(false);
+			etMeses.setVisible(false);
+			tfMonto.setVisible(false);
+			tfMeses.setVisible(false);
+			btnCrear.setVisible(false);
+			btnCancelar.setVisible(false);
+			tfMeses.setText("");
+			tfMonto.setText("");
 			tfNum.setEnabled(true);
 			tfTipo.setEnabled(true);
+			tfNum.setText("");
+			tfTipo.setText("");
 			btnConsultar.setEnabled(true);
 		}
 	}
