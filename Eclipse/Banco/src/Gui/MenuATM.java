@@ -23,6 +23,7 @@ public class MenuATM extends JFrame {
 	private TransferenciaATM trans;
 	private ExtraccionATM ext;
 	private Login login;
+	private JDesktopPane dkP;
 
 	
 	public MenuATM(int codCaja,Login login){
@@ -115,7 +116,7 @@ public class MenuATM extends JFrame {
 		miSesion.addActionListener(new oyenteSesion(this));
 		contentPane.setLayout(null);
 		
-		JDesktopPane dkP = new JDesktopPane();
+		dkP = new JDesktopPane();
 		dkP.setOpaque(false);
 		dkP.setBounds(new Rectangle(0, 0, 842, 485));
 		dkP.setForeground(Color.DARK_GRAY);
@@ -141,8 +142,12 @@ public class MenuATM extends JFrame {
 	private class oyenteSaldo implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			
+			saldos= new ConsultarSaldoATM(codCaja);
+			dkP.add(saldos);
+			saldos.setMaximizable(true);
+			saldos.setClosable(true);
+			saldos.setLocation(9, 11);
 			saldos.setVisible(true);
-			saldos.consultarSaldo();
 			saldos.setEnabled(true);			
 			saldos.moveToFront();
 		} 

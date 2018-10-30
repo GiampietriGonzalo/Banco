@@ -83,31 +83,42 @@ public class ExtraccionATM extends JInternalFrame {
 	private void realizarExtraccion(){
 		
 		String query;
-		int destino;
 		double monto;
 		int atm=20;
+		String mensaje="";
 		
 		try {
 			
 			conectarBD();
-			
+
 			monto = Double.parseDouble(txtMonto.getText());
-		
-			query="call extraer("+atm+","+codCaja+","+monto+")";
-			
-			Statement stmt = conexionBD.createStatement();
-			
-			ResultSet rs= stmt.executeQuery(query);
-			
-			if(rs.next());
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ""+rs.getString(1) + "\n","Extracción Finalizada",JOptionPane.INFORMATION_MESSAGE);
+
+			if(monto>0) {
+
+				query="call extraer("+atm+","+codCaja+","+monto+")";
+
+				Statement stmt = conexionBD.createStatement();
+
+				ResultSet rs= stmt.executeQuery(query);
+
+				if(rs.next()) {
+					mensaje=rs.getString(1);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extracción Finalizada",JOptionPane.INFORMATION_MESSAGE);
+				
+				}
+			}
+			else {
+				mensaje= "ERROR: El monto debe ser mayor a cero";
+
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extracción Abortada",JOptionPane.ERROR_MESSAGE);
+			}
 			
 			
 			desconectarBD();
 			 
 		}
 		catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admite números enteros." + "\n","ERROR.",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admite números enteros." + "\n","Extracción Abortada",JOptionPane.ERROR_MESSAGE);
 			
 		}
 		catch (SQLException ex){

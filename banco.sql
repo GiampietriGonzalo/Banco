@@ -430,7 +430,8 @@
     
     GRANT UPDATE ON banco.tarjeta TO atm@'%';
 
-#Stored Procedures
+
+#PROCEDURES
 
 delimiter !
 
@@ -468,22 +469,14 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
 		  
 		  SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
 		  SELECT saldo INTO saldo_cajaB FROM caja_ahorro WHERE nro_ca=cajaB FOR UPDATE;
-
-		  set nuevoSaldoA=saldo_cajaA - monto;
-		  set nuevoSaldoB=saldo_cajaB + monto;
-			
-          #Recupero el saldo de la cajaA en la variable saldo_actual_cajaA.
-          #Al utilizar FOR UPDATE se indica que los datos involucrados en la
-          #consulta van a ser actualizados luego.
-          #De esta forma se obtiene un write_lock sobre estos datos, que se      
-          #mantiene hasta que la trans. comete. Esto garantiza que nadie pueda
-          #leer ni escribir el saldo de la cajaA hasta que la trans. comete.      	    
-      
-
-		  #Si el saldo actual de la cajaA es suficiente para realizar la transferencia, 
+	
+     	  #Si el saldo actual de la cajaA es suficiente para realizar la transferencia, 
           #entonces actualizo el saldo de ambas cuentas 
+
 	      IF saldo_cajaA >= monto THEN 	  
-	       
+	     
+			 SET nuevoSaldoA=saldo_cajaA - monto;
+		  	 SET nuevoSaldoB=saldo_cajaB + monto;  
 
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoA  WHERE nro_ca=cajaA;
 	         UPDATE caja_ahorro SET saldo = nuevoSaldoB  WHERE nro_ca=cajaB;
@@ -549,6 +542,8 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		START TRANSACTION;	#Comienza la transacción 		 
 
  		 
+		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
+		#CREO QUE NO HACE FALTA VERIFICAR		
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
 			
 			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
@@ -556,6 +551,9 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 
 			IF saldo_caja >= monto THEN 
 		
+				#TESTEO-ANTES
+				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
+
 				SET nuevoSaldo= saldo_caja - monto;
 
 				#actualizacion del saldo de la caja de ahorro
@@ -608,4 +606,5 @@ CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
  delimiter ; #reestablece ';' como delimitador de sentencias
 
 
+GRANT EXECUTE ON banco.* TO 'atm'@'%';	
 GRANT EXECUTE ON banco.* TO 'atm'@'%';	

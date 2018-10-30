@@ -95,6 +95,7 @@ public class TransferenciaATM extends JInternalFrame {
 		int destino;
 		double monto;
 		int atm=20;
+		String mensaje="";
 		
 		try {
 			
@@ -103,22 +104,32 @@ public class TransferenciaATM extends JInternalFrame {
 			destino= Integer.parseInt(txtDestino.getText());
 			monto = Double.parseDouble(txtMonto.getText());
 		
-			query="call transferir("+atm+","+monto+","+codCaja+","+destino+")";
-			
-			Statement stmt = conexionBD.createStatement();
-			
-			
-			ResultSet rs= stmt.executeQuery(query);
-			
-			if(rs.next());
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ""+rs.getString(1) + "\n","Transferencia Finalizada.",JOptionPane.INFORMATION_MESSAGE);
+			if(monto>0) {
+
+				query="call transferir("+atm+","+monto+","+codCaja+","+destino+")";
+
+				Statement stmt = conexionBD.createStatement();
+
+
+				ResultSet rs= stmt.executeQuery(query);
+
+				if(rs.next()){
+					mensaje=rs.getString(1);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Transferencia Finalizada.",JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}
+			else{
+				mensaje="ERROR: El monto debe ser mayor a cero";
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Transferencia Abortada.",JOptionPane.ERROR_MESSAGE);	
+			}
 			
 			
 			desconectarBD();
 			 
 		}
 		catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. Sólo se admite números enteros." + "\n","ERROR.",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. Sólo se admite números enteros." + "\n","Transferencia Abortada",JOptionPane.ERROR_MESSAGE);
 			
 		}
 		catch (SQLException ex){
