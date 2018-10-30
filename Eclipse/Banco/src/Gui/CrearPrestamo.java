@@ -9,11 +9,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.Connection;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,18 +28,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
 
-import Logica.Fechas;
-
 public class CrearPrestamo extends JInternalFrame {
 	
 	private Connection conexionBD = null;
-	private int numeroDoc;
-	private String tipoDoc;
-	private JPanel contentPane, tablePane;
-	private JButton btnConsultar;
-	private JTextField tfTipo, tfNum;
-	private JTable table;
+	private JPanel contentPane, tablePane, prestamoPane;
+	private JButton btnCrear, btnConsultar, btnCancelar;
+	private JTextField tfTipo, tfNum, tfMonto, tfMeses;
+	private JTable tablaDoc;
 	private JScrollPane spTable;
+	private JLabel etMeses, etMonto, etTipo, etNum;
 	
 	public CrearPrestamo() {
 		initGui();
@@ -62,75 +62,157 @@ public class CrearPrestamo extends JInternalFrame {
 		btnConsultar = new JButton("Consultar");
 		btnConsultar.setForeground(Color.WHITE);
 		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(604, 164, 89, 23);
+		btnConsultar.setBounds(350, 10, 89, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
-
+		
 		tablePane= new JPanel();
 		tablePane.setForeground(Color.WHITE);
 		tablePane.setBackground(Color.DARK_GRAY);
-		tablePane.setBounds(10,198,799,285);
+		tablePane.setBounds(10,100,285,285);
 		tablePane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(tablePane);
+		
+		tablaDoc = new JTable();
+		tablaDoc.setForeground(Color.DARK_GRAY);
+		tablaDoc.setBackground(Color.WHITE);
+		tablaDoc.setBounds(10, 100, 200, 200);
+		contentPane.add(tablaDoc);
+		tablaDoc.setEnabled(false);
 
-		table = new JTable();
-		table.setForeground(Color.DARK_GRAY);
-		table.setBackground(Color.WHITE);
-		table.setBounds(2, 50, 789, 384);
-		//contentPane.add(table);
-		table.setEnabled(false);
-
-		spTable = new JScrollPane(table);
+		spTable = new JScrollPane(tablaDoc);
 		spTable.setForeground(Color.WHITE);
 		spTable.setBackground(Color.DARK_GRAY);
 		spTable.setBounds(0,50,799,400);
 
 		tablePane.add(spTable, BorderLayout.CENTER);
 
+		etTipo = new JLabel();
+		etTipo.setBounds(10, 10, 142, 10);
+		etTipo.setEnabled(false);
+		etTipo.setText("Tipo documento");
+		contentPane.add(etTipo);
+		
 		tfTipo = new JTextField(10);
 		tfTipo.setForeground(Color.WHITE);
 		tfTipo.setBackground(Color.DARK_GRAY);
-		tfTipo.setBounds(10, 11, 799, 142);
-		contentPane.add(tfTipo);		
+		tfTipo.setBounds(10, 20, 142, 50);
+		tfTipo.addFocusListener(new focus(tfTipo, "Tipo documento"));
+		contentPane.add(tfTipo);
 
+		etNum = new JLabel();
+		etNum.setBounds(160, 10, 142, 10);
+		etNum.setEnabled(false);
+		etNum.setText("Número documento");
+		contentPane.add(etNum);
+		
 		tfNum = new JTextField(10);
 		tfNum.setForeground(Color.WHITE);
 		tfNum.setBackground(Color.DARK_GRAY);
-		tfNum.setBounds(10, 11, 799, 142);
+		tfNum.setBounds(160, 20, 142, 50);
+		tfNum.addFocusListener(new focus(tfNum, "Número documento"));
 		contentPane.add(tfNum);
+		
+		prestamoPane= new JPanel();
+		prestamoPane.setForeground(Color.WHITE);
+		prestamoPane.setBackground(Color.DARK_GRAY);
+		prestamoPane.setBounds(300,100,285,285);
+		prestamoPane.setLayout(new BorderLayout(0, 0));
+		prestamoPane.setVisible(false);
+		contentPane.add(prestamoPane);
+		
+		etMonto = new JLabel();
+		etMonto.setBounds(400, 100, 142, 20);
+		etMonto.setEnabled(false);
+		etMonto.setText("Monto prestamo");
+		prestamoPane.add(etMonto);
+		
+		tfMonto = new JTextField(10);
+		tfMonto.setForeground(Color.WHITE);
+		tfMonto.setBackground(Color.DARK_GRAY);
+		tfMonto.setBounds(400, 120, 142, 50);
+		tfMonto.addFocusListener(new focus(tfMonto, "Monto prestamo"));
+		prestamoPane.add(tfMonto);
+		
+		etMeses = new JLabel();
+		etMeses.setBounds(400, 200, 142, 20);
+		etMeses.setEnabled(false);
+		etMeses.setText("Meses prestamo");
+		prestamoPane.add(etMeses);
+		
+		tfMeses = new JTextField(10);
+		tfMeses.setForeground(Color.WHITE);
+		tfMeses.setBackground(Color.DARK_GRAY);
+		tfMeses.setBounds(400, 220, 142, 50);
+		tfMeses.addFocusListener(new focus(tfMeses, "Meses prestamo"));
+		prestamoPane.add(tfMeses);
+		
+		btnCrear = new JButton("Crear Prestamo");
+		btnCrear.setForeground(Color.WHITE);
+		btnCrear.setBackground(Color.DARK_GRAY);
+		btnCrear.setBounds(400, 300, 142, 23);
+		prestamoPane.add(btnCrear);
+		btnCrear.addActionListener(new oyenteCrear(this));
+
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setForeground(Color.WHITE);
+		btnCancelar.setBackground(Color.DARK_GRAY);
+		btnCancelar.setBounds(400, 300, 142, 23);
+		prestamoPane.add(btnCancelar);
+		btnCrear.addActionListener(new oyenteCancelar(this));
+		
+		mostrarDocumentos();
 	}
 
-	private void realizarConsulta(){
+	private void mostrarDocumentos(){
 
-		int filas=0;
 		int i=0;
-		String fecha;
 		
 		try{    
 
-			if(tfTipo.getText().isEmpty() || tfNum.getText().isEmpty())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los campos de tipo y número no pueden estar vacíos\n","Campo vacío",JOptionPane.ERROR_MESSAGE);
-			else{
-				conectarBD();
-				Statement stmt = this.conexionBD.createStatement();
-				String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente WHERE tipo_doc=" + tfTipo +" and nro_doc=" + tfNum;
+			conectarBD();
+			Statement stmt = this.conexionBD.createStatement();
+			String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente";
 
-				ResultSet rs= stmt.executeQuery(tfQuery);
-				
-				if(!rs.next())
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-				else {
-					ResultSetMetaData md= rs.getMetaData();
+			ResultSet rs= stmt.executeQuery(tfQuery);
+			
+			if(!rs.next())
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No hay clientes registrados en la base de datos\n","No se encontraron clientes",JOptionPane.ERROR_MESSAGE);
+			else {
+				ResultSetMetaData md= rs.getMetaData();
 
-					rs=stmt.executeQuery(tfQuery);
+				rs=stmt.executeQuery(tfQuery);
 
-					JTableHeader header = table.getTableHeader();
-					tablePane.add(header,BorderLayout.NORTH);
+				JTableHeader header = tablaDoc.getTableHeader();
+				tablePane.add(header,BorderLayout.NORTH);
+				TableModel bancoModel;
+				Object columnNames[]=new Object[md.getColumnCount()];
+
+				while(i<md.getColumnCount()){
+					columnNames[i]= new String(md.getColumnName(i+1));
+					i++;
 				}
-				rs.close();
-				stmt.close();
-				desconectarBD();
+
+				bancoModel = new DefaultTableModel(columnNames,1);
+
+				tablaDoc.setModel(bancoModel);
+
+				i=1;
+				//Filas i, Columnas j
+
+				while (rs.next()){
+
+					((DefaultTableModel) tablaDoc.getModel()).setRowCount(i);
+					for(int j=1;j<md.getColumnCount()+1;j++)
+						tablaDoc.setValueAt(rs.getObject(j),i-1, j-1);
+					i++;
+				}
+
+
 			}
+			rs.close();
+			stmt.close();
+			desconectarBD();
 
 		}
 		catch (SQLException ex){
@@ -141,6 +223,107 @@ public class CrearPrestamo extends JInternalFrame {
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
 
+	}	
+	
+	private boolean clienteValidoPrestamo() {
+		
+		boolean valido = false; 
+		
+		try{    
+
+			conectarBD();
+			Statement stmt = this.conexionBD.createStatement();
+			
+			String tipo = '"'+tfTipo.getText().toString()+'"';
+			String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString();
+
+			ResultSet rs= stmt.executeQuery(tfQuery);
+			
+			if(!rs.next())
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se encontró un cliente asociado al tipo y número de documento ingresados\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+			else {
+				
+				tfQuery = "SELECT nro_prestamo\r\n" + 
+						"FROM Prestamo p, Cliente c\r\n" + 
+						"WHERE p.nro_cliente=c.nro_cliente and c.nro_doc="+ tfNum.getText().toString() +";";
+				
+				rs = stmt.executeQuery(tfQuery);
+				
+				if(rs.next())
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				else 
+					valido = true;
+				
+				rs.close();
+				stmt.close();
+				desconectarBD();
+
+				}
+		}
+		catch (SQLException ex){
+			// en caso de error, se muestra la causa en la consola
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+		}
+		return valido;
+	}
+	
+	private void crearPrestamo() {
+		
+		int i=0;
+		
+		try{    
+
+			conectarBD();
+			Statement stmt = this.conexionBD.createStatement();
+			
+			String tipo = '"'+tfTipo.getText().toString()+'"';
+			String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString();
+
+			ResultSet rs= stmt.executeQuery(tfQuery);
+			
+			ResultSetMetaData md= rs.getMetaData();
+
+			rs=stmt.executeQuery(tfQuery);
+
+			JTableHeader header = tablaDoc.getTableHeader();
+			tablePane.add(header,BorderLayout.NORTH);
+			TableModel bancoModel;
+			Object columnNames[]=new Object[md.getColumnCount()];
+
+			while(i<md.getColumnCount()){
+				columnNames[i]= new String(md.getColumnName(i+1));
+				i++;
+			}
+
+			bancoModel = new DefaultTableModel(columnNames,1);
+
+			tablaDoc.setModel(bancoModel);
+
+			i=1;
+			//Filas i, Columnas j
+
+			while (rs.next()){
+
+				((DefaultTableModel) tablaDoc.getModel()).setRowCount(i);
+				for(int j=1;j<md.getColumnCount()+1;j++)
+					tablaDoc.setValueAt(rs.getObject(j),i-1, j-1);
+				i++;
+			}
+			
+			rs.close();
+			stmt.close();
+			desconectarBD();
+		}
+		catch (SQLException ex){
+			// en caso de error, se muestra la causa en la consola
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+		}
 	}	
 	
 	private void conectarBD(){
@@ -192,9 +375,61 @@ public class CrearPrestamo extends JInternalFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			realizarConsulta();
+			if(clienteValidoPrestamo()) {
+				prestamoPane.setVisible(true);
+				tfNum.setEnabled(false);
+				tfTipo.setEnabled(false);
+				btnConsultar.setEnabled(false);
+			}
 		}
-		
 	}
 	
+	private class oyenteCrear implements ActionListener{
+
+		private JInternalFrame miFrame;
+
+		public oyenteCrear(JInternalFrame miFrame) {
+			this.miFrame=miFrame;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			crearPrestamo();
+		}
+	}
+	
+	private class oyenteCancelar implements ActionListener{
+
+		private JInternalFrame miFrame;
+
+		public oyenteCancelar(JInternalFrame miFrame) {
+			this.miFrame=miFrame;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			prestamoPane.setVisible(false);
+			tfNum.setEnabled(true);
+			tfTipo.setEnabled(true);
+			btnConsultar.setEnabled(true);
+		}
+	}
+	
+	private class focus implements FocusListener{
+
+		private JTextField miTField;
+		
+		public focus(JTextField miTField, String hint) {
+			this.miTField=miTField;
+			miTField.setText(hint);
+		}
+		
+		@Override
+		public void focusGained(FocusEvent arg0) {
+			miTField.setText("");
+		}
+
+		@Override
+		public void focusLost(FocusEvent arg0) {
+			miTField.setText(miTField.getText());
+		}
+	}
 }

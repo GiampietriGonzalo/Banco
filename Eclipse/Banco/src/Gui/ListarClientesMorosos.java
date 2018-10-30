@@ -30,12 +30,8 @@ import Logica.Fechas;
 public class ListarClientesMorosos extends JInternalFrame {
 
 	private Connection conexionBD = null;
-	private int numeroDoc;
-	private String tipoDoc;
 	private JPanel contentPane, tablePane;
-	private JButton btnConsultar;
-	private JTextField tfTipo, tfNum;
-	private JTable table;
+	private JTable tablaMorosos;
 	private JScrollPane spTable;
 	
 	public ListarClientesMorosos() {
@@ -59,45 +55,29 @@ public class ListarClientesMorosos extends JInternalFrame {
 		this.setVisible(false);
 		this.setEnabled(false);
 
-		btnConsultar = new JButton("Consultar");
-		btnConsultar.setForeground(Color.WHITE);
-		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(604, 164, 89, 23);
-		contentPane.add(btnConsultar);
-		btnConsultar.addActionListener(new oyenteConsultar(this));
-
 		tablePane= new JPanel();
 		tablePane.setForeground(Color.WHITE);
 		tablePane.setBackground(Color.DARK_GRAY);
-		tablePane.setBounds(10,198,799,285);
+		tablePane.setBounds(10,10,799,285);
 		tablePane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(tablePane);
 
-		table = new JTable();
-		table.setForeground(Color.DARK_GRAY);
-		table.setBackground(Color.WHITE);
-		table.setBounds(2, 50, 789, 384);
+		tablaMorosos = new JTable();
+		tablaMorosos.setForeground(Color.DARK_GRAY);
+		tablaMorosos.setBackground(Color.WHITE);
+		tablaMorosos.setBounds(2, 50, 789, 384);
 		//contentPane.add(table);
-		table.setEnabled(false);
+		tablaMorosos.setEnabled(false);
+		tablaMorosos.setAutoCreateRowSorter(true);
 
-		spTable = new JScrollPane(table);
+		spTable = new JScrollPane(tablaMorosos);
 		spTable.setForeground(Color.WHITE);
 		spTable.setBackground(Color.DARK_GRAY);
 		spTable.setBounds(0,50,799,400);
 
 		tablePane.add(spTable, BorderLayout.CENTER);
-
-		tfTipo = new JTextField(10);
-		tfTipo.setForeground(Color.WHITE);
-		tfTipo.setBackground(Color.DARK_GRAY);
-		tfTipo.setBounds(10, 11, 799, 142);
-		contentPane.add(tfTipo);		
-
-		tfNum = new JTextField(10);
-		tfNum.setForeground(Color.WHITE);
-		tfNum.setBackground(Color.DARK_GRAY);
-		tfNum.setBounds(10, 11, 799, 142);
-		contentPane.add(tfNum);
+		
+		realizarConsulta();
 	}
 
 	private void realizarConsulta(){
@@ -109,8 +89,11 @@ public class ListarClientesMorosos extends JInternalFrame {
 		try{    
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
-			String tfQuery = "";
-
+			//Agregar fecha actual
+			String tfQuery = "SELECT c.nro_cliente, c.tipo_doc, c.nro_doc, c.apellido, c.nombre, p.nro_prestamo, p.monto, p.cant_meses, p.valor_cuota, s.cuotas_atrasadas\r\n" + 
+					"FROM Cliente as c, Prestamo as p\r\n" + 
+					"WHERE c.nro_cliente=p.nro_cliente and s.nro_prestamo=p.nro_prestamo;";
+			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			ResultSetMetaData md= rs.getMetaData();
 
@@ -126,28 +109,28 @@ public class ListarClientesMorosos extends JInternalFrame {
 
 			bancoModel = new DefaultTableModel(columnNames,1);
 
-			table.setModel(bancoModel);
+			tablaMorosos.setModel(bancoModel);
 
 			i=1;
 			//Filas i, Columnas j
 
 			while (rs.next()){
 
-				((DefaultTableModel) table.getModel()).setRowCount(i);
+				((DefaultTableModel) tablaMorosos.getModel()).setRowCount(i);
 				for(int j=1;j<md.getColumnCount()+1;j++){
 
 					if(columnNames[j-1].equals("fecha")){
 
 						fecha= Fechas.convertirDateAString(rs.getDate(j));
-						table.setValueAt(fecha,i-1,j-1);
+						tablaMorosos.setValueAt(fecha,i-1,j-1);
 					}
 					else
-						table.setValueAt(rs.getObject(j),i-1, j-1);   
+						tablaMorosos.setValueAt(rs.getObject(j),i-1, j-1);   
 				}
 				i++;
 			}
 
-			JTableHeader header = table.getTableHeader();
+			JTableHeader header = tablaMorosos.getTableHeader();
 			tablePane.add(header,BorderLayout.NORTH);
 
 			rs.close();
@@ -203,19 +186,4 @@ public class ListarClientesMorosos extends JInternalFrame {
 			}
 		}
 	}
-	
-	private class oyenteConsultar implements ActionListener{
-
-		private JInternalFrame miFrame;
-
-		public oyenteConsultar(JInternalFrame miFrame) {
-			this.miFrame=miFrame;
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			realizarConsulta();
-		}
-		
-	}
-	
 }
