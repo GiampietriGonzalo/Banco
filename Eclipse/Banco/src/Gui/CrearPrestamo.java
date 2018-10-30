@@ -37,8 +37,10 @@ public class CrearPrestamo extends JInternalFrame {
 	private JTable tablaDoc;
 	private JScrollPane spTable;
 	private JLabel etMeses, etMonto, etTipo, etNum;
+	private String legajo;
 	
-	public CrearPrestamo() {
+	public CrearPrestamo(String l) {
+		legajo= l;
 		initGui();
 	}	
 	
@@ -97,7 +99,6 @@ public class CrearPrestamo extends JInternalFrame {
 		tfTipo.setForeground(Color.WHITE);
 		tfTipo.setBackground(Color.DARK_GRAY);
 		tfTipo.setBounds(10, 20, 142, 50);
-		tfTipo.addFocusListener(new focus(tfTipo, "Tipo documento"));
 		contentPane.add(tfTipo);
 
 		etNum = new JLabel();
@@ -110,7 +111,6 @@ public class CrearPrestamo extends JInternalFrame {
 		tfNum.setForeground(Color.WHITE);
 		tfNum.setBackground(Color.DARK_GRAY);
 		tfNum.setBounds(160, 20, 142, 50);
-		tfNum.addFocusListener(new focus(tfNum, "Número documento"));
 		contentPane.add(tfNum);
 		
 		prestamoPane= new JPanel();
@@ -131,7 +131,6 @@ public class CrearPrestamo extends JInternalFrame {
 		tfMonto.setForeground(Color.WHITE);
 		tfMonto.setBackground(Color.DARK_GRAY);
 		tfMonto.setBounds(400, 120, 142, 50);
-		tfMonto.addFocusListener(new focus(tfMonto, "Monto prestamo"));
 		prestamoPane.add(tfMonto);
 		
 		etMeses = new JLabel();
@@ -144,7 +143,6 @@ public class CrearPrestamo extends JInternalFrame {
 		tfMeses.setForeground(Color.WHITE);
 		tfMeses.setBackground(Color.DARK_GRAY);
 		tfMeses.setBounds(400, 220, 142, 50);
-		tfMeses.addFocusListener(new focus(tfMeses, "Meses prestamo"));
 		prestamoPane.add(tfMeses);
 		
 		btnCrear = new JButton("Crear Prestamo");
@@ -257,8 +255,7 @@ public class CrearPrestamo extends JInternalFrame {
 				rs.close();
 				stmt.close();
 				desconectarBD();
-
-				}
+			}
 		}
 		catch (SQLException ex){
 			// en caso de error, se muestra la causa en la consola
@@ -272,47 +269,53 @@ public class CrearPrestamo extends JInternalFrame {
 	
 	private void crearPrestamo() {
 		
-		int i=0;
+		String monto, periodo, numeroC, tipoC;
+		int valorCuota, interes;
 		
 		try{    
 
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
 			
-			String tipo = '"'+tfTipo.getText().toString()+'"';
-			String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString();
+			periodo= tfMeses.getText().toString();
 
+			String tfQuery = "SELECT monto_sup, tasa_interes\r\n" + 
+					"FROM tasa_prestamo\r\n" + 
+					"WHERE periodo="+ periodo +";";
+			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
-			ResultSetMetaData md= rs.getMetaData();
-
-			rs=stmt.executeQuery(tfQuery);
-
-			JTableHeader header = tablaDoc.getTableHeader();
-			tablePane.add(header,BorderLayout.NORTH);
-			TableModel bancoModel;
-			Object columnNames[]=new Object[md.getColumnCount()];
-
-			while(i<md.getColumnCount()){
-				columnNames[i]= new String(md.getColumnName(i+1));
-				i++;
-			}
-
-			bancoModel = new DefaultTableModel(columnNames,1);
-
-			tablaDoc.setModel(bancoModel);
-
-			i=1;
-			//Filas i, Columnas j
-
-			while (rs.next()){
-
-				((DefaultTableModel) tablaDoc.getModel()).setRowCount(i);
-				for(int j=1;j<md.getColumnCount()+1;j++)
-					tablaDoc.setValueAt(rs.getObject(j),i-1, j-1);
-				i++;
-			}
 			
+			if(!rs.next())
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El periodo ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+			else {
+				
+				//verificar si el monto es menor al maximo
+				
+				monto = tfMonto.getText().toString();
+				
+				if(Integer.parseInt(monto)<=Integer.parseInt(rs.getString("monto_sup")))
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El monto ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				else {
+					
+					numeroC = tfNum.getText().toString();
+					tipoC = tfTipo.getText().toString();
+					
+					interes = (Integer.parseInt(monto)*Integer.parseInt(rs.getString("tasa_interes"))*Integer.parseInt(periodo))/1200;
+					valorCuota = (Integer.parseInt(monto)+interes)/Integer.parseInt(periodo);
+					
+					tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
+							"VALUES ("+1+","+periodo+","+monto+","+rs.getString("tasa_interes")+","+interes+","+valorCuota+","+legajo+","+numeroC+");";
+
+					rs= stmt.executeQuery(tfQuery);
+					
+					ResultSetMetaData md= rs.getMetaData();
+
+					rs=stmt.executeQuery(tfQuery);
+					
+				}
+								
+			}			
 			rs.close();
 			stmt.close();
 			desconectarBD();
@@ -410,26 +413,6 @@ public class CrearPrestamo extends JInternalFrame {
 			tfNum.setEnabled(true);
 			tfTipo.setEnabled(true);
 			btnConsultar.setEnabled(true);
-		}
-	}
-	
-	private class focus implements FocusListener{
-
-		private JTextField miTField;
-		
-		public focus(JTextField miTField, String hint) {
-			this.miTField=miTField;
-			miTField.setText(hint);
-		}
-		
-		@Override
-		public void focusGained(FocusEvent arg0) {
-			miTField.setText("");
-		}
-
-		@Override
-		public void focusLost(FocusEvent arg0) {
-			miTField.setText(miTField.getText());
 		}
 	}
 }

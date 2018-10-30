@@ -64,7 +64,7 @@ public class DBManager {
 				
 				if(rs.first()){
 					//EL USUARIO ES EMPLEADO
-					MenuEmpleado empleado= new MenuEmpleado(login);
+					MenuEmpleado empleado= new MenuEmpleado(login, user);
 					empleado.setVisible(true);
 					empleado.setEnabled(true);
 					

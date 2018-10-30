@@ -19,13 +19,14 @@ public class MenuEmpleado extends JFrame{
 	
 	private Login login;
 	private JPanel contentPane;
-	private int legajo;
+	private String legajo;
 	private CrearPrestamo crearP;
 	private PagarCuotas pagarC;
 	private ListarClientesMorosos listarC;
 
-	public MenuEmpleado(Login login) {
+	public MenuEmpleado(Login login, String user) {
 		this.login = login;
+		legajo = user;
 		initGui();
 	}
 	
@@ -38,7 +39,7 @@ public class MenuEmpleado extends JFrame{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		crearP= new CrearPrestamo();
+		crearP= new CrearPrestamo(legajo);
 		crearP.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		crearP.setResizable(true);
 		crearP.setNormalBounds(new Rectangle(-10, -10, 842, 485));
@@ -164,5 +165,4 @@ public class MenuEmpleado extends JFrame{
 			
 		}				
 	}
-	
 }

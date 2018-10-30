@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -66,7 +67,7 @@ public class ListarClientesMorosos extends JInternalFrame {
 		tablaMorosos.setForeground(Color.DARK_GRAY);
 		tablaMorosos.setBackground(Color.WHITE);
 		tablaMorosos.setBounds(2, 50, 789, 384);
-		//contentPane.add(table);
+		contentPane.add(tablaMorosos);
 		tablaMorosos.setEnabled(false);
 		tablaMorosos.setAutoCreateRowSorter(true);
 
@@ -88,11 +89,18 @@ public class ListarClientesMorosos extends JInternalFrame {
 		
 		try{    
 			conectarBD();
+			
 			Statement stmt = this.conexionBD.createStatement();
-			//Agregar fecha actual
-			String tfQuery = "SELECT c.nro_cliente, c.tipo_doc, c.nro_doc, c.apellido, c.nombre, p.nro_prestamo, p.monto, p.cant_meses, p.valor_cuota, s.cuotas_atrasadas\r\n" + 
-					"FROM Cliente as c, Prestamo as p\r\n" + 
-					"WHERE c.nro_cliente=p.nro_cliente and s.nro_prestamo=p.nro_prestamo;";
+			
+			java.util.Date dete = new Date();
+			Fechas fehca = new Fechas();
+			
+			
+			String fecheHoy ='"'+ fehca.convertirDateAString(dete) +'"';
+			
+			String tfQuery = "SELECT num_cliente, tipo_doc, num_doc, nombre, apellido, num_prestamo, monto, cant_meses, valor_cuota, COUNT(nro_pago)\r\n" + 
+					"FROM Cliente c, Prestamo p, Pago a\r\n" + 
+					"WHERE c.num_cliente=p.num_cliente and p.num_prestamo=a.num_prestamo and a.fecha_venc<"+ fehca +";";
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			ResultSetMetaData md= rs.getMetaData();
