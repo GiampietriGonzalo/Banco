@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+
+import Logica.Fechas;
 
 public class CrearPrestamo extends JInternalFrame {
 	
@@ -229,10 +232,9 @@ public class CrearPrestamo extends JInternalFrame {
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
 			
-			String tipo = '"'+tfTipo.getText().toString()+'"';
 			String tfQuery = "SELECT tipo_doc, nro_doc \r\n" + 
 					"FROM Cliente \r\n" + 
-					"WHERE tipo_doc="+ tipo +" and nro_doc=" + tfNum.getText().toString()+";";
+					"WHERE tipo_doc='"+ tfTipo.getText().toString() +"' and nro_doc='" + tfNum.getText().toString()+"';";
 
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
@@ -242,7 +244,7 @@ public class CrearPrestamo extends JInternalFrame {
 				
 				tfQuery = "SELECT nro_prestamo\r\n" + 
 						"FROM Prestamo p, Cliente c\r\n" + 
-						"WHERE p.nro_cliente=c.nro_cliente and c.nro_doc="+ tfNum.getText().toString() +";";
+						"WHERE p.nro_cliente=c.nro_cliente and c.nro_doc='"+ tfNum.getText().toString() +"';";
 				
 				rs = stmt.executeQuery(tfQuery);
 				
@@ -280,7 +282,7 @@ public class CrearPrestamo extends JInternalFrame {
 
 			String tfQuery = "SELECT monto_sup\r\n" + 
 					"FROM tasa_prestamo\r\n" + 
-					"WHERE periodo="+ periodo +";";
+					"WHERE periodo='"+ periodo +"';";
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
@@ -303,8 +305,11 @@ public class CrearPrestamo extends JInternalFrame {
 					interes = (Integer.parseInt(monto)*Integer.parseInt(rs.getString("tasa_interes"))*Integer.parseInt(periodo))/1200;
 					valorCuota = (Integer.parseInt(monto)+interes)/Integer.parseInt(periodo);
 					
+					java.util.Date dete = new Date();
+					String fehca = Fechas.convertirDateAStringDB(dete);
+					
 					tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
-							"VALUES ("+1+","+periodo+","+monto+","+rs.getString("tasa_interes")+","+interes+","+valorCuota+","+legajo+","+numeroC+");";
+							"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+rs.getString("tasa_interes")+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
 					
 					stmt.execute(tfQuery);
 					
