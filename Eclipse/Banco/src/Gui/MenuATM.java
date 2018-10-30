@@ -28,8 +28,7 @@ public class MenuATM extends JFrame {
 	
 	public MenuATM(int codCaja,Login login){
 		this.codCaja=codCaja;
-		initGui(login);
-		
+		initGui(login);	
 	}
 
 	private void initGui(Login login){

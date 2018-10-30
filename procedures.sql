@@ -174,3 +174,4 @@ CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
 
 
 GRANT EXECUTE ON banco.* TO 'atm'@'%';	
+GRANT EXECUTE ON banco.* TO 'atm'@'%';	
