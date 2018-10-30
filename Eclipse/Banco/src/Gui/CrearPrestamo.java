@@ -278,7 +278,7 @@ public class CrearPrestamo extends JInternalFrame {
 			
 			periodo= tfMeses.getText().toString();
 
-			String tfQuery = "SELECT monto_sup, tasa_interes\r\n" + 
+			String tfQuery = "SELECT monto_sup\r\n" + 
 					"FROM tasa_prestamo\r\n" + 
 					"WHERE periodo="+ periodo +";";
 			

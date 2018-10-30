@@ -93,10 +93,7 @@ public class ListarClientesMorosos extends JInternalFrame {
 			Statement stmt = this.conexionBD.createStatement();
 			
 			java.util.Date dete = new Date();
-			Fechas fehca = new Fechas();
-			
-			
-			String fecheHoy ='"'+ fehca.convertirDateAString(dete) +'"';
+			String fehca = Fechas.convertirDateAStringDB(dete);
 			
 			String tfQuery = "SELECT num_cliente, tipo_doc, num_doc, nombre, apellido, num_prestamo, monto, cant_meses, valor_cuota, COUNT(nro_pago)\r\n" + 
 					"FROM Cliente c, Prestamo p, Pago a\r\n" + 
