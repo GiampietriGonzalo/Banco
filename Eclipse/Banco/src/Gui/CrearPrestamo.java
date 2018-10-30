@@ -268,10 +268,11 @@ public class CrearPrestamo extends JInternalFrame {
 		return valido;
 	}
 	
-	private void crearPrestamo() {
+	private boolean crearPrestamo() {
 		
 		String monto, periodo, numeroC, tipoC;
 		int valorCuota, interes;
+		boolean crea3 = false;
 		
 		try{    
 
@@ -311,13 +312,12 @@ public class CrearPrestamo extends JInternalFrame {
 					tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
 							"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+rs.getString("tasa_interes")+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
 					
-					stmt.execute(tfQuery);
-					
-					ResultSetMetaData md= rs.getMetaData();
-
-					
-				}
-								
+					if(stmt.execute(tfQuery)) {
+						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.ERROR_MESSAGE);
+						crea3 = true;
+					}else
+						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se pudo crear el préstamo, intente nuevamente\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				}				
 			}			
 			rs.close();
 			stmt.close();
@@ -330,6 +330,8 @@ public class CrearPrestamo extends JInternalFrame {
 			System.out.println("VendorError: " + ex.getErrorCode());
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
+		
+		return crea3;
 	}	
 	
 	private void conectarBD(){
@@ -404,7 +406,21 @@ public class CrearPrestamo extends JInternalFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			crearPrestamo();
+			if(crearPrestamo()) {
+				etMonto.setVisible(false);
+				etMeses.setVisible(false);
+				tfMonto.setVisible(false);
+				tfMeses.setVisible(false);
+				btnCrear.setVisible(false);
+				btnCancelar.setVisible(false);
+				tfMeses.setText("");
+				tfMonto.setText("");
+				tfNum.setEnabled(true);
+				tfTipo.setEnabled(true);
+				tfNum.setText("");
+				tfTipo.setText("");
+				btnConsultar.setEnabled(true);
+			}
 		}
 	}
 	
