@@ -226,7 +226,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		public void actionPerformed(ActionEvent arg0){
 			
-			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC";
+			String query="SELECT fecha,hora,tipo,IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC LIMIT 15";
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			
@@ -280,7 +280,7 @@ public class MovimientosATM extends JInternalFrame {
 				
 				desde= Fechas.convertirStringADateSQL(tfDesde.getText());
 				hasta= Fechas.convertirStringADateSQL(tfHasta.getText());
-				query="SELECT fecha, hora, tipo, monto FROM tarjeta NATURAL JOIN trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
+				query="SELECT fecha, hora, tipo, IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
 
 				consultar(query);
 			}
