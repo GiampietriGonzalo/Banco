@@ -155,7 +155,7 @@ public class CrearPrestamo extends JInternalFrame {
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setForeground(Color.WHITE);
 		btnCancelar.setBackground(Color.DARK_GRAY);
-		btnCancelar.setBounds(400, 300, 142, 23);
+		btnCancelar.setBounds(400, 350, 142, 23);
 		contentPane.add(btnCancelar);
 		btnCancelar.addActionListener(new oyenteCancelar(this));
 		btnCancelar.setVisible(false);
@@ -272,7 +272,6 @@ public class CrearPrestamo extends JInternalFrame {
 		
 		int numeroC;
 		int monto, periodo;
-		boolean crea3 = false;
 		Double tasa, interes, valorCuota;
 		
 		try{    
@@ -312,15 +311,7 @@ public class CrearPrestamo extends JInternalFrame {
 						"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+tasa+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
 				
 				
-				crea3 = stmt.execute(tfQuery);
-				
-				
-				
-				if(crea3)
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.ERROR_MESSAGE);
-				else
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se pudo crear el préstamo, intente nuevamente\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-							
+				stmt.execute(tfQuery);
 			}			
 			rs.close();
 			stmt.close();
@@ -331,14 +322,14 @@ public class CrearPrestamo extends JInternalFrame {
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "No se pudo crear el préstamo\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
 		catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admiten números positivos" + "\n","Prestamo abortado",JOptionPane.ERROR_MESSAGE);
-
 		}
 		
-		return crea3;
+		JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.OK_OPTION);
+		return true;
 	}	
 	
 	private void conectarBD(){

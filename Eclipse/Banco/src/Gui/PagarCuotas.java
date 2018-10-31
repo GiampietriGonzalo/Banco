@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableModel;
+
+import Logica.Fechas;
 
 public class PagarCuotas extends JInternalFrame {
 	
@@ -123,7 +126,7 @@ public class PagarCuotas extends JInternalFrame {
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setForeground(Color.WHITE);
 		btnCancelar.setBackground(Color.DARK_GRAY);
-		btnCancelar.setBounds(320, 40, 89, 23);
+		btnCancelar.setBounds(320, 70, 89, 23);
 		contentPane.add(btnCancelar);
 		btnCancelar.addActionListener(new oyenteCancelar(this));
 		btnCancelar.setVisible(false);
@@ -220,7 +223,7 @@ public class PagarCuotas extends JInternalFrame {
 
 					rs=stmt.executeQuery(tfQuery);
 					
-					tfQuery = "SELECT a.nro_pago, p.valor_cuota, a.fecha_venc\r\n" + 
+					tfQuery = "SELECT a.nro_pago as NroPago, p.nro_prestamo as NroPrestamo, p.valor_cuota as ValorCuota, a.fecha_venc as FechaVenc\r\n" + 
 							"FROM Prestamo p, Pago a\r\n" + 
 							"WHERE p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and p.nro_cliente='"+ numero +"';";
 					
@@ -272,8 +275,8 @@ public class PagarCuotas extends JInternalFrame {
 	private void pagarCuota() {
 		
 		int i=0;
-		int fila, columna;
-		String valor;
+		int fila;
+		String nroPago, nroPres;
 		
 		try{    
 
@@ -281,20 +284,24 @@ public class PagarCuotas extends JInternalFrame {
 			Statement stmt = this.conexionBD.createStatement();
 			
 			fila = tabla.getSelectedRow();
-			columna = tabla.getSelectedColumn();
-			
-			valor = tabla.getValueAt(fila, columna).toString();
-			
-			String tfQuery = "";
-
-			ResultSet rs= stmt.executeQuery(tfQuery);
-			
-			rs=stmt.executeQuery(tfQuery);
-			
-			rs.close();
+			if(fila==-1)
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Debe seleccionar una cuota para pagar\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+			else {
+				nroPago = tabla.getValueAt(fila, 0).toString();
+				nroPres = tabla.getValueAt(fila, 1).toString();
+				
+				String tfQuery = "\r\n" + 
+						"UPDATE pago\r\n" + 
+						"SET fecha_pago='2011-11-02'\r\n" + 
+						"WHERE nro_pago='"+ nroPago +"' and nro_prestamo='"+nroPres+"';";
+				
+				stmt.execute(tfQuery);
+				
+				mostrarCuotasCliente();
+				
+			}
 			stmt.close();
 			desconectarBD();
-
 			
 		}
 		catch (SQLException ex){
@@ -372,8 +379,10 @@ public class PagarCuotas extends JInternalFrame {
 			mostrarCuotasCliente();
 			btnPagar.setVisible(false);
 			btnCancelar.setVisible(false);
+			btnConsultar.setVisible(true);
 			tfTipo.setEnabled(true);
 			tfNum.setEnabled(true);
+			mostrarDocumentos();
 		}
 		
 	}
