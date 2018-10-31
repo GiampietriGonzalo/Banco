@@ -270,9 +270,10 @@ public class CrearPrestamo extends JInternalFrame {
 	
 	private boolean crearPrestamo() {
 		
-		String numeroC, tipoC;
+		String numeroC;
 		int monto,valorCuota, interes,periodo,monto_sup;
 		boolean crea3 = false;
+		int pagos = 0;
 		
 		try{    
 
@@ -280,43 +281,43 @@ public class CrearPrestamo extends JInternalFrame {
 			Statement stmt = this.conexionBD.createStatement();
 			
 			periodo= Integer.parseInt(tfMeses.getText().toString());
+			monto = Integer.parseInt(tfMonto.getText().toString());
 
-			String tfQuery = "SELECT monto_sup FROM tasa_prestamo WHERE periodo="+periodo;
+			String tfQuery = "SELECT monto_sup , monto_inf, tasa\r\n" + 
+					"FROM tasa_prestamo \r\n" + 
+					"WHERE '"+ monto +"'BETWEEN monto_inf and monto_sup and periodo='"+periodo+"';";
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			
 			
 			if(!rs.next())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El periodo ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los datos ingresados no son válidos\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
 			else{
-				
-				//verificar si el monto es menor al maximo
 				
 				monto = Integer.parseInt(tfMonto.getText().toString());
 				monto_sup= Integer.parseInt(rs.getString(1));
 				
-				if(monto<=monto_sup)
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El monto ingresado no es valido\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-				else {
-					
-					numeroC = tfNum.getText().toString();
-					tipoC = tfTipo.getText().toString();
-					
-					interes = (monto*Integer.parseInt(rs.getString("tasa_interes"))*periodo)/1200;
-					valorCuota = (monto+interes)/periodo;
-					
-					java.util.Date dete = new Date();
-					String fehca = Fechas.convertirDateAStringDB(dete);
-					
-					tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
-							"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+rs.getString("tasa_interes")+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
-					
-					if(stmt.execute(tfQuery)) {
-						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.ERROR_MESSAGE);
-						crea3 = true;
-					}else
-						JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se pudo crear el préstamo, intente nuevamente\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-				}				
+				tfQuery = "";
+				
+				numeroC = tfNum.getText().toString();
+				
+				interes = (monto*Integer.parseInt(rs.getString("tasa"))*periodo)/1200;
+				valorCuota = (monto+interes)/periodo;
+				
+				java.util.Date dete = new Date();
+				String fehca = Fechas.convertirDateAStringDB(dete);
+				
+				tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
+						"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+rs.getString("tasa_interes")+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
+				
+				crea3 = stmt.execute(tfQuery);
+				
+				
+				if(crea3)
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.ERROR_MESSAGE);
+				else
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se pudo crear el préstamo, intente nuevamente\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+							
 			}			
 			rs.close();
 			stmt.close();

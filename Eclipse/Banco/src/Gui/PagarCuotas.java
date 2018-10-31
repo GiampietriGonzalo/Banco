@@ -188,7 +188,7 @@ public class PagarCuotas extends JInternalFrame {
 				ResultSet rs= stmt.executeQuery(tfQuery);
 				
 				if(!rs.next())
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"\n","",JOptionPane.ERROR_MESSAGE);
 				else {
 					ResultSetMetaData md= rs.getMetaData();
 
