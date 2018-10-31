@@ -270,10 +270,10 @@ public class CrearPrestamo extends JInternalFrame {
 	
 	private boolean crearPrestamo() {
 		
-		String numeroC;
+		int numeroC;
 		int monto, periodo;
 		boolean crea3 = false;
-		float tasa, interes, valorCuota;
+		Double tasa, interes, valorCuota;
 		
 		try{    
 
@@ -283,22 +283,23 @@ public class CrearPrestamo extends JInternalFrame {
 			periodo= Integer.parseInt(tfMeses.getText().toString());
 			monto = Integer.parseInt(tfMonto.getText().toString());
 			
-			String tfQuery = "SELECT tasa\r\n" + 
-					"FROM tasa_prestamo \r\n" + 
-					"WHERE '"+ monto +"'BETWEEN monto_inf and monto_sup and periodo='"+periodo+"';";
+			String tfQuery = "SELECT tasa FROM tasa_prestamo WHERE '"+monto+"'BETWEEN monto_inf and monto_sup and periodo='"+periodo+"';";
+			
 			
 			ResultSet rs= stmt.executeQuery(tfQuery);
+
+			
 			
 			if(!rs.next())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los datos ingresados no son válidos\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
 			else{
 				
-				
+			
 				tfQuery = "";
 				
-				numeroC = tfNum.getText().toString();
+				numeroC = Integer.parseInt(tfNum.getText());
 				
-				tasa = Float.parseFloat(rs.getString(1));
+				tasa = Double.parseDouble(rs.getString("tasa"));
 				
 				interes = (monto*tasa*periodo)/1200;
 				valorCuota = (monto+interes)/periodo;
@@ -306,10 +307,13 @@ public class CrearPrestamo extends JInternalFrame {
 				java.util.Date dete = new Date();
 				String fehca = Fechas.convertirDateAStringDB(dete);
 				
+				
 				tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
 						"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+tasa+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
 				
+				
 				crea3 = stmt.execute(tfQuery);
+				
 				
 				
 				if(crea3)

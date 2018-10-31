@@ -30,8 +30,8 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
 
 	  END;		      
          
-	 START TRANSACTION;	#Comienza la transacción  
-		#Verifico que existan ambas cuentas. 
+	 START TRANSACTION;	#Comienza la transacción
+     
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaA) AND EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaB) THEN
 		  
 		  SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
@@ -107,19 +107,13 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 			END;		      
 	
 		START TRANSACTION;	#Comienza la transacción 		 
-
- 		 
-		#Verifico que el numero de cliente y la tarjeta correspondan a una misma caja de ahorro;
-		#CREO QUE NO HACE FALTA VERIFICAR		
+		
 		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
 			
 			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
 			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_ca=num_caja;
 
 			IF saldo_caja >= monto THEN 
-		
-				#TESTEO-ANTES
-				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
 
 				SET nuevoSaldo= saldo_caja - monto;
 
@@ -134,9 +128,6 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 
 				#extraccion
 				INSERT INTO extraccion(nro_trans,nro_cliente,nro_ca) VALUES (LAST_INSERT_ID(),num_cliente,num_caja);
-
-				#TESTEO-DESPUES
-				#SELECT nro_ca,saldo FROM caja_ahorro WHERE nro_ca=num_caja;
 
 				SELECT 'La extracción ha sido exitosa' AS resultado;
 	
@@ -163,7 +154,7 @@ CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
 	    SET k = 1;
 
 	    WHILE k <= NEW.cant_meses DO
-			INSERT INTO pago VALUES(NEW.nro_prestamo, k, NULL, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)));
+			INSERT INTO pago(nro_prestamo,nro_pago,fecha_pago) VALUES(NEW.nro_prestamo, k, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)),NULL);
 	        SET k = k+1;
 	    END WHILE;
 
@@ -171,7 +162,6 @@ CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
 	
     
  delimiter ; #reestablece ';' como delimitador de sentencias
-
 
 GRANT EXECUTE ON banco.* TO 'atm'@'%';	
 GRANT EXECUTE ON banco.* TO 'atm'@'%';	

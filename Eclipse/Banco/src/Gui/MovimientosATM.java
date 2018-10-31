@@ -313,7 +313,6 @@ public class MovimientosATM extends JInternalFrame {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 
-
 	}
 
 	private void desconectarBD(){
