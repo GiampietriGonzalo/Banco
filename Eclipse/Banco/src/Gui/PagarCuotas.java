@@ -33,7 +33,7 @@ public class PagarCuotas extends JInternalFrame {
 	private JPanel contentPane, tablePane;
 	private JButton btnCrear;
 	private JTextField tfTipo, tfNum;
-	private JTable tablaDoc, tablaCuotas;
+	private JTable tabla;
 	private JScrollPane spTable;
 	
 	public PagarCuotas() {
@@ -71,21 +71,14 @@ public class PagarCuotas extends JInternalFrame {
 		tablePane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(tablePane);
 		
-		tablaDoc = new JTable();
-		tablaDoc.setForeground(Color.DARK_GRAY);
-		tablaDoc.setBackground(Color.WHITE);
-		tablaDoc.setBounds(2, 10, 789, 384);
-		contentPane.add(tablaDoc);
-		tablaDoc.setEnabled(false);
-		
-		tablaCuotas = new JTable();
-		tablaCuotas.setForeground(Color.DARK_GRAY);
-		tablaCuotas.setBackground(Color.WHITE);
-		tablaCuotas.setBounds(300, 100, 285, 285);
-		contentPane.add(tablaCuotas);
-		tablaCuotas.setEnabled(false);
+		tabla = new JTable();
+		tabla.setForeground(Color.DARK_GRAY);
+		tabla.setBackground(Color.WHITE);
+		tabla.setBounds(2, 10, 789, 384);
+		contentPane.add(tabla);
+		tabla.setEnabled(false);
 
-		spTable = new JScrollPane(tablaDoc);
+		spTable = new JScrollPane(tabla);
 		spTable.setForeground(Color.WHITE);
 		spTable.setBackground(Color.DARK_GRAY);
 		spTable.setBounds(0,50,799,400);
@@ -128,7 +121,7 @@ public class PagarCuotas extends JInternalFrame {
 
 				rs=stmt.executeQuery(tfQuery);
 
-				JTableHeader header = tablaDoc.getTableHeader();
+				JTableHeader header = tabla.getTableHeader();
 				tablePane.add(header,BorderLayout.NORTH);
 				TableModel bancoModel;
 				Object columnNames[]=new Object[md.getColumnCount()];
@@ -140,16 +133,16 @@ public class PagarCuotas extends JInternalFrame {
 
 				bancoModel = new DefaultTableModel(columnNames,1);
 
-				tablaDoc.setModel(bancoModel);
+				tabla.setModel(bancoModel);
 
 				i=1;
 				//Filas i, Columnas j
 
 				while (rs.next()){
 
-					((DefaultTableModel) tablaDoc.getModel()).setRowCount(i);
+					((DefaultTableModel) tabla.getModel()).setRowCount(i);
 					for(int j=1;j<md.getColumnCount()+1;j++)
-						tablaDoc.setValueAt(rs.getObject(j),i-1, j-1);
+						tabla.setValueAt(rs.getObject(j),i-1, j-1);
 					i++;
 				}
 
@@ -188,13 +181,20 @@ public class PagarCuotas extends JInternalFrame {
 				ResultSet rs= stmt.executeQuery(tfQuery);
 				
 				if(!rs.next())
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"\n","",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El tipo y numero de documento ingresados no corresponden a un cliente de la base de datos\n","Error",JOptionPane.ERROR_MESSAGE);
 				else {
-					ResultSetMetaData md= rs.getMetaData();
 
 					rs=stmt.executeQuery(tfQuery);
+					
+					tfQuery = "SELECT a.nro_pago, p.valor_cuota, a.fecha_venc\r\n" + 
+							"FROM Prestamo p, Pago a\r\n" + 
+							"WHERE p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL;";
+					
+					rs=stmt.executeQuery(tfQuery);
 
-					JTableHeader header = tablaCuotas.getTableHeader();
+					ResultSetMetaData md= rs.getMetaData();
+					
+					JTableHeader header = tabla.getTableHeader();
 					tablePane.add(header,BorderLayout.NORTH);
 					TableModel bancoModel;
 					Object columnNames[]=new Object[md.getColumnCount()];
@@ -206,16 +206,16 @@ public class PagarCuotas extends JInternalFrame {
 
 					bancoModel = new DefaultTableModel(columnNames,1);
 
-					tablaDoc.setModel(bancoModel);
+					tabla.setModel(bancoModel);
 
 					i=1;
 					//Filas i, Columnas j
 
 					while (rs.next()){
 
-						((DefaultTableModel) tablaCuotas.getModel()).setRowCount(i);
+						((DefaultTableModel) tabla.getModel()).setRowCount(i);
 						for(int j=1;j<md.getColumnCount()+1;j++)
-							tablaCuotas.setValueAt(rs.getObject(j),i-1, j-1);
+							tabla.setValueAt(rs.getObject(j),i-1, j-1);
 						i++;
 					}
 

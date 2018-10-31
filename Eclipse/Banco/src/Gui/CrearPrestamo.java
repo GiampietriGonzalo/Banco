@@ -271,8 +271,9 @@ public class CrearPrestamo extends JInternalFrame {
 	private boolean crearPrestamo() {
 		
 		String numeroC;
-		int monto, valorCuota, interes, periodo, tasa;
+		int monto, periodo;
 		boolean crea3 = false;
+		float tasa, interes, valorCuota;
 		
 		try{    
 
@@ -281,33 +282,23 @@ public class CrearPrestamo extends JInternalFrame {
 			
 			periodo= Integer.parseInt(tfMeses.getText().toString());
 			monto = Integer.parseInt(tfMonto.getText().toString());
-			System.out.println("monto="+monto);
-			System.out.println("periodo"+periodo);
-
-			System.out.println("Llega piola 1");
 			
 			String tfQuery = "SELECT tasa\r\n" + 
 					"FROM tasa_prestamo \r\n" + 
 					"WHERE '"+ monto +"'BETWEEN monto_inf and monto_sup and periodo='"+periodo+"';";
 			
-			System.out.println("crea query");
-			
 			ResultSet rs= stmt.executeQuery(tfQuery);
-			
-			System.out.println("ejecuta query");
 			
 			if(!rs.next())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los datos ingresados no son válidos\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
 			else{
 				
-				System.out.println("entra else");
 				
 				tfQuery = "";
 				
 				numeroC = tfNum.getText().toString();
 				
-				System.out.println("TASA"+rs.getString("tasa"));
-				tasa = Integer.parseInt(rs.getString("tasa"));
+				tasa = Float.parseFloat(rs.getString(1));
 				
 				interes = (monto*tasa*periodo)/1200;
 				valorCuota = (monto+interes)/periodo;
@@ -316,7 +307,7 @@ public class CrearPrestamo extends JInternalFrame {
 				String fehca = Fechas.convertirDateAStringDB(dete);
 				
 				tfQuery = "INSERT INTO prestamo(fecha, cant_meses, monto, tasa_interes, interes, valor_cuota, legajo, nro_cliente)\r\n" + 
-						"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+rs.getString("tasa_interes")+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
+						"VALUES ('"+fehca+"','"+periodo+"','"+monto+"',"+tasa+","+interes+",'"+valorCuota+"','"+legajo+"','"+numeroC+"');";
 				
 				crea3 = stmt.execute(tfQuery);
 				
