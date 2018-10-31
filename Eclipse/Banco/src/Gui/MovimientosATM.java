@@ -144,7 +144,6 @@ public class MovimientosATM extends JInternalFrame {
 	
 	private void consultar(String query){
 		
-		int ultimas=15;
 		int i=0;
 		int saldo;
 		String tipo;
@@ -171,7 +170,7 @@ public class MovimientosATM extends JInternalFrame {
 
 				i=1; //i=Filas j=Columnas
 				String fechaAux;
-				while (rs.next() && i<ultimas+1){
+				while (rs.next()){
 					
 					((DefaultTableModel) tabla.getModel()).setRowCount(i);
 					for(int j=1;j<md.getColumnCount();j++){
@@ -183,21 +182,22 @@ public class MovimientosATM extends JInternalFrame {
 							fechaAux= rs.getString(1); 						
 							tabla.setValueAt(Fechas.acomodarFecha(fechaAux),i-1,0);
 						}
-						
-						if(j==2){
-							//Hora
-							tabla.setValueAt(rs.getString(2), i-1, 1);
-						}
+						else
+							if(j==2){
+								//Hora
+								tabla.setValueAt(rs.getString(2), i-1, 1);
+							}
 
 						if(j==3){
 							//Monto
-							tipo=rs.getString(j);
+							/*tipo=rs.getString(j);
 
 							if(!tipo.equals("Deposito"))
 								saldo= -rs.getInt(4);
 							else
 								saldo= rs.getInt(4);
-
+							*/
+							saldo= rs.getInt(4);
 							tabla.setValueAt(saldo,i-1, 3);
 						}
 					}
@@ -226,7 +226,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		public void actionPerformed(ActionEvent arg0){
 			
-			String query="SELECT fecha,hora,tipo,monto FROM trans_cajas_ahorro WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC";
+			String query="SELECT fecha,hora,tipo,IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC LIMIT 15";
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			
@@ -280,13 +280,15 @@ public class MovimientosATM extends JInternalFrame {
 				
 				desde= Fechas.convertirStringADateSQL(tfDesde.getText());
 				hasta= Fechas.convertirStringADateSQL(tfHasta.getText());
-				query="SELECT fecha, hora, tipo, monto FROM tarjeta NATURAL JOIN trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
+				query="SELECT fecha,hora,tipo,IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC LIMIT 15";
+
+				query="SELECT fecha, hora, tipo, IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
 
 				consultar(query);
 			}
 				
 			else
-				JOptionPane.showMessageDialog(miFrame,"Al menos una de las fechas es incorrecta.\n" ,"Error-Fechas",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(miFrame,"ERROR: Al menos una de las fechas es incorrecta.\n" ,"Error-Fechas",JOptionPane.ERROR_MESSAGE);
 			
 			
 		}
