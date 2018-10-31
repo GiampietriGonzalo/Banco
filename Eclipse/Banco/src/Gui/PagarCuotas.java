@@ -16,6 +16,7 @@ import java.sql.Connection;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,10 +32,11 @@ public class PagarCuotas extends JInternalFrame {
 	
 	private Connection conexionBD = null;
 	private JPanel contentPane, tablePane;
-	private JButton btnCrear;
+	private JButton btnConsultar, btnPagar, btnCancelar;
 	private JTextField tfTipo, tfNum;
 	private JTable tabla;
 	private JScrollPane spTable;
+	private JLabel etTipo, etNum;
 	
 	public PagarCuotas() {
 		initGui();
@@ -57,13 +59,6 @@ public class PagarCuotas extends JInternalFrame {
 		this.setVisible(false);
 		this.setEnabled(false);
 
-		btnCrear = new JButton("Consultar");
-		btnCrear.setForeground(Color.WHITE);
-		btnCrear.setBackground(Color.DARK_GRAY);
-		btnCrear.setBounds(320, 10, 89, 23);
-		contentPane.add(btnCrear);
-		btnCrear.addActionListener(new oyenteSeleccionar(this));
-		
 		tablePane= new JPanel();
 		tablePane.setForeground(Color.WHITE);
 		tablePane.setBackground(Color.DARK_GRAY);
@@ -76,7 +71,7 @@ public class PagarCuotas extends JInternalFrame {
 		tabla.setBackground(Color.WHITE);
 		tabla.setBounds(2, 10, 789, 384);
 		contentPane.add(tabla);
-		tabla.setEnabled(false);
+		tabla.setEnabled(true);
 
 		spTable = new JScrollPane(tabla);
 		spTable.setForeground(Color.WHITE);
@@ -85,19 +80,53 @@ public class PagarCuotas extends JInternalFrame {
 
 		tablePane.add(spTable, BorderLayout.CENTER);
 		
+		etTipo = new JLabel();
+		etTipo.setBounds(10, 10, 142, 10);
+		etTipo.setEnabled(false);
+		etTipo.setText("Tipo documento");
+		contentPane.add(etTipo);
+		
 		tfTipo = new JTextField(10);
 		tfTipo.setForeground(Color.WHITE);
 		tfTipo.setBackground(Color.DARK_GRAY);
-		tfTipo.setBounds(10, 10, 142, 50);
-		tfTipo.addFocusListener(new focusTipo(tfTipo));
+		tfTipo.setBounds(10, 20, 142, 50);
 		contentPane.add(tfTipo);
 
+		etNum = new JLabel();
+		etNum.setBounds(160, 10, 142, 10);
+		etNum.setEnabled(false);
+		etNum.setText("Número documento");
+		contentPane.add(etNum);
+		
 		tfNum = new JTextField(10);
 		tfNum.setForeground(Color.WHITE);
 		tfNum.setBackground(Color.DARK_GRAY);
-		tfNum.setBounds(160, 10, 142, 50);
-		tfNum.addFocusListener(new focusNum(tfNum));
+		tfNum.setBounds(160, 20, 142, 50);
 		contentPane.add(tfNum);
+		
+		btnConsultar = new JButton("Consultar");
+		btnConsultar.setForeground(Color.WHITE);
+		btnConsultar.setBackground(Color.DARK_GRAY);
+		btnConsultar.setBounds(320, 10, 89, 23);
+		contentPane.add(btnConsultar);
+		btnConsultar.addActionListener(new oyenteSeleccionar(this));
+				
+
+		btnPagar = new JButton("Pagar");
+		btnPagar.setForeground(Color.WHITE);
+		btnPagar.setBackground(Color.DARK_GRAY);
+		btnPagar.setBounds(320, 40, 89, 23);
+		contentPane.add(btnPagar);
+		btnPagar.addActionListener(new oyentePagar(this));
+		btnPagar.setVisible(false);
+		
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setForeground(Color.WHITE);
+		btnCancelar.setBackground(Color.DARK_GRAY);
+		btnCancelar.setBounds(320, 40, 89, 23);
+		contentPane.add(btnCancelar);
+		btnCancelar.addActionListener(new oyenteCancelar(this));
+		btnCancelar.setVisible(false);
 		
 		mostrarDocumentos();
 	}
@@ -166,6 +195,7 @@ public class PagarCuotas extends JInternalFrame {
 	private void mostrarCuotasCliente() {
 		
 		int i=0;
+		String tipo, numero;
 		
 		try{    
 
@@ -176,7 +206,11 @@ public class PagarCuotas extends JInternalFrame {
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los campos de tipo y número de documento no pueden estar vacíos\n","No se puede seleccionar cliente",JOptionPane.ERROR_MESSAGE);
 			}
 			else {
-				String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente where tipo_doc='"+ tfTipo.getText().toString() +"' and nro_doc='" + tfNum.getText().toString()+"';";
+				
+				tipo = tfTipo.getText().toString();
+				numero = tfNum.getText().toString();
+				
+				String tfQuery = "SELECT tipo_doc, nro_doc FROM Cliente where tipo_doc='"+ tipo +"' and nro_doc='" + numero +"';";
 
 				ResultSet rs= stmt.executeQuery(tfQuery);
 				
@@ -188,7 +222,7 @@ public class PagarCuotas extends JInternalFrame {
 					
 					tfQuery = "SELECT a.nro_pago, p.valor_cuota, a.fecha_venc\r\n" + 
 							"FROM Prestamo p, Pago a\r\n" + 
-							"WHERE p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL;";
+							"WHERE p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and p.nro_cliente='"+ numero +"';";
 					
 					rs=stmt.executeQuery(tfQuery);
 
@@ -225,6 +259,43 @@ public class PagarCuotas extends JInternalFrame {
 				stmt.close();
 				desconectarBD();
 			}
+		}
+		catch (SQLException ex){
+			// en caso de error, se muestra la causa en la consola
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void pagarCuota() {
+		
+		int i=0;
+		int fila, columna;
+		String valor;
+		
+		try{    
+
+			conectarBD();
+			Statement stmt = this.conexionBD.createStatement();
+			
+			fila = tabla.getSelectedRow();
+			columna = tabla.getSelectedColumn();
+			
+			valor = tabla.getValueAt(fila, columna).toString();
+			
+			String tfQuery = "";
+
+			ResultSet rs= stmt.executeQuery(tfQuery);
+			
+			rs=stmt.executeQuery(tfQuery);
+			
+			rs.close();
+			stmt.close();
+			desconectarBD();
+
+			
 		}
 		catch (SQLException ex){
 			// en caso de error, se muestra la causa en la consola
@@ -275,6 +346,38 @@ public class PagarCuotas extends JInternalFrame {
 		}
 	}
 	
+	private class oyentePagar implements ActionListener{
+
+		private JInternalFrame miFrame;
+
+		public oyentePagar(JInternalFrame miFrame) {
+			this.miFrame=miFrame;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			pagarCuota();
+		}
+		
+	}
+	
+	private class oyenteCancelar implements ActionListener{
+
+		private JInternalFrame miFrame;
+
+		public oyenteCancelar(JInternalFrame miFrame) {
+			this.miFrame=miFrame;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			mostrarCuotasCliente();
+			btnPagar.setVisible(false);
+			btnCancelar.setVisible(false);
+			tfTipo.setEnabled(true);
+			tfNum.setEnabled(true);
+		}
+		
+	}
+	
 	private class oyenteSeleccionar implements ActionListener{
 
 		private JInternalFrame miFrame;
@@ -285,47 +388,12 @@ public class PagarCuotas extends JInternalFrame {
 
 		public void actionPerformed(ActionEvent arg0) {
 			mostrarCuotasCliente();
+			btnPagar.setVisible(true);
+			btnCancelar.setVisible(true);
+			btnConsultar.setVisible(false);
+			tfTipo.setEnabled(false);
+			tfNum.setEnabled(false);
 		}
 		
-	}
-	
-	private class focusTipo implements FocusListener{
-
-		private JTextField miTField;
-		
-		public focusTipo(JTextField miTField) {
-			this.miTField=miTField;
-			miTField.setText("Tipo documento");
-		}
-		
-		@Override
-		public void focusGained(FocusEvent arg0) {
-			miTField.setText("");
-		}
-
-		@Override
-		public void focusLost(FocusEvent arg0) {
-			miTField.setText(miTField.getText());
-		}
-	}
-
-	private class focusNum implements FocusListener{
-
-		private JTextField miTField;
-		
-		public focusNum(JTextField miTField) {
-			this.miTField=miTField;
-			miTField.setText("Número documento");
-		}
-		
-		@Override
-		public void focusGained(FocusEvent arg0) {
-			miTField.setText("");
-		}
-
-		@Override
-		public void focusLost(FocusEvent arg0) {
-			miTField.setText(miTField.getText());
-		}
 	}
 }
