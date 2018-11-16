@@ -20,16 +20,17 @@ import javax.swing.JButton;
 public class ExtraccionATM extends JInternalFrame {
 
 	private JTextField txtMonto;
-	private int codCaja;
+	//private int codCaja;
+	private int numTarjeta;
 	private JButton btnExtraer;
 	private Connection conexionBD = null;
 
 	
-	public ExtraccionATM(int codCaja) {
+	public ExtraccionATM(int codCaja,int numTarjeta) {
 	
 		initGUI();
-		this.codCaja=codCaja;
-		
+		//this.codCaja=codCaja;
+		this.numTarjeta=numTarjeta;
 	}
 	
 	private void initGUI(){
@@ -84,7 +85,7 @@ public class ExtraccionATM extends JInternalFrame {
 		
 		String query;
 		double monto;
-		int atm=20;
+		int atm=1;
 		String mensaje="";
 		
 		try {
@@ -95,22 +96,23 @@ public class ExtraccionATM extends JInternalFrame {
 
 			if(monto>0) {
 
-				query="call extraer("+atm+","+codCaja+","+monto+")";
+				query="call extraer("+atm+","+numTarjeta+","+monto+")";
 
 				Statement stmt = conexionBD.createStatement();
 
-				ResultSet rs= stmt.executeQuery(query);
+				ResultSet rs;
 
-				if(rs.next()) {
+				if(stmt.execute(query)) {
+					rs= stmt.getResultSet();
 					mensaje=rs.getString(1);
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extracción Finalizada",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extraccion Finalizada",JOptionPane.INFORMATION_MESSAGE);
 				
 				}
 			}
 			else {
 				mensaje= "ERROR: El monto debe ser mayor a cero";
 
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extracción Abortada",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), mensaje + "\n","Extraccion Abortada",JOptionPane.ERROR_MESSAGE);
 			}
 			
 			
@@ -118,7 +120,7 @@ public class ExtraccionATM extends JInternalFrame {
 			 
 		}
 		catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admite números enteros." + "\n","Extracción Abortada",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Salio se admite numeros enteros." + "\n","Extracción Abortada",JOptionPane.ERROR_MESSAGE);
 			
 		}
 		catch (SQLException ex){

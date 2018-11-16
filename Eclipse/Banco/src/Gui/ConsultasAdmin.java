@@ -169,51 +169,59 @@ public class ConsultasAdmin extends JInternalFrame {
 				}
 				else{
 
-					ResultSet rs= stmt.executeQuery(tfQuery.getText());
-					ResultSetMetaData md= rs.getMetaData();
-					rs=stmt.executeQuery(tfQuery.getText());
-					TableModel bancoModel;
-					Object columnNames[]=new Object[md.getColumnCount()];
+					//ResultSet rs= stmt.executeQuery(tfQuery.getText());
 
-					while(i<md.getColumnCount()){
-						columnNames[i]= new String(md.getColumnName(i+1));
-						i++;
-					}
-
-					bancoModel = new DefaultTableModel(columnNames,1);
-
-					table.setModel(bancoModel);
-
-					i=1;
-					//Filas i, Columnas j
-
-					while (rs.next()){
-
-						((DefaultTableModel) table.getModel()).setRowCount(i);
-						for(int j=1;j<md.getColumnCount()+1;j++){
-
-							if(((String)columnNames[j-1]).trim().toLowerCase().equals("fecha")){
-
-								fecha= rs.getString(j);
-								table.setValueAt(Fechas.acomodarFecha(fecha),i-1,j-1);
-							}
-							else
-								if(((String)columnNames[j-1]).trim().toLowerCase().equals("hora"))
-									table.setValueAt(rs.getString(j),i-1,j-1);
-								else
-									table.setValueAt(rs.getObject(j),i-1, j-1);   
-						}
-						i++;
-					}
-
-			
+					ResultSet rs;
 					
-					JTableHeader header = table.getTableHeader();
-					tablePane.add(header,BorderLayout.NORTH);
+					if(stmt.execute(tfQuery.getText())){
+						rs=stmt.getResultSet();
 
-					rs.close();
+						ResultSetMetaData md= rs.getMetaData();
+						rs=stmt.executeQuery(tfQuery.getText());
+						TableModel bancoModel;
+						Object columnNames[]=new Object[md.getColumnCount()];
+
+						while(i<md.getColumnCount()){
+							columnNames[i]= new String(md.getColumnName(i+1));
+							i++;
+						}
+
+						bancoModel = new DefaultTableModel(columnNames,1);
+
+						table.setModel(bancoModel);
+
+						i=1;
+						//Filas i, Columnas j
+
+						while (rs.next()){
+
+							((DefaultTableModel) table.getModel()).setRowCount(i);
+							for(int j=1;j<md.getColumnCount()+1;j++){
+
+								if(((String)columnNames[j-1]).trim().toLowerCase().equals("fecha")){
+
+									fecha= rs.getString(j);
+									table.setValueAt(Fechas.acomodarFecha(fecha),i-1,j-1);
+								}
+								else
+									if(((String)columnNames[j-1]).trim().toLowerCase().equals("hora"))
+										table.setValueAt(rs.getString(j),i-1,j-1);
+									else
+										table.setValueAt(rs.getObject(j),i-1, j-1);   
+							}
+							i++;
+						}
+
+
+
+						JTableHeader header = table.getTableHeader();
+						tablePane.add(header,BorderLayout.NORTH);
+
+						rs.close();
+					}
+					
+					stmt.close();
 				}
-				stmt.close();
 				desconectarBD();
 			}
 

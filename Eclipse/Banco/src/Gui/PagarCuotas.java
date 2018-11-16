@@ -46,7 +46,8 @@ public class PagarCuotas extends JInternalFrame {
 	}	
 	
 	private void initGui() {
-		setTitle("Crear prestamo");
+		
+		setTitle("Pagar prestamo");
 		setResizable(false);
 
 		setForeground(Color.WHITE);
@@ -138,6 +139,9 @@ public class PagarCuotas extends JInternalFrame {
 
 		int i=0;
 		
+		
+
+		
 		try{    
 
 			conectarBD();
@@ -163,7 +167,12 @@ public class PagarCuotas extends JInternalFrame {
 					i++;
 				}
 
-				bancoModel = new DefaultTableModel(columnNames,1);
+				bancoModel = new DefaultTableModel(columnNames,1){
+					
+					public boolean isCellEditable(int rowIndex, int columnIndex) {
+					    return false;  //
+					}
+				};
 
 				tabla.setModel(bancoModel);
 
@@ -205,10 +214,9 @@ public class PagarCuotas extends JInternalFrame {
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
 			
-			if(tfTipo.getText().isEmpty() || tfNum.getText().isEmpty()) {
+			if(tfTipo.getText().isEmpty() || tfNum.getText().isEmpty())
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los campos de tipo y número de documento no pueden estar vacíos\n","No se puede seleccionar cliente",JOptionPane.ERROR_MESSAGE);
-			}
-			else {
+			else{
 				
 				tipo = tfTipo.getText().toString();
 				numero = tfNum.getText().toString();
@@ -217,9 +225,15 @@ public class PagarCuotas extends JInternalFrame {
 
 				ResultSet rs= stmt.executeQuery(tfQuery);
 				
-				if(!rs.next())
+				if(!rs.next()) 
 					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El tipo y numero de documento ingresados no corresponden a un cliente de la base de datos\n","Error",JOptionPane.ERROR_MESSAGE);
 				else {
+					
+					btnPagar.setVisible(true);
+					btnCancelar.setVisible(true);
+					btnConsultar.setVisible(false);
+					tfTipo.setEnabled(false);
+					tfNum.setEnabled(false);
 
 					rs=stmt.executeQuery(tfQuery);
 					
@@ -241,10 +255,16 @@ public class PagarCuotas extends JInternalFrame {
 						i++;
 					}
 
-					bancoModel = new DefaultTableModel(columnNames,1);
+					bancoModel = new DefaultTableModel(columnNames,1){
+						
+						public boolean isCellEditable(int rowIndex, int columnIndex) {
+						    return false;  //
+						}
+					};
 
 					tabla.setModel(bancoModel);
-
+					
+					
 					i=1;
 					//Filas i, Columnas j
 
@@ -287,12 +307,13 @@ public class PagarCuotas extends JInternalFrame {
 			if(fila==-1)
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Debe seleccionar una cuota para pagar\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 			else {
+				
 				nroPago = tabla.getValueAt(fila, 0).toString();
 				nroPres = tabla.getValueAt(fila, 1).toString();
 				
 				String tfQuery = "\r\n" + 
 						"UPDATE pago\r\n" + 
-						"SET fecha_pago='2011-11-02'\r\n" + 
+						"SET fecha_pago=CURDATE()\r\n" + 
 						"WHERE nro_pago='"+ nroPago +"' and nro_prestamo='"+nroPres+"';";
 				
 				stmt.execute(tfQuery);
@@ -397,11 +418,7 @@ public class PagarCuotas extends JInternalFrame {
 
 		public void actionPerformed(ActionEvent arg0) {
 			mostrarCuotasCliente();
-			btnPagar.setVisible(true);
-			btnCancelar.setVisible(true);
-			btnConsultar.setVisible(false);
-			tfTipo.setEnabled(false);
-			tfNum.setEnabled(false);
+			
 		}
 		
 	}

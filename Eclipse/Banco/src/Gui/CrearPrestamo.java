@@ -249,9 +249,11 @@ public class CrearPrestamo extends JInternalFrame {
 				rs = stmt.executeQuery(tfQuery);
 				
 				if(rs.next())
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-				else 
 					valido = true;
+				else 
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+					
+					
 				
 				rs.close();
 				stmt.close();
@@ -312,7 +314,10 @@ public class CrearPrestamo extends JInternalFrame {
 				
 				
 				stmt.execute(tfQuery);
-			}			
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo creaDO",JOptionPane.OK_OPTION);
+				
+			}	
+			
 			rs.close();
 			stmt.close();
 			desconectarBD();
@@ -328,7 +333,7 @@ public class CrearPrestamo extends JInternalFrame {
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admiten números positivos" + "\n","Prestamo abortado",JOptionPane.ERROR_MESSAGE);
 		}
 		
-		JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo crea3",JOptionPane.OK_OPTION);
+		
 		return true;
 	}	
 	
@@ -338,8 +343,8 @@ public class CrearPrestamo extends JInternalFrame {
 			String driver ="com.mysql.cj.jdbc.Driver";
 			String servidor = "localhost:3306";
 			String baseDatos = "banco";
-			String usuario = "admin";
-			String clave = "admin";
+			String usuario = "empleado";
+			String clave = "empleado";
 			String uriConexion = "jdbc:mysql://" + servidor + "/" + baseDatos+"?serverTimezone=UTC";
 
 			//establece una conexión con la  B.D. "banco"    

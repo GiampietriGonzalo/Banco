@@ -75,12 +75,13 @@ public class DBManager {
 				else{
 					queryATM="SELECT nro_ca FROM tarjeta WHERE nro_tarjeta="+Integer.parseInt(user)+" AND pin=md5("+Integer.parseInt(password)+")";
 					rs=stmt.executeQuery(queryATM);
+			
 					if(rs.first()){
 						
 						//EL USUARIO ES ATM
 						codCaja=rs.getInt(1);
 						incorrecto=false;
-						MenuATM ATM= new MenuATM(codCaja,login);
+						MenuATM ATM= new MenuATM(codCaja,Integer.parseInt(user),login);
 						ATM.setVisible(true);
 						ATM.setEnabled(true);
 						

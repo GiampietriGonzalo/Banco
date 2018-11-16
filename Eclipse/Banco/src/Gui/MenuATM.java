@@ -18,6 +18,7 @@ public class MenuATM extends JFrame {
 
 	private JPanel contentPane;
 	private int codCaja;
+	private int numTarjeta;
 	private MovimientosATM mov;
 	private ConsultarSaldoATM saldos;
 	private TransferenciaATM trans;
@@ -26,8 +27,9 @@ public class MenuATM extends JFrame {
 	private JDesktopPane dkP;
 
 	
-	public MenuATM(int codCaja,Login login){
+	public MenuATM(int codCaja,int numTarjeta,Login login){
 		this.codCaja=codCaja;
+		this.numTarjeta=numTarjeta;
 		initGui(login);	
 	}
 
@@ -62,7 +64,7 @@ public class MenuATM extends JFrame {
 		trans.setLocation(9, 11);
 		trans.setVisible(false);
 		
-		ext= new ExtraccionATM(codCaja);
+		ext= new ExtraccionATM(codCaja,numTarjeta);
 		ext.setBorder(null);
 		ext.setMaximizable(true);
 		ext.setClosable(true);

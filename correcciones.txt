@@ -1,0 +1,81 @@
+﻿COMISION: Giampietri - Viola Gomez
+-----------------------------
+
+************
+BD
+************
+Ok
+************
+Vista
+************
+-
+************
+Usuarios:
+************
+-
+
+************
+Admin 
+************
+
+1. Login: Ok 
+2. Consultas:
+	Sigue sin poder ejecutarse la sentencia de creación de tablas. 
+CORREGIDO
+
+************
+ATM 
+************
+
+1. Login: Ok
+2. Consulta de saldo: Ok
+3. Ultimos movimientos: Ok
+4. Movimientos por período: 
+	La aplicación debería mostrar un mensaje indicando que la fecha de inicio debe ser menor a la fecha fin  y no realizar la consulta.
+	Faltan las columnas cod_caja y destino.
+	
+	CORREGIDO
+
+5. Extracción:
+	Al intentar realizar una extracción se muestra SQL EXCEPTION!, extracción abortada.
+6. Transferencia:
+	Idem anterior.
+
+
+************
+Préstamos 
+************
+Las subventanas que se crean no se pueden cerrar. No funciona bien toda la interfaz, muchas veces es necesario reiniciarla.
+Si se cierra la ventana el proceso continúa en ejecución.
+
+1. Login: Ok
+2. Creación de préstamos: 
+	Al colocar datos incorrectos en los campos, se muestra un cartel de error que indica que "El préstamo fue creado existosamente" (no crea nada efectivamente).
+	El mensaje de confirmación de creación es un ERROR_MESSAGE.
+
+	CORREGIDO. TESTEAR
+3. Pago de cuotas: 
+	Se pueden editar los datos de las columnas al presionar doble clic, por lo que luego se muestra un error al intentar efectuar el pago. CORREGIDO
+	La fecha de pago que se registra no es la fecha actual.  CORREGIDO
+4. Listado de morosos: 
+	Luego de pagar una cuota, se muestra a un cliente como moroso (no se muestra información actualizada).
+
+
+******************************
+Implementación de SP y Trigger 
+******************************
+
+1. SP para la extracción: 
+	El número de cliente está asociado a la tarjeta. Una caja de ahorro puede tener muchos clientes, por lo que debe ser un parámetro en el store procedure. No se puede obtener de otra forma (salvo que se pase como parámetro el número de tarjeta y no la caja).
+	Al invocarlo se muestra "Result consisted of more than one row". Por esta razón también falla en la interfaz.
+	También se debe controlar que el cliente esté asociado a la caja, en caso de pasar ambos como parámetro.
+	Mezclaron número de tarjeta con número de caja para notificar el error.
+
+2. SP para transferencia: 
+	Idem anterior para número de cliente.
+	El depósito es otra transacción. Se deberá crear una nueva para que tenga su ID propio.
+
+3. Trigger: 
+	Estaba comentado, no se si esa era la intención. Se quitaron los comentarios para efectuar la corrección.
+	Error:
+	INSERT INTO pago(nro_prestamo,nro_pago,fecha_venc, fecha_pago). Faltaba fecha_pago en la declaración.

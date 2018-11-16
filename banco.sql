@@ -434,6 +434,9 @@
 
 delimiter !
 
+
+
+
 CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT(8),IN cajaB INT(8))
                             
   BEGIN   
@@ -514,7 +517,9 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
  END; !
 
 
-CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
+#CORREGIR PASANDOLE TARJETA Y OBTENIENDO EL CLIENTE Y EL NRO_CA O CODCAJA
+
+CREATE PROCEDURE extraer(codCaja INT (5),numTarjeta INT(8),monto INT(12))
 
 	BEGIN
 
@@ -522,6 +527,7 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 		DECLARE saldo_caja DECIMAL(16,2);
 		DECLARE nuevoSaldo DECIMAL(16,2);
 		DECLARE num_cliente INT(5);
+        DECLARE numCA INT(8);
 	
 		#Declaro variables locales para recuperar los errores.
 		DECLARE codigo_SQL  CHAR(5) DEFAULT '00000';	 
@@ -540,37 +546,41 @@ CREATE PROCEDURE extraer(codCaja INT (5),num_caja INT(8),monto INT(12))
 	
 		START TRANSACTION;	#Comienza la transacción 		 
 		
-		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=num_caja) THEN
+		IF EXISTS(SELECT * FROM atm as a WHERE a.atm=atm) THEN
 			
-			SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=num_caja FOR UPDATE;
-			SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE nro_ca=num_caja;
+			IF EXISTS(SELECT * FROM tarjeta WHERE nro_tarjeta=numTarjeta) THEN
+			 
+				SELECT nro_ca INTO numCa FROM tarjeta WHERE num_tarjeta=numTarjeta;
+				SELECT saldo INTO saldo_caja FROM caja_ahorro WHERE nro_ca=numCA FOR UPDATE;
+				SELECT nro_cliente INTO num_cliente FROM tarjeta WHERE num_tarjeta=numTarjeta;
 
-			IF saldo_caja >= monto THEN 
+				IF saldo_caja >= monto THEN 
 
-				SET nuevoSaldo= saldo_caja - monto;
+					SET nuevoSaldo= saldo_caja - monto;
 
-				#actualizacion del saldo de la caja de ahorro
-				UPDATE caja_ahorro SET saldo = nuevoSaldo  WHERE nro_ca=num_caja;	
+					#actualizacion del saldo de la caja de ahorro
+					UPDATE caja_ahorro SET saldo = nuevoSaldo  WHERE nro_ca=numCA;	
 			
-				#transaccion
-				INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
+					#transaccion
+					INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
 
-				#transaccion_por_caja
-				INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (LAST_INSERT_ID(),codCaja);
+					#transaccion_por_caja
+					INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (LAST_INSERT_ID(),codCaja);
 
-				#extraccion
-				INSERT INTO extraccion(nro_trans,nro_cliente,nro_ca) VALUES (LAST_INSERT_ID(),num_cliente,num_caja);
+					#extraccion
+					INSERT INTO extraccion(nro_trans,nro_cliente,nro_ca) VALUES (LAST_INSERT_ID(),num_cliente,numCA);
 
-				SELECT 'La extracción ha sido exitosa' AS resultado;
+					SELECT 'La extracción ha sido exitosa' AS resultado;
 	
-	   	 	ELSE
-				SELECT 'ERROR: El monto a extraer es superior al saldo de la cuenta' AS resultado;		
-	    
-			END IF;	
-	
+				ELSE	
+					SELECT 'ERROR: El monto a extraer es superior al saldo de la cuenta' AS resultado;
+				END IF;	
+			ELSE
+				SELECT 'ERROR: Número de tarjeta inexistente' AS resultado; 
+			END IF;
 		ELSE
-			SELECT 'ERROR: El número de tarjeta no existe' AS resultado; 
-		END IF;
+			SELECT 'ERROR: ATM inexistente' AS resultado;
+		END IF;	
 
 
 		COMMIT; #Comete la transacción 

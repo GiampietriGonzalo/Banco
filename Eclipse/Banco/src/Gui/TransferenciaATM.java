@@ -40,7 +40,7 @@ public class TransferenciaATM extends JInternalFrame {
 		getContentPane().setLayout(null);
 		
 		txtDestino = new JTextField();
-		txtDestino.setText("NÂ° de la cuenta de ahorro destino");
+		txtDestino.setText("N° de la cuenta de ahorro destino");
 		txtDestino.setBounds(12, 12, 243, 30);
 		getContentPane().add(txtDestino);
 		txtDestino.setColumns(10);
@@ -74,7 +74,7 @@ public class TransferenciaATM extends JInternalFrame {
 
 		public void actionPerformed(ActionEvent arg0){
 			
-			int resp = JOptionPane.showConfirmDialog(null, "Â¿Confirmar transacciÃ³n?","ConfirmaciÃ³n",JOptionPane.YES_NO_OPTION);
+			int resp = JOptionPane.showConfirmDialog(null, "¿Confirmar transacción?","Confirmación",JOptionPane.YES_NO_OPTION);
 			
 			if(resp==0)
 				//Si

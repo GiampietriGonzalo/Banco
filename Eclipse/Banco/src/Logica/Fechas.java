@@ -76,7 +76,7 @@ public class Fechas{
         	sdf.parse(p_fecha);
             return true;
          }
-         catch (ParseException ex) {System.out.println("ACA");}
+         catch (ParseException ex) {System.out.println("Error al parsear la fecha");}
       }
       return false;
    }

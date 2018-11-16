@@ -174,32 +174,33 @@ public class MovimientosATM extends JInternalFrame {
 				while (rs.next() && i<ultimas+1){
 					
 					((DefaultTableModel) tabla.getModel()).setRowCount(i);
-					for(int j=1;j<md.getColumnCount();j++){
+					for(int j=1;j<md.getColumnCount()+1;j++){
 
-						tabla.setValueAt(rs.getObject(j),i-1, j-1);
+						tabla.setValueAt(rs.getString(j),i-1, j-1);
 
-						if(j==1){
+						if(j==2){
 							//Fecha
-							fechaAux= rs.getString(1); 						
-							tabla.setValueAt(Fechas.acomodarFecha(fechaAux),i-1,0);
+							fechaAux= rs.getString(2); 						
+							tabla.setValueAt(Fechas.acomodarFecha(fechaAux),i-1,1);
 						}
 						
-						if(j==2){
+						if(j==3){
 							//Hora
-							tabla.setValueAt(rs.getString(2), i-1, 1);
+							tabla.setValueAt(rs.getString(3), i-1, 2);
 						}
 
-						if(j==3){
+						if(j==4){
 							//Monto
 							tipo=rs.getString(j);
 
 							if(!tipo.equals("Deposito"))
-								saldo= -rs.getInt(4);
+								saldo= -rs.getInt(5);
 							else
-								saldo= rs.getInt(4);
+								saldo= rs.getInt(5);
 
-							tabla.setValueAt(saldo,i-1, 3);
+							tabla.setValueAt(saldo,i-1, 4);
 						}
+					
 					}
 
 					i++;
@@ -226,7 +227,7 @@ public class MovimientosATM extends JInternalFrame {
 		
 		public void actionPerformed(ActionEvent arg0){
 			
-			String query="SELECT fecha,hora,tipo,IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC LIMIT 15";
+			String query="SELECT cod_caja,fecha,hora,tipo,IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto, destino FROM trans_cajas_ahorro AS T WHERE nro_ca='"+codCaja+"' ORDER BY fecha DESC, hora DESC LIMIT 15";
 			spTabla.setEnabled(true);
 			spTabla.setVisible(true);
 			
@@ -275,14 +276,21 @@ public class MovimientosATM extends JInternalFrame {
 			String query;
 			Date hasta;
 			Date desde;
+
 			
 			if(Fechas.validar(tfDesde.getText()) && Fechas.validar(tfHasta.getText())){
 				
 				desde= Fechas.convertirStringADateSQL(tfDesde.getText());
 				hasta= Fechas.convertirStringADateSQL(tfHasta.getText());
-				query="SELECT fecha, hora, tipo, IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto FROM trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
+				
+				if (desde.after(hasta))
+					JOptionPane.showMessageDialog(miFrame,"La fecha de inicio es superior a la fecha limite\n" ,"Error-Fechas",JOptionPane.ERROR_MESSAGE);
+				else{
+				
+					query="SELECT cod_caja,fecha, hora, tipo, IF(T.tipo<>'Deposito',-T.monto,T.monto) as monto , destino FROM trans_cajas_ahorro AS T WHERE T.nro_ca="+codCaja+" AND fecha BETWEEN '"+Fechas.convertirDateAStringDB(desde)+"' AND '"+Fechas.convertirDateAStringDB(hasta)+"' ORDER BY fecha DESC, hora DESC";
 
-				consultar(query);
+					consultar(query);
+				}
 			}
 				
 			else
