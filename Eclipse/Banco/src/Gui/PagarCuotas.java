@@ -410,13 +410,7 @@ public class PagarCuotas extends JInternalFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			mostrarCuotasCliente();
-			btnPagar.setVisible(false);
-			btnCancelar.setVisible(false);
-			btnConsultar.setEnabled(true);
-			tfTipo.setEnabled(true);
-			tfNum.setEnabled(true);
-			mostrarDocumentos();
+			cancelar();
 		}
 		
 	}
@@ -434,6 +428,19 @@ public class PagarCuotas extends JInternalFrame {
 			
 		}
 		
+	}
+	
+	public void cancelar(){
+		
+		//mostrarCuotasCliente();
+		btnPagar.setVisible(false);
+		btnCancelar.setVisible(false);
+		btnConsultar.setEnabled(true);
+		tfTipo.setEnabled(true);
+		tfNum.setEnabled(true);
+		tfTipo.setText("");
+		tfNum.setText("");
+		mostrarDocumentos();
 	}
 
 }

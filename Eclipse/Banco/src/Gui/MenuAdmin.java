@@ -124,6 +124,7 @@ public class MenuAdmin extends JFrame {
 
 	private class oyenteConsultarTablas implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
+			consultasTablas.consultarTablas();
 			consultasTablas.setVisible(true);
 			consultasTablas.setEnabled(true);
 			consultasTablas.moveToFront();

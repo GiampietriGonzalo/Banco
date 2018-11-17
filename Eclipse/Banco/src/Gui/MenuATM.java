@@ -143,8 +143,7 @@ public class MenuATM extends JFrame {
 	private class oyenteSaldo implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
 			
-			saldos= new ConsultarSaldoATM(codCaja);
-			dkP.add(saldos);
+			saldos.consultarSaldo();
 			saldos.setMaximizable(true);
 			saldos.setClosable(true);
 			saldos.setLocation(9, 11);

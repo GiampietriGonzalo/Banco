@@ -265,7 +265,7 @@ public class ConsultasAdmin extends JInternalFrame {
 		
 		boolean es=false;
 		
-		if(query.contains("update") || query.contains("insert") || query.contains("delete"))
+		if(query.contains("update") || query.contains("insert") || query.contains("delete") || query.contains("create"))
 			es=true;
 		
 		return es;

@@ -49,7 +49,7 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 		setBounds(0, 0, 835, 527);
 		getContentPane().setLayout(null);
 		
-		toListaTablas= new String[27];
+		toListaTablas= new String[100];
 		listaTablas = new JList(toListaTablas);
 		listaTablas.setFont(new Font("Dialog", Font.BOLD, 16));
 		listaTablas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -155,7 +155,7 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 	}
 	
 	
-	private void consultarTablas(){
+	public void consultarTablas(){
 		
 		String query="SHOW TABLES";
 

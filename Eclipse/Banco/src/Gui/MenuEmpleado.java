@@ -150,7 +150,7 @@ public class MenuEmpleado extends JFrame{
 	
 	private class oyentePagar implements ActionListener{
 		public void actionPerformed(ActionEvent arg0) {
-			
+			pagarC.cancelar();
 			pagarC.setVisible(true);
 			pagarC.show();
 			pagarC.moveToFront();

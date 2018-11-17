@@ -74,14 +74,14 @@ public class TransferenciaATM extends JInternalFrame {
 
 		public void actionPerformed(ActionEvent arg0){
 			
-			int resp = JOptionPane.showConfirmDialog(null, "緾onfirmar transacci髇?","Confirmaci髇",JOptionPane.YES_NO_OPTION);
+			int resp = JOptionPane.showConfirmDialog(null, "緾onfirmar transaccion?","Confirmacion",JOptionPane.YES_NO_OPTION);
 			
 			if(resp==0)
 				//Si
 				realizarTransferencia();
 			else
 				//No
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transacci贸n ha sido cancelada." + "\n","Transacci贸n finalizada",JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(miFrame), "La transaccion ha sido cancelada." + "\n","Transacci贸n finalizada",JOptionPane.INFORMATION_MESSAGE);
 		
 			txtDestino.setText("Destino");
 			txtMonto.setText("Monto");
@@ -129,7 +129,7 @@ public class TransferenciaATM extends JInternalFrame {
 			 
 		}
 		catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. S贸lo se admite n煤meros enteros." + "\n","Transferencia Abortada",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "Al menos uno de los campos es incorrecto. Solo se admite numeros enteros." + "\n","Transferencia Abortada",JOptionPane.ERROR_MESSAGE);
 			
 		}
 		catch (SQLException ex){
