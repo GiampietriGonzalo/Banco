@@ -69,12 +69,12 @@ public class MovimientosATM extends JInternalFrame {
 		
 		ButtonGroup bg= new ButtonGroup();
 		
-		JRadioButton rbUltimos = new JRadioButton("\u00DAltimos");
+		JRadioButton rbUltimos = new JRadioButton("Ultimos");
 		rbUltimos.setForeground(Color.DARK_GRAY);
 		rbUltimos.setBounds(273, 15, 86, 23);
 		getContentPane().add(rbUltimos);
 		
-		JRadioButton rbPeriodo = new JRadioButton("Por per\u00EDodo");
+		JRadioButton rbPeriodo = new JRadioButton("Por periodo");
 		rbPeriodo.setForeground(Color.DARK_GRAY);
 		rbPeriodo.setBounds(375, 15, 123, 23);
 		getContentPane().add(rbPeriodo);

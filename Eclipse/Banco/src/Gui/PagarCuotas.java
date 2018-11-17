@@ -42,6 +42,7 @@ public class PagarCuotas extends JInternalFrame {
 	private JLabel etTipo, etNum;
 	
 	public PagarCuotas() {
+		setClosable(true);
 		initGui();
 	}	
 	
@@ -52,11 +53,11 @@ public class PagarCuotas extends JInternalFrame {
 
 		setForeground(Color.WHITE);
 		setBackground(Color.DARK_GRAY);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 835, 527);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 70, 512, 527);
 		contentPane = new JPanel();
-		contentPane.setForeground(Color.WHITE);
-		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setForeground(Color.DARK_GRAY);
+		contentPane.setBackground(new Color(211, 211, 211));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -85,49 +86,51 @@ public class PagarCuotas extends JInternalFrame {
 		tablePane.add(spTable, BorderLayout.CENTER);
 		
 		etTipo = new JLabel();
+		etTipo.setForeground(Color.DARK_GRAY);
+		etTipo.setBackground(Color.WHITE);
 		etTipo.setBounds(10, 10, 142, 10);
-		etTipo.setEnabled(false);
 		etTipo.setText("Tipo documento");
 		contentPane.add(etTipo);
 		
 		tfTipo = new JTextField(10);
-		tfTipo.setForeground(Color.WHITE);
-		tfTipo.setBackground(Color.DARK_GRAY);
+		tfTipo.setForeground(Color.DARK_GRAY);
+		tfTipo.setBackground(Color.WHITE);
 		tfTipo.setBounds(10, 20, 142, 50);
 		contentPane.add(tfTipo);
 
 		etNum = new JLabel();
+		etNum.setForeground(Color.DARK_GRAY);
+		etNum.setBackground(Color.WHITE);
 		etNum.setBounds(160, 10, 142, 10);
-		etNum.setEnabled(false);
 		etNum.setText("Número documento");
 		contentPane.add(etNum);
 		
 		tfNum = new JTextField(10);
-		tfNum.setForeground(Color.WHITE);
-		tfNum.setBackground(Color.DARK_GRAY);
+		tfNum.setForeground(Color.DARK_GRAY);
+		tfNum.setBackground(Color.WHITE);
 		tfNum.setBounds(160, 20, 142, 50);
 		contentPane.add(tfNum);
 		
 		btnConsultar = new JButton("Consultar");
-		btnConsultar.setForeground(Color.WHITE);
-		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(320, 10, 89, 23);
+		btnConsultar.setForeground(Color.DARK_GRAY);
+		btnConsultar.setBackground(Color.LIGHT_GRAY);
+		btnConsultar.setBounds(321, 20, 89, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteSeleccionar(this));
 				
 
 		btnPagar = new JButton("Pagar");
-		btnPagar.setForeground(Color.WHITE);
-		btnPagar.setBackground(Color.DARK_GRAY);
-		btnPagar.setBounds(320, 40, 89, 23);
+		btnPagar.setForeground(Color.DARK_GRAY);
+		btnPagar.setBackground(Color.LIGHT_GRAY);
+		btnPagar.setBounds(321, 49, 89, 23);
 		contentPane.add(btnPagar);
 		btnPagar.addActionListener(new oyentePagar(this));
 		btnPagar.setVisible(false);
 		
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setForeground(Color.WHITE);
-		btnCancelar.setBackground(Color.DARK_GRAY);
-		btnCancelar.setBounds(320, 70, 89, 23);
+		btnCancelar.setForeground(Color.DARK_GRAY);
+		btnCancelar.setBackground(Color.LIGHT_GRAY);
+		btnCancelar.setBounds(321, 79, 89, 23);
 		contentPane.add(btnCancelar);
 		btnCancelar.addActionListener(new oyenteCancelar(this));
 		btnCancelar.setVisible(false);
@@ -135,12 +138,9 @@ public class PagarCuotas extends JInternalFrame {
 		mostrarDocumentos();
 	}
 
-	private void mostrarDocumentos(){
+	public void mostrarDocumentos(){
 
 		int i=0;
-		
-		
-
 		
 		try{    
 
@@ -231,7 +231,7 @@ public class PagarCuotas extends JInternalFrame {
 					
 					btnPagar.setVisible(true);
 					btnCancelar.setVisible(true);
-					btnConsultar.setVisible(false);
+					btnConsultar.setEnabled(false);
 					tfTipo.setEnabled(false);
 					tfNum.setEnabled(false);
 
@@ -240,44 +240,56 @@ public class PagarCuotas extends JInternalFrame {
 					tfQuery = "SELECT a.nro_pago as NroPago, p.nro_prestamo as NroPrestamo, p.valor_cuota as ValorCuota, a.fecha_venc as FechaVenc\r\n" + 
 							"FROM Prestamo p, Pago a\r\n" + 
 							"WHERE p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and p.nro_cliente='"+ numero +"';";
+
 					
-					rs=stmt.executeQuery(tfQuery);
 
-					ResultSetMetaData md= rs.getMetaData();
-					
-					JTableHeader header = tabla.getTableHeader();
-					tablePane.add(header,BorderLayout.NORTH);
-					TableModel bancoModel;
-					Object columnNames[]=new Object[md.getColumnCount()];
+					if(stmt.execute(tfQuery)){
 
-					while(i<md.getColumnCount()){
-						columnNames[i]= new String(md.getColumnName(i+1));
-						i++;
-					}
+						rs=stmt.getResultSet();	
+						ResultSetMetaData md= rs.getMetaData();
 
-					bancoModel = new DefaultTableModel(columnNames,1){
-						
-						public boolean isCellEditable(int rowIndex, int columnIndex) {
-						    return false;  //
+						JTableHeader header = tabla.getTableHeader();
+						tablePane.add(header,BorderLayout.NORTH);
+						TableModel bancoModel;
+						Object columnNames[]=new Object[md.getColumnCount()];
+
+						while(i<md.getColumnCount()){
+							columnNames[i]= new String(md.getColumnName(i+1));
+							i++;
 						}
-					};
 
-					tabla.setModel(bancoModel);
-					
-					
-					i=1;
-					//Filas i, Columnas j
+						bancoModel = new DefaultTableModel(columnNames,0){
 
-					while (rs.next()){
+							public boolean isCellEditable(int rowIndex, int columnIndex) {
+								return false;  
+							}
+						};
 
-						((DefaultTableModel) tabla.getModel()).setRowCount(i);
-						for(int j=1;j<md.getColumnCount()+1;j++)
-							tabla.setValueAt(rs.getObject(j),i-1, j-1);
-						i++;
+						tabla.setModel(bancoModel);
+
+
+						i=1;
+						//Filas i, Columnas j
+
+						while (rs.next()){
+
+							((DefaultTableModel) tabla.getModel()).setRowCount(i);
+							
+							for(int j=1;j<md.getColumnCount()+1;j++) {
+								
+								tabla.setValueAt(rs.getObject(j),i-1, j-1);
+								
+								if((md.getColumnName(j).trim().toLowerCase().equals("fecha_venc"))){
+									tabla.setValueAt(Fechas.acomodarFecha(rs.getString(j)),i-1,j-1);
+								}
+							
+							}
+							i++;
+						}
 					}
-
 
 				}
+				
 				rs.close();
 				stmt.close();
 				desconectarBD();
@@ -295,8 +307,10 @@ public class PagarCuotas extends JInternalFrame {
 	private void pagarCuota() {
 		
 		int i=0;
-		int fila;
+		int fila,cantFilas;
 		String nroPago, nroPres;
+		ResultSet rs;
+		String query;
 		
 		try{    
 
@@ -308,15 +322,14 @@ public class PagarCuotas extends JInternalFrame {
 				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Debe seleccionar una cuota para pagar\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 			else {
 				
+				rs=stmt.getResultSet();
+	
 				nroPago = tabla.getValueAt(fila, 0).toString();
 				nroPres = tabla.getValueAt(fila, 1).toString();
+							
+				query ="UPDATE pago SET fecha_pago=CURDATE() WHERE nro_pago="+nroPago+" AND nro_prestamo="+nroPres+";";
 				
-				String tfQuery = "\r\n" + 
-						"UPDATE pago\r\n" + 
-						"SET fecha_pago=CURDATE()\r\n" + 
-						"WHERE nro_pago='"+ nroPago +"' and nro_prestamo='"+nroPres+"';";
-				
-				stmt.execute(tfQuery);
+				stmt.execute(query);
 				
 				mostrarCuotasCliente();
 				
@@ -400,7 +413,7 @@ public class PagarCuotas extends JInternalFrame {
 			mostrarCuotasCliente();
 			btnPagar.setVisible(false);
 			btnCancelar.setVisible(false);
-			btnConsultar.setVisible(true);
+			btnConsultar.setEnabled(true);
 			tfTipo.setEnabled(true);
 			tfNum.setEnabled(true);
 			mostrarDocumentos();
@@ -422,4 +435,5 @@ public class PagarCuotas extends JInternalFrame {
 		}
 		
 	}
+
 }

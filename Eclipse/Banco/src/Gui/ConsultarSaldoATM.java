@@ -60,7 +60,7 @@ public class ConsultarSaldoATM extends JInternalFrame {
 		
 		try{    
 			if(query.isEmpty())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vac�a\n","Consulta vac�a",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"La consulta SQL es vacia\n","Consulta vacia",JOptionPane.ERROR_MESSAGE);
 			else{
 
 				conectarBD();

@@ -94,7 +94,7 @@ public class TransferenciaATM extends JInternalFrame {
 		String query;
 		int destino;
 		double monto;
-		int atm=20;
+		int atm=100;
 		String mensaje="";
 		
 		try {

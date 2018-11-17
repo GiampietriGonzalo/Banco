@@ -110,6 +110,7 @@ public class MenuAdmin extends JFrame {
 		JIConsultar.addActionListener(new oyenteConsultar());
 
 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 

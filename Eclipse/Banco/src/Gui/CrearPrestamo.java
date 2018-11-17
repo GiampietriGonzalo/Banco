@@ -48,16 +48,18 @@ public class CrearPrestamo extends JInternalFrame {
 	}	
 	
 	private void initGui() {
+		
+		setClosable(true);
 		setTitle("Crear prestamo");
 		setResizable(false);
 
-		setForeground(Color.WHITE);
-		setBackground(Color.DARK_GRAY);
+		setForeground(Color.DARK_GRAY);
+		setBackground(new Color(211, 211, 211));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 835, 527);
+		setBounds(100, 70, 835, 527);
 		contentPane = new JPanel();
-		contentPane.setForeground(Color.WHITE);
-		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setForeground(Color.DARK_GRAY);
+		contentPane.setBackground(new Color(211, 211, 211));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -65,9 +67,9 @@ public class CrearPrestamo extends JInternalFrame {
 		this.setEnabled(false);
 
 		btnConsultar = new JButton("Consultar");
-		btnConsultar.setForeground(Color.WHITE);
-		btnConsultar.setBackground(Color.DARK_GRAY);
-		btnConsultar.setBounds(350, 10, 89, 23);
+		btnConsultar.setForeground(Color.DARK_GRAY);
+		btnConsultar.setBackground(Color.LIGHT_GRAY);
+		btnConsultar.setBounds(318, 34, 142, 23);
 		contentPane.add(btnConsultar);
 		btnConsultar.addActionListener(new oyenteConsultar(this));
 		
@@ -93,69 +95,73 @@ public class CrearPrestamo extends JInternalFrame {
 		tablePane.add(spTable, BorderLayout.CENTER);
 
 		etTipo = new JLabel();
+		etTipo.setForeground(Color.DARK_GRAY);
+		etTipo.setBackground(Color.WHITE);
 		etTipo.setBounds(10, 10, 142, 10);
-		etTipo.setEnabled(false);
 		etTipo.setText("Tipo documento");
 		contentPane.add(etTipo);
 		
 		tfTipo = new JTextField(10);
-		tfTipo.setForeground(Color.WHITE);
-		tfTipo.setBackground(Color.DARK_GRAY);
+		tfTipo.setForeground(Color.DARK_GRAY);
+		tfTipo.setBackground(Color.WHITE);
 		tfTipo.setBounds(10, 20, 142, 50);
 		contentPane.add(tfTipo);
 
 		etNum = new JLabel();
+		etNum.setForeground(Color.DARK_GRAY);
+		etNum.setBackground(Color.WHITE);
 		etNum.setBounds(160, 10, 142, 10);
-		etNum.setEnabled(false);
 		etNum.setText("Número documento");
 		contentPane.add(etNum);
 		
 		tfNum = new JTextField(10);
-		tfNum.setForeground(Color.WHITE);
-		tfNum.setBackground(Color.DARK_GRAY);
+		tfNum.setForeground(Color.DARK_GRAY);
+		tfNum.setBackground(Color.WHITE);
 		tfNum.setBounds(160, 20, 142, 50);
 		contentPane.add(tfNum);
 		
 		etMonto = new JLabel();
-		etMonto.setBounds(400, 100, 142, 20);
-		etMonto.setEnabled(false);
+		etMonto.setForeground(Color.DARK_GRAY);
+		etMonto.setBackground(Color.WHITE);
+		etMonto.setBounds(318, 100, 142, 20);
 		etMonto.setText("Monto prestamo");
 		contentPane.add(etMonto);
 		etMonto.setVisible(false);
 		
 		tfMonto = new JTextField(10);
-		tfMonto.setForeground(Color.WHITE);
-		tfMonto.setBackground(Color.DARK_GRAY);
-		tfMonto.setBounds(400, 120, 142, 50);
+		tfMonto.setForeground(Color.DARK_GRAY);
+		tfMonto.setBackground(Color.WHITE);
+		tfMonto.setBounds(318, 120, 142, 50);
 		contentPane.add(tfMonto);
 		tfMonto.setVisible(false);
 		
 		etMeses = new JLabel();
-		etMeses.setBounds(400, 200, 142, 20);
-		etMeses.setEnabled(false);
+		etMeses.setForeground(Color.DARK_GRAY);
+		etMeses.setBackground(Color.WHITE);
+		etMeses.setBounds(318, 199, 142, 20);
 		etMeses.setText("Meses prestamo");
 		contentPane.add(etMeses);
 		etMeses.setVisible(false);
 		
 		tfMeses = new JTextField(10);
-		tfMeses.setForeground(Color.WHITE);
-		tfMeses.setBackground(Color.DARK_GRAY);
-		tfMeses.setBounds(400, 220, 142, 50);
+		tfMeses.setForeground(Color.DARK_GRAY);
+		tfMeses.setBackground(Color.WHITE);
+		tfMeses.setBounds(318, 220, 142, 50);
 		contentPane.add(tfMeses);
 		tfMeses.setVisible(false);
 		
 		btnCrear = new JButton("Crear Prestamo");
-		btnCrear.setForeground(Color.WHITE);
-		btnCrear.setBackground(Color.DARK_GRAY);
-		btnCrear.setBounds(400, 300, 142, 23);
+		btnCrear.setForeground(Color.DARK_GRAY);
+		btnCrear.setBackground(Color.LIGHT_GRAY);
+		btnCrear.setBounds(318, 281, 142, 23);
 		contentPane.add(btnCrear);
 		btnCrear.addActionListener(new oyenteCrear(this));
 		btnCrear.setVisible(false);
 
 		btnCancelar = new JButton("Cancelar");
-		btnCancelar.setForeground(Color.WHITE);
-		btnCancelar.setBackground(Color.DARK_GRAY);
-		btnCancelar.setBounds(400, 350, 142, 23);
+		btnCancelar.setForeground(Color.DARK_GRAY);
+		btnCancelar.setBackground(Color.LIGHT_GRAY);
+		btnCancelar.setBounds(318, 315, 142, 23);
 		contentPane.add(btnCancelar);
 		btnCancelar.addActionListener(new oyenteCancelar(this));
 		btnCancelar.setVisible(false);
@@ -227,34 +233,36 @@ public class CrearPrestamo extends JInternalFrame {
 		
 		boolean valido = false; 
 		
+		String query;
+		
 		try{    
 
 			conectarBD();
 			Statement stmt = this.conexionBD.createStatement();
 			
-			String tfQuery = "SELECT tipo_doc, nro_doc \r\n" + 
+			query = "SELECT tipo_doc, nro_doc \r\n" + 
 					"FROM Cliente \r\n" + 
 					"WHERE tipo_doc='"+ tfTipo.getText().toString() +"' and nro_doc='" + tfNum.getText().toString()+"';";
 
-			ResultSet rs= stmt.executeQuery(tfQuery);
+			ResultSet rs= stmt.executeQuery(query);
 			
 			if(!rs.next())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se encontró un cliente asociado al tipo y número de documento ingresados\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"No se encontro un cliente asociado al tipo y número de documento ingresados\n","No se puede crear prestamo",JOptionPane.ERROR_MESSAGE);
 			else {
 				
-				tfQuery = "SELECT nro_prestamo\r\n" + 
-						"FROM Prestamo p, Cliente c\r\n" + 
-						"WHERE p.nro_cliente=c.nro_cliente and c.nro_doc='"+ tfNum.getText().toString() +"';";
 				
-				rs = stmt.executeQuery(tfQuery);
+				query= "SELECT nro_prestamo FROM prestamo natural join cliente natural join pago WHERE fecha_pago IS NULL and nro_doc = "+tfNum.getText().toString()+";";
 				
-				if(rs.next())
+				rs = stmt.executeQuery(query);
+				
+				if(!rs.next())
 					valido = true;
-				else 
-					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El cliente correspondiente al tipo y número de documento ingresados ya tiene un préstamo activo\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
-					
-					
+				else { 
+					//EL CLIENTE TIENE UN PRESTAMO, SE CONTROLA SI EL PRESTAMO ESTA ACTIVO, ES DECIR, SI HAY CUOTAS NO PAGAS.
 				
+					JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"ERROR: El cliente ya tiene un préstamo activo\n","No se puede crear prestamo",JOptionPane.ERROR_MESSAGE);
+				
+				}
 				rs.close();
 				stmt.close();
 				desconectarBD();
@@ -275,6 +283,7 @@ public class CrearPrestamo extends JInternalFrame {
 		int numeroC;
 		int monto, periodo;
 		Double tasa, interes, valorCuota;
+		boolean exito=false;
 		
 		try{    
 
@@ -290,9 +299,8 @@ public class CrearPrestamo extends JInternalFrame {
 			ResultSet rs= stmt.executeQuery(tfQuery);
 
 			
-			
 			if(!rs.next())
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"Los datos ingresados no son válidos\n","No se puede crear préstamo",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"ERROR: Los datos ingresados no son validos\n","No se puede crear prestamo",JOptionPane.ERROR_MESSAGE);
 			else{
 				
 			
@@ -314,8 +322,8 @@ public class CrearPrestamo extends JInternalFrame {
 				
 				
 				stmt.execute(tfQuery);
-				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El préstamo fue creado exitosamente\n","Préstamo creaDO",JOptionPane.OK_OPTION);
-				
+				JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this),"El prestamo fue creado exitosamente\n","Prestamo creado",JOptionPane.INFORMATION_MESSAGE);
+				exito=true;
 			}	
 			
 			rs.close();
@@ -327,14 +335,14 @@ public class CrearPrestamo extends JInternalFrame {
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
-			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "No se pudo crear el préstamo\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), ex.getMessage() + "ERROR: No se pudo crear el préstamo\n","Error al ejecutar la consulta.",JOptionPane.ERROR_MESSAGE);
 		}
 		catch (NumberFormatException ex){
 			JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), "ERROR: Sólo se admiten números positivos" + "\n","Prestamo abortado",JOptionPane.ERROR_MESSAGE);
 		}
 		
 		
-		return true;
+		return exito;
 	}	
 	
 	private void conectarBD(){

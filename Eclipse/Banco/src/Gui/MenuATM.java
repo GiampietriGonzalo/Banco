@@ -48,7 +48,7 @@ public class MenuATM extends JFrame {
 		mov.setResizable(false);
 		mov.setNormalBounds(new Rectangle(-10, -10, 842, 485));
 		mov.setMaximizable(true);
-		mov.setBounds(7, 10, 846,492);
+		mov.setBounds(7, 10, 820,492);
 		mov.setVisible(false);
 		mov.setEnabled(false);
 		
@@ -102,7 +102,7 @@ public class MenuATM extends JFrame {
 		miTransferencias.addActionListener(new oyenteTransferencias());
 		mnRealizar.add(miTransferencias);
 		
-		JMenuItem miExtraccion = new JMenuItem("Realizar Extracción");
+		JMenuItem miExtraccion = new JMenuItem("Realizar Extraccion");
 		miExtraccion.setForeground(Color.DARK_GRAY);
 		miExtraccion.addActionListener(new oyenteExtraccion());
 		mnRealizar.add(miExtraccion);
@@ -110,7 +110,7 @@ public class MenuATM extends JFrame {
 		JSeparator separator = new JSeparator();
 		mnRealizar.add(separator);
 		
-		JMenuItem miSesion = new JMenuItem("Cerrar Sesi\u00F3n");
+		JMenuItem miSesion = new JMenuItem("Cerrar Sesion");
 		miSesion.setForeground(Color.DARK_GRAY);
 		mnRealizar.add(miSesion);
 		getContentPane().setLayout(null);

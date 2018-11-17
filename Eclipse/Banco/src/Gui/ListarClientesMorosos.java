@@ -36,20 +36,23 @@ public class ListarClientesMorosos extends JInternalFrame {
 	private JScrollPane spTable;
 	
 	public ListarClientesMorosos() {
+		
 		initGui();
 	}
 	
 	private void initGui() {
+		
+		setClosable(true);
 		setTitle("Clientes morosos");
 		setResizable(false);
 
-		setForeground(Color.WHITE);
-		setBackground(Color.DARK_GRAY);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 835, 527);
+		setForeground(Color.DARK_GRAY);
+		setBackground(new Color(211, 211, 211));
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setBounds(100, 70, 835, 527);
 		contentPane = new JPanel();
-		contentPane.setForeground(Color.WHITE);
-		contentPane.setBackground(Color.DARK_GRAY);
+		contentPane.setForeground(Color.DARK_GRAY);
+		contentPane.setBackground(new Color(211, 211, 211));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -81,7 +84,7 @@ public class ListarClientesMorosos extends JInternalFrame {
 		realizarConsulta();
 	}
 
-	private void realizarConsulta(){
+	public void realizarConsulta(){
 
 		int filas=0;
 		int i=0;
@@ -106,38 +109,42 @@ public class ListarClientesMorosos extends JInternalFrame {
 
 			rs=stmt.executeQuery(tfQuery);
 			TableModel bancoModel;
-			Object columnNames[]=new Object[md.getColumnCount()];
+			
+			if(rs.next()) {
 
-			while(i<md.getColumnCount()){
-				columnNames[i]= new String(md.getColumnName(i+1));
-				i++;
-			}
+				Object columnNames[]=new Object[md.getColumnCount()];
 
-			bancoModel = new DefaultTableModel(columnNames,1);
-
-			tablaMorosos.setModel(bancoModel);
-
-			i=1;
-			//Filas i, Columnas j
-
-			while (rs.next()){
-
-				((DefaultTableModel) tablaMorosos.getModel()).setRowCount(i);
-				for(int j=1;j<md.getColumnCount()+1;j++){
-
-					if(columnNames[j-1].equals("fecha")){
-
-						fecha= Fechas.convertirDateAString(rs.getDate(j));
-						tablaMorosos.setValueAt(fecha,i-1,j-1);
-					}
-					else
-						tablaMorosos.setValueAt(rs.getObject(j),i-1, j-1);   
+				while(i<md.getColumnCount()){
+					columnNames[i]= new String(md.getColumnName(i+1));
+					i++;
 				}
-				i++;
-			}
 
-			JTableHeader header = tablaMorosos.getTableHeader();
-			tablePane.add(header,BorderLayout.NORTH);
+				bancoModel = new DefaultTableModel(columnNames,0);
+
+				tablaMorosos.setModel(bancoModel);
+
+				i=1;
+				//Filas i, Columnas j
+
+				while (rs.next()){
+
+					((DefaultTableModel) tablaMorosos.getModel()).setRowCount(i);
+					for(int j=1;j<md.getColumnCount()+1;j++){
+
+						if(columnNames[j-1].equals("fecha")){
+
+							fecha= Fechas.convertirDateAString(rs.getDate(j));
+							tablaMorosos.setValueAt(fecha,i-1,j-1);
+						}
+						else
+							tablaMorosos.setValueAt(rs.getObject(j),i-1, j-1);   
+					}
+					i++;
+				}
+
+				JTableHeader header = tablaMorosos.getTableHeader();
+				tablePane.add(header,BorderLayout.NORTH);
+			}
 
 			rs.close();
 			stmt.close();
