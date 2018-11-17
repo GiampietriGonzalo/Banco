@@ -2,11 +2,12 @@
 
 delimiter !
 
-CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA INT(8),IN cajaB INT(8))
+CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN numTarjeta BIGINT,IN cajaB INT(8))
                             
   BEGIN   
 
      #Declaración de variables.
+     DECLARE cajaA INT(8);
 	 DECLARE saldo_cajaA DECIMAL(16,2);
 	 DECLARE saldo_cajaB DECIMAL(16,2);
 	 DECLARE nuevoSaldoA DECIMAL(16,2);
@@ -32,57 +33,73 @@ CREATE PROCEDURE transferir(IN codCaja INT(5),IN monto DECIMAL(16,2), IN cajaA I
          
 	 START TRANSACTION;	#Comienza la transacción
      
-		IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaA) AND EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaB) THEN
-		  
-		  SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
-		  SELECT saldo INTO saldo_cajaB FROM caja_ahorro WHERE nro_ca=cajaB FOR UPDATE;
+		IF EXISTS(SELECT * FROM caja WHERE cod_caja=codCaja) THEN
+			IF EXISTS (SELECT * FROM tarjeta WHERE nro_tarjeta=numTarjeta) THEN
+				IF EXISTS (SELECT * FROM caja_ahorro WHERE nro_ca=cajaB) THEN
+				
+          
+					SELECT nro_ca INTO cajaA FROM tarjeta WHERE nro_tarjeta=numTarjeta;
+					SELECT saldo INTO saldo_cajaA FROM caja_ahorro WHERE nro_ca=cajaA FOR UPDATE;
+					SELECT saldo INTO saldo_cajaB FROM caja_ahorro WHERE nro_ca=cajaB FOR UPDATE;
 	
-     	  #Si el saldo actual de la cajaA es suficiente para realizar la transferencia, 
-          #entonces actualizo el saldo de ambas cuentas 
-
-	      IF saldo_cajaA >= monto THEN 	  
-	     
-			 SET nuevoSaldoA=saldo_cajaA - monto;
-		  	 SET nuevoSaldoB=saldo_cajaB + monto;  
-
-	         UPDATE caja_ahorro SET saldo = nuevoSaldoA  WHERE nro_ca=cajaA;
-	         UPDATE caja_ahorro SET saldo = nuevoSaldoB  WHERE nro_ca=cajaB;
-
-		   #TRANSFERENCIA
-
-			 #transaccion
-			 INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
-
-             set lastIDTransaccion=LAST_INSERT_ID();
-             
-			 #transaccion_por_caja
-			 INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
-             
-			 set lastIDTransaccionCaja=LAST_INSERT_ID();
-			 SELECT nro_cliente INTO numCliente FROM cliente_ca WHERE nro_ca=cajaA;
-			 
-			 #transferencia
-			 INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,cajaA,cajaB); 
-
-		   #DEPOSITO
-			 INSERT INTO deposito VALUES (lastIDTransaccionCaja,cajaB);
-	
-             SELECT 'La transferencia ha sido exitosa' AS resultado; 
-
-	    
-		  ELSE  
-             SELECT 'ERROR: Saldo insuficiente para realizar la transferencia' AS resultado;
-	      END IF;  
-
-	   ELSE  
-            SELECT 'ERROR: Cuenta inexistente' AS resultado;  
-	   END IF;  	 		
+					#Si el saldo actual de la cajaA es suficiente para realizar la transferencia, 
+					#entonces actualizo el saldo de ambas cuentas 
+			
+					IF monto>0 THEN
 		
-	 COMMIT;   #Comete la transacción  
+						IF saldo_cajaA >= monto THEN 	  
+	     
+							SET nuevoSaldoA=saldo_cajaA - monto;
+							SET nuevoSaldoB=saldo_cajaB + monto;  
+
+							UPDATE caja_ahorro SET saldo = nuevoSaldoA  WHERE nro_ca=cajaA;
+							UPDATE caja_ahorro SET saldo = nuevoSaldoB  WHERE nro_ca=cajaB;
+
+							#TRANSFERENCIA
+	
+							#transaccion
+							INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
+
+							set lastIDTransaccion=LAST_INSERT_ID();
+             
+							#transaccion_por_caja
+							INSERT INTO transaccion_por_caja(nro_trans,cod_caja) VALUES (lastIDTransaccion,codCaja);
+             
+							set lastIDTransaccionCaja=LAST_INSERT_ID();
+							SELECT nro_cliente INTO numCliente FROM tarjeta WHERE nro_tarjeta=numTarjeta;
+			 
+							#transferencia
+							INSERT INTO transferencia(nro_trans,nro_cliente,origen,destino) VALUES (LAST_INSERT_ID(),numCliente,cajaA,cajaB); 
+
+							#Transaccion para deposito
+                            INSERT INTO transaccion(fecha,hora,monto) VALUES (curdate(),curtime(),monto);
+                            set lastIDTransaccion=LAST_INSERT_ID();
+                            
+							#DEPOSITO
+							INSERT INTO deposito VALUES (lastIDTransaccion,cajaB);
+	
+							SELECT 'La transferencia ha sido exitosa' AS resultado; 
+						ELSE  
+							SELECT 'ERROR: Saldo insuficiente para realizar la transferencia' AS resultado;
+						END IF;
+					ELSE
+						SELECT 'ERROR: El monto a transferir debe ser mayora cero' AS resultado;
+					END IF;
+				ELSE
+					SELECT 'ERROR: Caja de ahorro destino inexistente' AS resultado;
+				END IF;    
+			ELSE  
+				SELECT 'ERROR: Número de tarjeta inexistene' AS resultado;  
+			END IF;  	
+		ELSE
+			SELECT 'ERROR: Caja inexistente' as Resultado;
+		END IF;
+        
+		COMMIT;   #Comete la transacción  
  END; !
 
 
-CREATE PROCEDURE extraer(codCaja INT (5),numTarjeta INT(8),monto INT(12))
+CREATE PROCEDURE extraer(codCaja INT (5),numTarjeta BIGINT,monto INT(12))
 
 	BEGIN
 
@@ -164,11 +181,11 @@ CREATE TRIGGER cuotasDePrestamo AFTER INSERT ON prestamo FOR EACH ROW
 	    SET k = 1;
 
 	    WHILE k <= NEW.cant_meses DO
-			INSERT INTO pago(nro_prestamo,nro_pago,fecha_pago) VALUES(NEW.nro_prestamo, k, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)),NULL);
+			INSERT INTO pago(nro_prestamo,nro_pago,fecha_venc,fecha_pago) VALUES(NEW.nro_prestamo, k, (SELECT date_add(NEW.fecha, INTERVAL k MONTH)),NULL);
 	        SET k = k+1;
 	    END WHILE;
 
-	END; !
+END; !
 	
     
  delimiter ; #reestablece ';' como delimitador de sentencias
