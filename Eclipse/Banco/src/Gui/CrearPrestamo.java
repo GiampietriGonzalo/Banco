@@ -55,7 +55,7 @@ public class CrearPrestamo extends JInternalFrame {
 
 		setForeground(Color.DARK_GRAY);
 		setBackground(new Color(211, 211, 211));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 70, 835, 527);
 		contentPane = new JPanel();
 		contentPane.setForeground(Color.DARK_GRAY);

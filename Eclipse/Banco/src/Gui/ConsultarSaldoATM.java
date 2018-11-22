@@ -28,7 +28,7 @@ public class ConsultarSaldoATM extends JInternalFrame {
 	private JLabel lblSaldo;
 	
 	public ConsultarSaldoATM(int codCaja){
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBorder(null);
 		setMaximizable(true);
 		setEnabled(false);

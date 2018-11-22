@@ -25,14 +25,14 @@ public class TransferenciaATM extends JInternalFrame {
 	private JTextField txtMonto;
 	private Connection conexionBD = null;
 	private JButton btnTransferir;
-	private int codCaja;
+	private int numTarjeta;
 	
 
 	
-	public TransferenciaATM(int codCaja) {
+	public TransferenciaATM(int tarjeta) {
 		setBorder(null);
 		initGui();
-		this.codCaja=codCaja;
+		this.numTarjeta=tarjeta;
 	}
 	
 	private void initGui(){
@@ -106,7 +106,7 @@ public class TransferenciaATM extends JInternalFrame {
 		
 			if(monto>0) {
 
-				query="call transferir("+atm+","+monto+","+codCaja+","+destino+")";
+				query="call transferir("+atm+","+monto+","+numTarjeta+","+destino+")";
 
 				Statement stmt = conexionBD.createStatement();
 

@@ -95,22 +95,15 @@ public class ListarClientesMorosos extends JInternalFrame {
 			
 			Statement stmt = this.conexionBD.createStatement();
 			
-			java.util.Date dete = new Date();
-			String fehca = Fechas.convertirDateAStringDB(dete);
-			
-			String tfQuery ="SELECT c.nro_cliente, c.tipo_doc, c.nro_doc, c.nombre, c.apellido, p.nro_prestamo, p.monto, p.cant_meses, p.valor_cuota, COUNT(nro_pago) as cuotas_atrasadas\r\n" + 
-					"FROM Cliente c, Prestamo p, Pago a\r\n" + 
-					"WHERE c.nro_cliente=p.nro_cliente and p.nro_prestamo=a.nro_prestamo and a.fecha_pago is NULL and a.fecha_venc<'"+ fehca +"' \r\n" + 
-					"GROUP BY nro_prestamo having COUNT(nro_pago)>=2;";
-			
+			String tfQuery="SELECT nro_cliente, tipo_doc, nro_doc, nombre, apellido, nro_prestamo, monto, cant_meses, valor_cuota, COUNT(nro_prestamo) FROM prestamo natural join pago natural join cliente WHERE fecha_pago IS NULL and fecha_venc < CURDATE() GROUP BY nro_prestamo HAVING count(nro_prestamo) > 1;";
 			ResultSet rs= stmt.executeQuery(tfQuery);
 			ResultSetMetaData md= rs.getMetaData();
 
 
-			rs=stmt.executeQuery(tfQuery);
+			
 			TableModel bancoModel;
 			
-			if(rs.next()) {
+			if(stmt.execute(tfQuery)) {
 
 				Object columnNames[]=new Object[md.getColumnCount()];
 
@@ -126,18 +119,14 @@ public class ListarClientesMorosos extends JInternalFrame {
 				i=1;
 				//Filas i, Columnas j
 
+				rs=stmt.getResultSet();
+				
 				while (rs.next()){
 
 					((DefaultTableModel) tablaMorosos.getModel()).setRowCount(i);
 					for(int j=1;j<md.getColumnCount()+1;j++){
 
-						if(columnNames[j-1].equals("fecha")){
-
-							fecha= Fechas.convertirDateAString(rs.getDate(j));
-							tablaMorosos.setValueAt(fecha,i-1,j-1);
-						}
-						else
-							tablaMorosos.setValueAt(rs.getObject(j),i-1, j-1);   
+						tablaMorosos.setValueAt(rs.getObject(j),i-1, j-1);   
 					}
 					i++;
 				}

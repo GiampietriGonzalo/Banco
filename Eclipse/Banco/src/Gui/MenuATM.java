@@ -57,7 +57,7 @@ public class MenuATM extends JFrame {
 		saldos.setClosable(true);
 		saldos.setLocation(9, 11);
 		
-		trans= new TransferenciaATM(codCaja);
+		trans= new TransferenciaATM(numTarjeta);
 		trans.setBorder(null);
 		trans.setMaximizable(true);
 		trans.setClosable(true);

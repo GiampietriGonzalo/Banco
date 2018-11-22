@@ -158,19 +158,30 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 	public void consultarTablas(){
 		
 		String query="SHOW TABLES";
-
+		int cantTablas=0;
+		
 		try {
+		
 			conectarBD();
 			Statement stmt = conexionBD.createStatement();
 			ResultSet rs= stmt.executeQuery(query);
 			int i=0;
 			
+			while(rs.next())
+				cantTablas++;
+			
+			toListaTablas= new String[cantTablas];
+			
+			
+			rs= stmt.executeQuery(query);
 			
 			while(rs.next()){
 				toListaTablas[i]=rs.getString(1);
 				i++;
 			}
 	
+			listaTablas.setListData(toListaTablas);
+			
 		
 			rs.close();
 			desconectarBD();
@@ -188,15 +199,24 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 	private void consultarAtributos(String tabla){
 		
 		String query="DESCRIBE "+tabla;
-		
+		int cantAtributos=0;
 		
 		try {
+			
+			
 			conectarBD();
 			Statement stmt = conexionBD.createStatement();
 			ResultSet rs= stmt.executeQuery(query);
 			int i=0;
 			
-			toListaAtributos= new String[15];
+			
+			while(rs.next())
+				cantAtributos++;
+			
+			
+			toListaAtributos= new String[cantAtributos];
+			
+			rs= stmt.executeQuery(query);
 			
 			while(rs.next()){
 				toListaAtributos[i]=rs.getString(1);
@@ -227,8 +247,11 @@ public class ConsultarTablasAdmin extends JInternalFrame {
 		}
 		
 		public void valueChanged(ListSelectionEvent event) {
+			
 			String tabla = (String) miJList.getSelectedValue();
-			consultarAtributos(tabla);
+			
+			if(tabla!=null)
+				consultarAtributos(tabla);
 			
 		}
 		

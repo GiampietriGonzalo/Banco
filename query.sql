@@ -1,3 +1,2 @@
 use banco;
-
-call transferir(100,100,2,2)
+SELECT nro_cliente, tipo_doc, nro_doc, nombre, apellido, nro_prestamo, monto, cant_meses, valor_cuota COUNT(nro_prestamo) FROM prestamo natural join pago natural join cliente WHERE fecha_pago IS NULL and fecha_venc < CURDATE() GROUP BY nro_prestamo HAVING count(nro_prestamo) > 1;";
